@@ -24,7 +24,35 @@ function makePdf(){let f=formInvoice();if(!f.client.trim()||!f.lines.length){ale
 function renderHistory(){$('historyList').innerHTML=invoices.length?invoices.map((f,i)=>`<div class="invoice-item"><b>${esc(f.number)} — ${esc(f.client)}</b><div class="muted">${esc(f.date)} • ${fmt(f.total)} • ${esc(f.payment)}</div><button onclick="loadInvoice(${i})">Modifier / consulter</button> <button onclick="printSaved(${i})">PDF</button></div>`).join(''):'<p class="muted">Aucune facture enregistrée.</p>'}
 function loadInvoice(i){let f=invoices[i];$('number').value=f.number;$('date').value=f.date;$('client').value=f.client;$('clientAddress').value=f.clientAddress;$('payment').value=f.payment;$('dueDate').value=f.dueDate||'';$('notes').value=f.notes||'';lines=f.lines.map(l=>({...l,id:Date.now()+Math.random()}));renderLines();showPage('invoice')}
 function printSaved(i){let f=invoices[i];if(window.KemsAndroid)KemsAndroid.printInvoice(invoiceHtml(f));else{let w=window.open('','_blank');w.document.write(invoiceHtml(f));w.document.close();w.print()}}
-function exportData(){let blob=new Blob([JSON.stringify({cfg,invoices},null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='KEMS_sauvegarde.json';a.click();URL.revokeObjectURL(a.href)}function importData(e){let file=e.target.files[0];if(!file)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);cfg=d.cfg||{};invoices=d.invoices||[];localStorage.setItem('kems_cfg',JSON.stringify(cfg));localStorage.setItem('kems_invoices',JSON.stringify(invoices));fillSettings();renderHistory();updateNumber();alert('Sauvegarde importée.')}catch(err){alert('Fichier de sauvegarde invalide.')}};r.readAsText(file)}
+function exportData() {
+    const json = JSON.stringify({
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        cfg: cfg,
+        invoices: invoices
+    }, null, 2);
+
+    if (window.KemsAndroid &&
+        typeof window.KemsAndroid.saveJson === "function") {
+        window.KemsAndroid.saveJson(json);
+        return;
+    }
+
+    const blob = new Blob([json], {
+        type: "application/json;charset=utf-8"
+    });
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+
+    a.href = url;
+    a.download = "KEMS_sauvegarde.json";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
 function showPage(id){document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('hidden',p.id!==id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id))}document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>showPage(b.dataset.page));
 fillSettings();$('date').value=today();let d=new Date();d.setDate(d.getDate()+Number(cfg.dueDays||30));$('dueDate').value=d.toISOString().slice(0,10);updateNumber();addLine();renderHistory();
 </script></body></html>
