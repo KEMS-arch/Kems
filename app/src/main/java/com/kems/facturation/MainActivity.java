@@ -2,6 +2,7 @@
 package com.kems.facturation;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,12 +10,16 @@ import android.os.Bundle;
 import android.graphics.Color;
 import android.print.PrintAttributes;
 import android.print.PrintManager;
+import android.text.InputType;
+import android.view.Gravity;
 import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.WebSettings;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import java.io.OutputStream;
 import java.io.IOException;
@@ -27,6 +32,9 @@ public class MainActivity extends Activity {
 
     private static final int FILE_CHOOSER_REQUEST = 1001;
     private static final int SAVE_FILE_REQUEST = 1002;
+
+    // Code PIN pour accéder aux paramètres
+    private static final String SETTINGS_PIN = "1707";
 
     private String pendingJson;
 
@@ -63,10 +71,8 @@ public class MainActivity extends Activity {
                 try {
                     Intent intent =
                             new Intent(Intent.ACTION_OPEN_DOCUMENT);
-
                     intent.addCategory(Intent.CATEGORY_OPENABLE);
                     intent.setType("*/*");
-
                     intent.putExtra(
                             Intent.EXTRA_MIME_TYPES,
                             new String[]{
@@ -78,10 +84,7 @@ public class MainActivity extends Activity {
                     );
 
                     startActivityForResult(
-                            intent,
-                            FILE_CHOOSER_REQUEST
-                    );
-
+                            intent, FILE_CHOOSER_REQUEST);
                     return true;
 
                 } catch (Exception e) {
@@ -93,9 +96,7 @@ public class MainActivity extends Activity {
         });
 
         webView.addJavascriptInterface(
-                new AndroidBridge(this),
-                "KemsAndroid"
-        );
+                new AndroidBridge(this), "KemsAndroid");
 
         setContentView(webView);
         webView.loadUrl("file:///android_asset/index.html");
@@ -103,9 +104,7 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onActivityResult(
-            int requestCode,
-            int resultCode,
-            Intent data) {
+            int requestCode, int resultCode, Intent data) {
 
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -124,39 +123,29 @@ public class MainActivity extends Activity {
         }
 
         if (requestCode == SAVE_FILE_REQUEST) {
-            if (resultCode == RESULT_OK
-                    && data != null
-                    && data.getData() != null
-                    && pendingJson != null) {
-
-                Uri uri = data.getData();
-
+            if (resultCode == RESULT_OK && data != null
+                    && data.getData() != null && pendingJson != null) {
                 try (OutputStream output =
-                             getContentResolver().openOutputStream(uri)) {
+                        getContentResolver().openOutputStream(
+                                data.getData())) {
 
                     if (output == null) {
                         throw new IOException(
-                                "Impossible d'ouvrir le fichier."
-                        );
+                                "Impossible d'ouvrir le fichier.");
                     }
 
                     output.write(
-                            pendingJson.getBytes(StandardCharsets.UTF_8)
-                    );
+                            pendingJson.getBytes(StandardCharsets.UTF_8));
                     output.flush();
 
-                    android.widget.Toast.makeText(
-                            this,
+                    Toast.makeText(this,
                             "Sauvegarde exportée avec succès.",
-                            android.widget.Toast.LENGTH_LONG
-                    ).show();
+                            Toast.LENGTH_LONG).show();
 
                 } catch (Exception e) {
-                    android.widget.Toast.makeText(
-                            this,
+                    Toast.makeText(this,
                             "Erreur pendant l'exportation.",
-                            android.widget.Toast.LENGTH_LONG
-                    ).show();
+                            Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -174,11 +163,59 @@ public class MainActivity extends Activity {
     }
 
     public class AndroidBridge {
-
         private final Context context;
 
         AndroidBridge(Context c) {
             context = c;
+        }
+
+        @JavascriptInterface
+        public void openSettingsWithPin() {
+            runOnUiThread(() -> {
+                EditText pinInput = new EditText(MainActivity.this);
+                pinInput.setInputType(
+                        InputType.TYPE_CLASS_NUMBER
+                        | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+                pinInput.setHint("Code PIN");
+                pinInput.setGravity(Gravity.CENTER);
+                pinInput.setSingleLine(true);
+
+                AlertDialog dialog = new AlertDialog.Builder(
+                        MainActivity.this)
+                        .setTitle("Accès aux paramètres")
+                        .setMessage("Entrez votre code PIN.")
+                        .setView(pinInput)
+                        .setPositiveButton("Valider", null)
+                        .setNegativeButton("Annuler", (d, w) ->
+                                sendPinResult(false))
+                        .create();
+
+                dialog.setOnShowListener(d -> {
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                            .setOnClickListener(v -> {
+                                String pin = pinInput.getText()
+                                        .toString();
+
+                                if (SETTINGS_PIN.equals(pin)) {
+                                    dialog.dismiss();
+                                    sendPinResult(true);
+                                } else {
+                                    pinInput.setText("");
+                                    pinInput.setError(
+                                            "Code PIN incorrect");
+                                }
+                            });
+                });
+
+                dialog.show();
+            });
+        }
+
+        private void sendPinResult(boolean valid) {
+            webView.evaluateJavascript(
+                    "if(window.kemsSettingsPinResult){" +
+                    "window.kemsSettingsPinResult(" + valid + ");}",
+                    null);
         }
 
         @JavascriptInterface
@@ -188,28 +225,20 @@ public class MainActivity extends Activity {
 
                 Intent intent =
                         new Intent(Intent.ACTION_CREATE_DOCUMENT);
-
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 intent.setType("application/json");
-
                 intent.putExtra(
                         Intent.EXTRA_TITLE,
-                        "KEMS_sauvegarde.json"
-                );
+                        "KEMS_sauvegarde.json");
 
                 try {
                     startActivityForResult(
-                            intent,
-                            SAVE_FILE_REQUEST
-                    );
+                            intent, SAVE_FILE_REQUEST);
                 } catch (Exception e) {
                     pendingJson = null;
-
-                    android.widget.Toast.makeText(
-                            context,
+                    Toast.makeText(context,
                             "Impossible d'ouvrir l'enregistrement.",
-                            android.widget.Toast.LENGTH_LONG
-                    ).show();
+                            Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -223,13 +252,11 @@ public class MainActivity extends Activity {
                 printView.setWebViewClient(new WebViewClient() {
                     @Override
                     public void onPageFinished(
-                            WebView view,
-                            String url) {
+                            WebView view, String url) {
 
                         PrintManager manager =
                                 (PrintManager) getSystemService(
-                                        Context.PRINT_SERVICE
-                                );
+                                        Context.PRINT_SERVICE);
 
                         String jobName = "KEMS_Facture";
 
@@ -238,31 +265,18 @@ public class MainActivity extends Activity {
                                 view.createPrintDocumentAdapter(jobName),
                                 new PrintAttributes.Builder()
                                         .setMediaSize(
-                                                PrintAttributes.MediaSize.ISO_A4
-                                        )
+                                                PrintAttributes.MediaSize.ISO_A4)
                                         .setResolution(
                                                 new PrintAttributes.Resolution(
-                                                        "pdf",
-                                                        "PDF",
-                                                        300,
-                                                        300
-                                                )
-                                        )
+                                                        "pdf", "PDF", 300, 300))
                                         .setMinMargins(
-                                                PrintAttributes.Margins.NO_MARGINS
-                                        )
-                                        .build()
-                        );
+                                                PrintAttributes.Margins.NO_MARGINS)
+                                        .build());
                     }
                 });
 
                 printView.loadDataWithBaseURL(
-                        null,
-                        html,
-                        "text/html",
-                        "UTF-8",
-                        null
-                );
+                        null, html, "text/html", "UTF-8", null);
             });
         }
     }
