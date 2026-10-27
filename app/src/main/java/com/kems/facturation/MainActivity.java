@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.graphics.Color;
 import android.print.PrintAttributes;
 import android.print.PrintManager;
 import android.webkit.JavascriptInterface;
@@ -14,13 +15,20 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.WebSettings;
-import android.graphics.Color;
+
+import java.io.OutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class MainActivity extends Activity {
 
     private WebView webView;
     private ValueCallback<Uri[]> filePathCallback;
+
     private static final int FILE_CHOOSER_REQUEST = 1001;
+    private static final int SAVE_FILE_REQUEST = 1002;
+
+    private String pendingJson;
 
     @Override
     public void onCreate(Bundle state) {
@@ -35,10 +43,10 @@ public class MainActivity extends Activity {
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
         settings.setAllowFileAccess(true);
+        settings.setAllowContentAccess(true);
 
         webView.setWebViewClient(new WebViewClient());
 
-        // Autorise les boutons HTML de sélection de fichiers
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public boolean onShowFileChooser(
@@ -53,9 +61,12 @@ public class MainActivity extends Activity {
                 filePathCallback = callback;
 
                 try {
-                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    Intent intent =
+                            new Intent(Intent.ACTION_OPEN_DOCUMENT);
+
                     intent.addCategory(Intent.CATEGORY_OPENABLE);
                     intent.setType("*/*");
+
                     intent.putExtra(
                             Intent.EXTRA_MIME_TYPES,
                             new String[]{
@@ -71,13 +82,13 @@ public class MainActivity extends Activity {
                             FILE_CHOOSER_REQUEST
                     );
 
+                    return true;
+
                 } catch (Exception e) {
                     filePathCallback.onReceiveValue(null);
                     filePathCallback = null;
                     return false;
                 }
-
-                return true;
             }
         });
 
@@ -98,21 +109,58 @@ public class MainActivity extends Activity {
 
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == FILE_CHOOSER_REQUEST
-                && filePathCallback != null) {
+        if (requestCode == FILE_CHOOSER_REQUEST) {
+            if (filePathCallback != null) {
+                Uri[] results = null;
 
-            Uri[] results = null;
+                if (resultCode == RESULT_OK && data != null
+                        && data.getData() != null) {
+                    results = new Uri[]{data.getData()};
+                }
 
-            if (resultCode == RESULT_OK && data != null) {
+                filePathCallback.onReceiveValue(results);
+                filePathCallback = null;
+            }
+        }
+
+        if (requestCode == SAVE_FILE_REQUEST) {
+            if (resultCode == RESULT_OK
+                    && data != null
+                    && data.getData() != null
+                    && pendingJson != null) {
+
                 Uri uri = data.getData();
 
-                if (uri != null) {
-                    results = new Uri[]{uri};
+                try (OutputStream output =
+                             getContentResolver().openOutputStream(uri)) {
+
+                    if (output == null) {
+                        throw new IOException(
+                                "Impossible d'ouvrir le fichier."
+                        );
+                    }
+
+                    output.write(
+                            pendingJson.getBytes(StandardCharsets.UTF_8)
+                    );
+                    output.flush();
+
+                    android.widget.Toast.makeText(
+                            this,
+                            "Sauvegarde exportée avec succès.",
+                            android.widget.Toast.LENGTH_LONG
+                    ).show();
+
+                } catch (Exception e) {
+                    android.widget.Toast.makeText(
+                            this,
+                            "Erreur pendant l'exportation.",
+                            android.widget.Toast.LENGTH_LONG
+                    ).show();
                 }
             }
 
-            filePathCallback.onReceiveValue(results);
-            filePathCallback = null;
+            pendingJson = null;
         }
     }
 
@@ -126,10 +174,44 @@ public class MainActivity extends Activity {
     }
 
     public class AndroidBridge {
+
         private final Context context;
 
         AndroidBridge(Context c) {
             context = c;
+        }
+
+        @JavascriptInterface
+        public void saveJson(String json) {
+            runOnUiThread(() -> {
+                pendingJson = json;
+
+                Intent intent =
+                        new Intent(Intent.ACTION_CREATE_DOCUMENT);
+
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("application/json");
+
+                intent.putExtra(
+                        Intent.EXTRA_TITLE,
+                        "KEMS_sauvegarde.json"
+                );
+
+                try {
+                    startActivityForResult(
+                            intent,
+                            SAVE_FILE_REQUEST
+                    );
+                } catch (Exception e) {
+                    pendingJson = null;
+
+                    android.widget.Toast.makeText(
+                            context,
+                            "Impossible d'ouvrir l'enregistrement.",
+                            android.widget.Toast.LENGTH_LONG
+                    ).show();
+                }
+            });
         }
 
         @JavascriptInterface
