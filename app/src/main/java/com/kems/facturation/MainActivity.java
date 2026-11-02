@@ -1,4 +1,3 @@
-
 package com.kems.facturation;
 
 import android.app.Activity;
@@ -18,6 +17,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.WebSettings;
+import android.webkit.JsResult;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -55,7 +55,58 @@ public class MainActivity extends Activity {
 
         webView.setWebViewClient(new WebViewClient());
 
+        // Gestion des confirmations JavaScript
         webView.setWebChromeClient(new WebChromeClient() {
+
+            @Override
+            public boolean onJsConfirm(
+                    WebView view,
+                    String url,
+                    String message,
+                    JsResult result) {
+
+                AlertDialog dialog = new AlertDialog.Builder(
+                        MainActivity.this)
+                        .setTitle("Confirmation")
+                        .setMessage(message)
+                        .setPositiveButton("Oui", (d, w) -> {
+                            result.confirm();
+                        })
+                        .setNegativeButton("Annuler", (d, w) -> {
+                            result.cancel();
+                        })
+                        .create();
+
+                dialog.setOnCancelListener(d -> result.cancel());
+                dialog.show();
+
+                return true;
+            }
+
+            // Gestion des messages JavaScript
+            @Override
+            public boolean onJsAlert(
+                    WebView view,
+                    String url,
+                    String message,
+                    JsResult result) {
+
+                AlertDialog dialog = new AlertDialog.Builder(
+                        MainActivity.this)
+                        .setTitle("KEMS Facturation")
+                        .setMessage(message)
+                        .setPositiveButton("OK", (d, w) -> {
+                            result.confirm();
+                        })
+                        .create();
+
+                dialog.setOnCancelListener(d -> result.cancel());
+                dialog.show();
+
+                return true;
+            }
+
+            // Gestion de l'importation JSON
             @Override
             public boolean onShowFileChooser(
                     WebView view,
@@ -71,8 +122,10 @@ public class MainActivity extends Activity {
                 try {
                     Intent intent =
                             new Intent(Intent.ACTION_OPEN_DOCUMENT);
+
                     intent.addCategory(Intent.CATEGORY_OPENABLE);
                     intent.setType("*/*");
+
                     intent.putExtra(
                             Intent.EXTRA_MIME_TYPES,
                             new String[]{
@@ -85,6 +138,7 @@ public class MainActivity extends Activity {
 
                     startActivityForResult(
                             intent, FILE_CHOOSER_REQUEST);
+
                     return true;
 
                 } catch (Exception e) {
@@ -95,10 +149,12 @@ public class MainActivity extends Activity {
             }
         });
 
+        // Connexion entre Java et JavaScript
         webView.addJavascriptInterface(
                 new AndroidBridge(this), "KemsAndroid");
 
         setContentView(webView);
+
         webView.loadUrl("file:///android_asset/index.html");
     }
 
@@ -108,12 +164,16 @@ public class MainActivity extends Activity {
 
         super.onActivityResult(requestCode, resultCode, data);
 
+        // Résultat de l'importation JSON
         if (requestCode == FILE_CHOOSER_REQUEST) {
+
             if (filePathCallback != null) {
                 Uri[] results = null;
 
-                if (resultCode == RESULT_OK && data != null
+                if (resultCode == RESULT_OK
+                        && data != null
                         && data.getData() != null) {
+
                     results = new Uri[]{data.getData()};
                 }
 
@@ -122,9 +182,14 @@ public class MainActivity extends Activity {
             }
         }
 
+        // Résultat de l'exportation JSON
         if (requestCode == SAVE_FILE_REQUEST) {
-            if (resultCode == RESULT_OK && data != null
-                    && data.getData() != null && pendingJson != null) {
+
+            if (resultCode == RESULT_OK
+                    && data != null
+                    && data.getData() != null
+                    && pendingJson != null) {
+
                 try (OutputStream output =
                         getContentResolver().openOutputStream(
                                 data.getData())) {
@@ -136,14 +201,18 @@ public class MainActivity extends Activity {
 
                     output.write(
                             pendingJson.getBytes(StandardCharsets.UTF_8));
+
                     output.flush();
 
-                    Toast.makeText(this,
+                    Toast.makeText(
+                            this,
                             "Sauvegarde exportée avec succès.",
                             Toast.LENGTH_LONG).show();
 
                 } catch (Exception e) {
-                    Toast.makeText(this,
+
+                    Toast.makeText(
+                            this,
                             "Erreur pendant l'exportation.",
                             Toast.LENGTH_LONG).show();
                 }
@@ -155,6 +224,7 @@ public class MainActivity extends Activity {
 
     @Override
     public void onBackPressed() {
+
         if (webView != null && webView.canGoBack()) {
             webView.goBack();
         } else {
@@ -162,20 +232,27 @@ public class MainActivity extends Activity {
         }
     }
 
+    // Interface Android - JavaScript
     public class AndroidBridge {
+
         private final Context context;
 
         AndroidBridge(Context c) {
             context = c;
         }
 
+        // Vérification du code PIN
         @JavascriptInterface
         public void openSettingsWithPin() {
+
             runOnUiThread(() -> {
+
                 EditText pinInput = new EditText(MainActivity.this);
+
                 pinInput.setInputType(
                         InputType.TYPE_CLASS_NUMBER
                         | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+
                 pinInput.setHint("Code PIN");
                 pinInput.setGravity(Gravity.CENTER);
                 pinInput.setSingleLine(true);
@@ -191,15 +268,20 @@ public class MainActivity extends Activity {
                         .create();
 
                 dialog.setOnShowListener(d -> {
+
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE)
                             .setOnClickListener(v -> {
+
                                 String pin = pinInput.getText()
                                         .toString();
 
                                 if (SETTINGS_PIN.equals(pin)) {
+
                                     dialog.dismiss();
                                     sendPinResult(true);
+
                                 } else {
+
                                     pinInput.setText("");
                                     pinInput.setError(
                                             "Code PIN incorrect");
@@ -212,44 +294,61 @@ public class MainActivity extends Activity {
         }
 
         private void sendPinResult(boolean valid) {
+
             webView.evaluateJavascript(
                     "if(window.kemsSettingsPinResult){" +
                     "window.kemsSettingsPinResult(" + valid + ");}",
                     null);
         }
 
+        // Exportation JSON
         @JavascriptInterface
         public void saveJson(String json) {
+
             runOnUiThread(() -> {
+
                 pendingJson = json;
 
                 Intent intent =
                         new Intent(Intent.ACTION_CREATE_DOCUMENT);
+
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 intent.setType("application/json");
+
                 intent.putExtra(
                         Intent.EXTRA_TITLE,
                         "KEMS_sauvegarde.json");
 
                 try {
+
                     startActivityForResult(
                             intent, SAVE_FILE_REQUEST);
+
                 } catch (Exception e) {
+
                     pendingJson = null;
-                    Toast.makeText(context,
+
+                    Toast.makeText(
+                            context,
                             "Impossible d'ouvrir l'enregistrement.",
                             Toast.LENGTH_LONG).show();
                 }
             });
         }
 
+        // Impression PDF
         @JavascriptInterface
         public void printInvoice(String html) {
+
             runOnUiThread(() -> {
+
                 WebView printView = new WebView(context);
-                printView.getSettings().setJavaScriptEnabled(false);
+
+                printView.getSettings()
+                        .setJavaScriptEnabled(false);
 
                 printView.setWebViewClient(new WebViewClient() {
+
                     @Override
                     public void onPageFinished(
                             WebView view, String url) {
@@ -268,7 +367,10 @@ public class MainActivity extends Activity {
                                                 PrintAttributes.MediaSize.ISO_A4)
                                         .setResolution(
                                                 new PrintAttributes.Resolution(
-                                                        "pdf", "PDF", 300, 300))
+                                                        "pdf",
+                                                        "PDF",
+                                                        300,
+                                                        300))
                                         .setMinMargins(
                                                 PrintAttributes.Margins.NO_MARGINS)
                                         .build());
@@ -276,7 +378,11 @@ public class MainActivity extends Activity {
                 });
 
                 printView.loadDataWithBaseURL(
-                        null, html, "text/html", "UTF-8", null);
+                        null,
+                        html,
+                        "text/html",
+                        "UTF-8",
+                        null);
             });
         }
     }
