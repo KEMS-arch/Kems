@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="fr">
 <head>
@@ -7,34 +8,171 @@
 
 <style>
 :root{
---bg:#0c1714;--panel:#14251f;--green:#65e6a5;
---text:#f2fff8;--muted:#a7bdb2;--line:#29453a
+--bg:#0c1714;
+--panel:#14251f;
+--green:#65e6a5;
+--text:#f2fff8;
+--muted:#a7bdb2;
+--line:#29453a
 }
+
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:15px Arial,sans-serif}
-header{padding:20px 16px;background:#10251d;border-bottom:1px solid var(--line)}
-header small{color:var(--green);letter-spacing:2px}
-h1{font-size:23px;margin:7px 0 0}
-nav{display:flex;gap:8px;padding:12px;position:sticky;top:0;background:var(--bg);z-index:3;overflow:auto}
-button{border:0;border-radius:10px;padding:12px 14px;font-weight:bold;background:#203a30;color:var(--text);cursor:pointer}
-button.active,.primary{background:var(--green);color:#082016}
-.page{padding:12px;max-width:760px;margin:auto}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px;margin-bottom:12px}
-h2{font-size:18px;margin:0 0 14px}
-label{display:block;color:var(--muted);font-size:13px;margin:10px 0 5px}
-input,select,textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:9px;background:#0b1913;color:var(--text);font:inherit}
+
+body{
+margin:0;
+background:var(--bg);
+color:var(--text);
+font:15px Arial,sans-serif
+}
+
+header{
+padding:20px 16px;
+background:#10251d;
+border-bottom:1px solid var(--line)
+}
+
+header small{
+color:var(--green);
+letter-spacing:2px
+}
+
+h1{
+font-size:23px;
+margin:7px 0 0
+}
+
+nav{
+display:flex;
+gap:8px;
+padding:12px;
+position:sticky;
+top:0;
+background:var(--bg);
+z-index:3;
+overflow:auto
+}
+
+button{
+border:0;
+border-radius:10px;
+padding:12px 14px;
+font-weight:bold;
+background:#203a30;
+color:var(--text);
+cursor:pointer
+}
+
+button.active,.primary{
+background:var(--green);
+color:#082016
+}
+
+.page{
+padding:12px;
+max-width:760px;
+margin:auto
+}
+
+.card{
+background:var(--panel);
+border:1px solid var(--line);
+border-radius:14px;
+padding:15px;
+margin-bottom:12px
+}
+
+h2{
+font-size:18px;
+margin:0 0 14px
+}
+
+label{
+display:block;
+color:var(--muted);
+font-size:13px;
+margin:10px 0 5px
+}
+
+input,select,textarea{
+width:100%;
+padding:12px;
+border:1px solid var(--line);
+border-radius:9px;
+background:#0b1913;
+color:var(--text);
+font:inherit
+}
+
 textarea{min-height:65px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.row{display:grid;grid-template-columns:2fr .7fr 1fr auto;gap:6px;align-items:end}
-.row input{min-width:0;padding:10px}
-.total{font-size:22px;color:var(--green);font-weight:bold;text-align:right;padding:12px}
-.muted{color:var(--muted);font-size:13px}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px
+}
+
+.row{
+display:grid;
+grid-template-columns:2fr .7fr 1fr auto;
+gap:6px;
+align-items:end
+}
+
+.row input{
+min-width:0;
+padding:10px
+}
+
+.total{
+font-size:22px;
+color:var(--green);
+font-weight:bold;
+text-align:right;
+padding:12px
+}
+
+.muted{
+color:var(--muted);
+font-size:13px
+}
+
 .hidden{display:none!important}
-.invoice-item{border:1px solid var(--line);padding:10px;border-radius:10px;margin:8px 0}
+
+.invoice-item{
+border:1px solid var(--line);
+padding:10px;
+border-radius:10px;
+margin:8px 0
+}
+
 .invoice-item b{display:block}
-.danger{background:#512b2b;color:white}
-.full{width:100%;margin-top:8px}
-.history-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+
+.danger{
+background:#512b2b;
+color:white
+}
+
+.full{
+width:100%;
+margin-top:8px
+}
+
+.history-actions{
+display:flex;
+flex-wrap:wrap;
+gap:7px;
+margin-top:10px
+}
+
+.sync-status{
+padding:12px;
+background:#0b1913;
+border:1px solid var(--line);
+border-radius:9px;
+margin-top:12px;
+overflow-wrap:anywhere
+}
+
 @media(max-width:420px){
 .grid{grid-template-columns:1fr}
 .row{grid-template-columns:1fr 65px 90px auto}
@@ -59,6 +197,8 @@ textarea{min-height:65px}
 
 <main class="page">
 
+<!-- NOUVELLE FACTURE -->
+
 <section id="invoice" class="pane">
 
 <div class="card">
@@ -69,6 +209,7 @@ textarea{min-height:65px}
 <label>Numéro</label>
 <input id="number" readonly>
 </div>
+
 <div>
 <label>Date</label>
 <input id="date" type="date">
@@ -94,6 +235,7 @@ textarea{min-height:65px}
 <option>Autre</option>
 </select>
 </div>
+
 <div>
 <label>Date d'échéance</label>
 <input id="dueDate" type="date">
@@ -103,6 +245,7 @@ textarea{min-height:65px}
 
 <div class="card">
 <h2>Articles / prestations</h2>
+
 <div id="lines"></div>
 
 <button onclick="addLine()">＋ Ajouter un article</button>
@@ -114,24 +257,41 @@ Total : <span id="total">0 Ar</span>
 <label>Notes / conditions</label>
 <textarea id="notes"></textarea>
 
-<button class="primary full" onclick="saveInvoice()">Enregistrer la facture</button>
-<button class="full" onclick="makePdf()">Générer / imprimer le PDF</button>
+<button class="primary full" onclick="saveInvoice()">
+Enregistrer la facture
+</button>
+
+<button class="full" onclick="makePdf()">
+Générer / imprimer le PDF
+</button>
 </div>
 
 </section>
 
+<!-- HISTORIQUE -->
+
 <section id="history" class="pane hidden">
+
 <div class="card">
 <h2>Historique des factures</h2>
-<div class="muted">Les factures sont enregistrées localement sur ce téléphone.</div>
 
-<button class="danger full" onclick="clearHistory()">Supprimer tout l'historique</button>
+<div class="muted">
+Les factures sont enregistrées localement sur ce téléphone.
+</div>
+
+<button class="danger full" onclick="clearHistory()">
+Supprimer tout l'historique
+</button>
 
 <div id="historyList"></div>
 </div>
+
 </section>
 
+<!-- PARAMETRES -->
+
 <section id="settings" class="pane hidden">
+
 <div class="card">
 
 <h2>Paramètres de l'entreprise</h2>
@@ -147,6 +307,7 @@ Total : <span id="total">0 Ar</span>
 <label>Téléphone</label>
 <input id="phone" type="tel">
 </div>
+
 <div>
 <label>Email</label>
 <input id="email" type="email">
@@ -170,6 +331,7 @@ Total : <span id="total">0 Ar</span>
 <label>Préfixe</label>
 <input id="prefix" value="FAC-">
 </div>
+
 <div>
 <label>Année dans le numéro</label>
 <select id="yearInNumber">
@@ -184,6 +346,7 @@ Total : <span id="total">0 Ar</span>
 <label>Prochain numéro</label>
 <input id="nextNumber" type="number" min="1" value="1">
 </div>
+
 <div>
 <label>Mode de paiement par défaut</label>
 <select id="defaultPayment">
@@ -201,13 +364,74 @@ Total : <span id="total">0 Ar</span>
 <label>Délai de paiement par défaut (jours)</label>
 <input id="dueDays" type="number" min="0" value="30">
 
-<button class="primary full" onclick="saveSettings()">Enregistrer les paramètres</button>
-<button class="full" onclick="exportData()">Exporter une sauvegarde JSON</button>
+<button class="primary full" onclick="saveSettings()">
+Enregistrer les paramètres
+</button>
+
+<button class="full" onclick="exportData()">
+Exporter une sauvegarde JSON
+</button>
 
 <label>Importer une sauvegarde JSON</label>
-<input id="jsonFile" type="file" accept=".json,application/json" onchange="importData(event)">
+<input
+id="jsonFile"
+type="file"
+accept=".json,application/json"
+onchange="importData(event)"
+>
 
-<p class="muted">Les données restent sur ce téléphone. Exportez régulièrement une sauvegarde.</p>
+<p class="muted">
+Les données restent sur ce téléphone. Exportez régulièrement une sauvegarde.
+</p>
+
+<hr style="border-color:#29453a;margin:22px 0">
+
+<!-- SYNCHRONISATION KEMS -->
+
+<h2>Synchronisation KEMS</h2>
+
+<p class="muted">
+Synchronisez vos factures entre votre téléphone Android et votre PC Lenovo.
+</p>
+
+<label>Clé secrète du serveur</label>
+
+<input
+id="syncToken"
+type="password"
+placeholder="Coller la clé du serveur"
+autocomplete="off"
+>
+
+<button class="primary full" onclick="saveSyncToken()">
+Enregistrer la clé de connexion
+</button>
+
+<button class="full" onclick="checkSync()">
+Vérifier la connexion
+</button>
+
+<button class="full" onclick="uploadSync()">
+Envoyer les données vers le serveur
+</button>
+
+<button class="full" onclick="downloadSync()">
+Télécharger les données du serveur
+</button>
+
+<button class="primary full" onclick="syncNow()">
+Synchroniser maintenant
+</button>
+
+<div id="syncStatus" class="sync-status muted">
+État : non vérifié
+</div>
+
+<p class="muted">
+Attention : l'envoi remplace les données du serveur.
+Le téléchargement remplace les données locales.
+Une sauvegarde locale est créée avant le téléchargement.
+</p>
 
 </div>
 </section>
@@ -252,9 +476,15 @@ function fmt(n, currency) {
 
 function esc(s) {
     return String(s ?? '').replace(/[&<>"']/g,c=>({
-        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+        '&':'&amp;',
+        '<':'&lt;',
+        '>':'&gt;',
+        '"':'&quot;',
+        "'":'&#39;'
     }[c]));
 }
+
+/* PARAMETRES */
 
 function fillSettings() {
     [
@@ -280,8 +510,11 @@ function saveSettings() {
     });
 
     saveConfig();
+
     $('payment').value=cfg.defaultPayment;
+
     alert('Paramètres enregistrés.');
+
     updateNumber();
 }
 
@@ -294,6 +527,8 @@ function updateNumber() {
 
     $('number').value=p+y+String(n).padStart(4,'0');
 }
+
+/* ARTICLES */
 
 function addLine(d={}) {
     let id=Date.now()+Math.random();
@@ -317,21 +552,28 @@ function renderLines() {
                     <input value="${esc(l.description)}"
                     onchange="editLine(${l.id},'description',this.value)">
                 </div>
+
                 <div>
                     <label>Qté</label>
                     <input type="number" min="0" step="any"
                     value="${l.qty}"
                     onchange="editLine(${l.id},'qty',this.value)">
                 </div>
+
                 <div>
                     <label>Prix unitaire</label>
                     <input type="number" min="0" step="any"
                     value="${l.price}"
                     onchange="editLine(${l.id},'price',this.value)">
                 </div>
-                <button class="danger" onclick="removeLine(${l.id})">×</button>
+
+                <button class="danger"
+                onclick="removeLine(${l.id})">×</button>
             </div>
-            <div class="muted">Montant : ${fmt(l.qty*l.price)}</div>
+
+            <div class="muted">
+                Montant : ${fmt(l.qty*l.price)}
+            </div>
         </div>
     `).join('');
 
@@ -340,6 +582,7 @@ function renderLines() {
 
 function editLine(id,k,v) {
     let l=lines.find(x=>x.id===id);
+
     if(l) {
         l[k]=k==='description'?v:Number(v)||0;
         renderLines();
@@ -356,6 +599,8 @@ function total() {
         s+(Number(l.qty)||0)*(Number(l.price)||0),0
     );
 }
+
+/* FACTURES */
 
 function formInvoice() {
     return {
@@ -392,7 +637,11 @@ function saveInvoice() {
         invoices[old]=f;
     } else {
         invoices.unshift(f);
-        cfg.nextNumber=Number(cfg.nextNumber || $('nextNumber').value || 1)+1;
+
+        cfg.nextNumber=Number(
+            cfg.nextNumber || $('nextNumber').value || 1
+        )+1;
+
         $('nextNumber').value=cfg.nextNumber;
         saveConfig();
     }
@@ -400,6 +649,7 @@ function saveInvoice() {
     saveInvoices();
     renderHistory();
     updateNumber();
+
     alert('Facture enregistrée sur le téléphone.');
 }
 
@@ -408,13 +658,23 @@ function renderHistory() {
     ? invoices.map((f,i)=>`
         <div class="invoice-item">
             <b>${esc(f.number)} — ${esc(f.client)}</b>
+
             <div class="muted">
             ${esc(f.date)} • ${fmt(f.total,f.currency)} • ${esc(f.payment)}
             </div>
+
             <div class="history-actions">
-                <button onclick="loadInvoice(${i})">Modifier / consulter</button>
-                <button onclick="printSaved(${i})">PDF</button>
-                <button class="danger" onclick="deleteInvoice(${i})">Supprimer</button>
+                <button onclick="loadInvoice(${i})">
+                    Modifier / consulter
+                </button>
+
+                <button onclick="printSaved(${i})">
+                    PDF
+                </button>
+
+                <button class="danger" onclick="deleteInvoice(${i})">
+                    Supprimer
+                </button>
             </div>
         </div>
     `).join('')
@@ -424,13 +684,16 @@ function renderHistory() {
 function deleteInvoice(index) {
     if(index<0 || index>=invoices.length) return;
 
-    if(!confirm('Confirmer la suppression de la facture '+invoices[index].number+' ?')) {
-        return;
-    }
+    if(!confirm(
+        'Confirmer la suppression de la facture '+
+        invoices[index].number+' ?'
+    )) return;
 
     invoices.splice(index,1);
+
     saveInvoices();
     renderHistory();
+
     alert('Facture supprimée avec succès.');
 }
 
@@ -440,11 +703,15 @@ function clearHistory() {
         return;
     }
 
-    if(!confirm('ATTENTION ! Voulez-vous supprimer toutes les factures ?')) return;
+    if(!confirm(
+        'ATTENTION ! Voulez-vous supprimer toutes les factures ?'
+    )) return;
 
     invoices=[];
+
     saveInvoices();
     renderHistory();
+
     alert('Tout l’historique a été supprimé.');
 }
 
@@ -469,6 +736,8 @@ function loadInvoice(i) {
     showPage('invoice');
 }
 
+/* PDF */
+
 function invoiceHtml(f) {
     let c=cfg;
     let currency=f.currency || c.currency || 'Ar';
@@ -485,25 +754,33 @@ function invoiceHtml(f) {
     .total{font-size:18px;font-weight:bold;text-align:right;margin-top:25px}
     .muted{color:#555;white-space:pre-line}
     </style>
+
     <h1>FACTURE</h1>
     <h2>${esc(c.company||'Votre entreprise')}</h2>
+
     <div class="muted">
     ${esc(c.companyAddress||'')}
     ${esc(c.phone||'')} ${esc(c.email||'')}
     ${esc(c.legal||'')}
     </div>
+
     <p>
     <b>Facture n° :</b> ${esc(f.number)}<br>
     <b>Date :</b> ${esc(f.date)}<br>
     <b>Client :</b> ${esc(f.client)}<br>
     ${esc(f.clientAddress)}
     </p>
+
     <b>Mode de paiement :</b> ${esc(f.payment)}
+
     <table>
     <thead><tr>
-    <th>Désignation</th><th>Quantité</th>
-    <th>Prix unitaire</th><th>Montant</th>
+    <th>Désignation</th>
+    <th>Quantité</th>
+    <th>Prix unitaire</th>
+    <th>Montant</th>
     </tr></thead>
+
     <tbody>
     ${(f.lines || []).map(l=>`
     <tr>
@@ -514,9 +791,14 @@ function invoiceHtml(f) {
     </tr>`).join('')}
     </tbody>
     </table>
-    <div class="total">TOTAL À PAYER : ${fmt(f.total,currency)}</div>
+
+    <div class="total">
+    TOTAL À PAYER : ${fmt(f.total,currency)}
+    </div>
+
     <p>${esc(f.notes||'')}</p>
-    <hr><small>Merci pour votre confiance.</small>
+    <hr>
+    <small>Merci pour votre confiance.</small>
     </html>`;
 }
 
@@ -528,14 +810,20 @@ function makePdf() {
         return;
     }
 
-    if(window.KemsAndroid && typeof KemsAndroid.printInvoice==='function') {
+    if(window.KemsAndroid &&
+       typeof KemsAndroid.printInvoice==='function') {
+
         KemsAndroid.printInvoice(invoiceHtml(f));
+
     } else {
+
         let w=window.open('','_blank');
+
         if(!w) {
             alert('Impossible d’ouvrir la fenêtre PDF.');
             return;
         }
+
         w.document.write(invoiceHtml(f));
         w.document.close();
         w.print();
@@ -546,14 +834,20 @@ function printSaved(i) {
     let f=invoices[i];
     if(!f) return;
 
-    if(window.KemsAndroid && typeof KemsAndroid.printInvoice==='function') {
+    if(window.KemsAndroid &&
+       typeof KemsAndroid.printInvoice==='function') {
+
         KemsAndroid.printInvoice(invoiceHtml(f));
+
     } else {
+
         let w=window.open('','_blank');
+
         if(!w) {
             alert('Impossible d’ouvrir la fenêtre PDF.');
             return;
         }
+
         w.document.write(invoiceHtml(f));
         w.document.close();
         w.print();
@@ -561,10 +855,13 @@ function printSaved(i) {
 }
 
 /* EXPORT JSON */
+
 function exportData() {
     const json=JSON.stringify({cfg,invoices},null,2);
 
-    if(window.KemsAndroid && typeof KemsAndroid.saveJson==='function') {
+    if(window.KemsAndroid &&
+       typeof KemsAndroid.saveJson==='function') {
+
         KemsAndroid.saveJson(json);
         return;
     }
@@ -581,6 +878,7 @@ function exportData() {
 }
 
 /* IMPORT JSON */
+
 function importData(e) {
     let file=e.target.files && e.target.files[0];
     if(!file) return;
@@ -595,7 +893,9 @@ function importData(e) {
                 throw new Error('Format invalide');
             }
 
-            if(!confirm('Importer cette sauvegarde ? Les factures et paramètres actuels seront remplacés.')) {
+            if(!confirm(
+                'Importer cette sauvegarde ? Les factures et paramètres actuels seront remplacés.'
+            )) {
                 return;
             }
 
@@ -626,8 +926,224 @@ function importData(e) {
     r.readAsText(file);
 }
 
-/* NAVIGATION SANS DEUXIÈME PIN */
+/* ==============================
+   SYNCHRONISATION KEMS ANDROID
+================================ */
+
+let syncBusy = false;
+
+function syncMessage(message, success = true) {
+    const status = $('syncStatus');
+
+    status.textContent = 'État : ' + message;
+    status.style.color = success ? '#65e6a5' : '#ff7777';
+}
+
+/* Enregistrer la clé */
+
+function saveSyncToken() {
+
+    const token = $('syncToken').value.trim();
+
+    if (!token) {
+        alert('Veuillez saisir la clé secrète du serveur.');
+        return;
+    }
+
+    if (!window.KemsAndroid ||
+        typeof KemsAndroid.saveSyncToken !== 'function') {
+
+        syncMessage('Fonction Android indisponible.', false);
+        return;
+    }
+
+    KemsAndroid.saveSyncToken(token);
+}
+
+/* Vérifier le serveur */
+
+function checkSync() {
+
+    if (!window.KemsAndroid) {
+        syncMessage('Interface Android indisponible.', false);
+        return;
+    }
+
+    syncMessage('Vérification en cours...');
+
+    KemsAndroid.checkSyncServer();
+}
+
+/* Envoyer les données */
+
+function uploadSync() {
+
+    if (syncBusy) return;
+
+    if (!confirm(
+        'ATTENTION : les données présentes sur le serveur seront remplacées par celles de ce téléphone. Continuer ?'
+    )) return;
+
+    if (!window.KemsAndroid) {
+        syncMessage('Interface Android indisponible.', false);
+        return;
+    }
+
+    syncBusy = true;
+
+    syncMessage('Envoi des données en cours...');
+
+    const data = JSON.stringify({
+        cfg: cfg,
+        invoices: invoices
+    });
+
+    KemsAndroid.uploadSyncData(data);
+}
+
+/* Télécharger les données */
+
+function downloadSync() {
+
+    if (syncBusy) return;
+
+    if (!confirm(
+        'ATTENTION : les factures et paramètres de ce téléphone seront remplacés par ceux du serveur. Une sauvegarde locale sera créée. Continuer ?'
+    )) return;
+
+    if (!window.KemsAndroid) {
+        syncMessage('Interface Android indisponible.', false);
+        return;
+    }
+
+    syncBusy = true;
+
+    syncMessage('Téléchargement en cours...');
+
+    KemsAndroid.downloadSyncData();
+}
+
+/* Synchronisation manuelle */
+
+function syncNow() {
+
+    const choice = confirm(
+        'Choisir la synchronisation :\n\n' +
+        'OK : envoyer les données du téléphone vers le serveur.\n\n' +
+        'ANNULER : télécharger les données du serveur vers le téléphone.'
+    );
+
+    if (choice) {
+        uploadSync();
+    } else {
+        downloadSync();
+    }
+}
+
+/* Réception des réponses Java */
+
+window.onKemsSyncResult = function(action, success, message) {
+
+    if (action === 'health') {
+
+        if (success) {
+            syncMessage('Serveur connecté : ' + message);
+        } else {
+            syncMessage('Connexion impossible : ' + message, false);
+        }
+
+        return;
+    }
+
+    if (action === 'saveToken') {
+
+        if (success) {
+            $('syncToken').value = '';
+            syncMessage(message);
+            alert(message);
+        } else {
+            syncMessage(message, false);
+            alert(message);
+        }
+
+        return;
+    }
+
+    if (action === 'upload') {
+
+        syncBusy = false;
+
+        if (success) {
+            syncMessage('Envoi terminé avec succès.');
+            alert('Les données ont été envoyées au serveur.');
+        } else {
+            syncMessage('Erreur pendant l’envoi : ' + message, false);
+            alert('Erreur : ' + message);
+        }
+
+        return;
+    }
+
+    if (action === 'download') {
+
+        syncBusy = false;
+
+        if (!success) {
+            syncMessage('Erreur de téléchargement : ' + message, false);
+            alert('Erreur : ' + message);
+            return;
+        }
+
+        try {
+            const data = JSON.parse(message);
+
+            if (!data ||
+                typeof data.cfg !== 'object' ||
+                data.cfg === null ||
+                !Array.isArray(data.invoices)) {
+
+                throw new Error('Données du serveur invalides.');
+            }
+
+            // Sauvegarde locale avant remplacement
+            localStorage.setItem(
+                'kems_last_sync_backup',
+                JSON.stringify({
+                    cfg: cfg,
+                    invoices: invoices,
+                    backupDate: new Date().toISOString()
+                })
+            );
+
+            // Remplacement des données locales
+            cfg = data.cfg;
+            invoices = data.invoices;
+
+            saveConfig();
+            saveInvoices();
+
+            fillSettings();
+            renderHistory();
+            updateNumber();
+
+            syncMessage('Téléchargement terminé avec succès.');
+
+            alert(
+                'Synchronisation terminée.\n' +
+                invoices.length + ' facture(s) récupérée(s).'
+            );
+
+        } catch (error) {
+            syncMessage(error.message, false);
+            alert('Erreur : ' + error.message);
+        }
+    }
+};
+
+/* NAVIGATION */
+
 function showPage(id) {
+
     document.querySelectorAll('.pane').forEach(p=>{
         p.classList.toggle('hidden',p.id!==id);
     });
@@ -644,11 +1160,14 @@ document.querySelectorAll('nav button').forEach(b=>{
 });
 
 /* INITIALISATION */
+
 fillSettings();
+
 $('date').value=today();
 
 let d=new Date();
 d.setDate(d.getDate()+Number(cfg.dueDays||30));
+
 $('dueDate').value=d.toISOString().slice(0,10);
 
 updateNumber();
