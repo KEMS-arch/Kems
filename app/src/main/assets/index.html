@@ -173,6 +173,29 @@ margin-top:12px;
 overflow-wrap:anywhere
 }
 
+.document-type{
+border:1px solid var(--green);
+background:#10251d;
+padding:12px;
+border-radius:10px;
+margin-bottom:14px
+}
+
+.document-type label{
+margin-top:0
+}
+
+.document-badge{
+display:inline-block;
+padding:4px 8px;
+border-radius:6px;
+background:#203a30;
+color:var(--green);
+font-size:11px;
+font-weight:bold;
+margin-bottom:5px
+}
+
 @media(max-width:420px){
 .grid{grid-template-columns:1fr}
 .row{grid-template-columns:1fr 65px 90px auto}
@@ -186,23 +209,34 @@ overflow-wrap:anywhere
 <header>
 <small>KEMS • GESTION</small>
 <h1>Facturation</h1>
-<div class="muted">Factures professionnelles • PDF • hors ligne</div>
+<div class="muted">Devis • Factures • PDF • hors ligne</div>
 </header>
 
 <nav>
-<button class="active" data-page="invoice">Nouvelle facture</button>
+<button class="active" data-page="invoice">Nouveau document</button>
 <button data-page="history">Historique</button>
 <button data-page="settings">Paramètres</button>
 </nav>
 
 <main class="page">
 
-<!-- NOUVELLE FACTURE -->
+<!-- NOUVEAU DOCUMENT -->
 
 <section id="invoice" class="pane">
 
 <div class="card">
-<h2>Informations facture</h2>
+<h2>Informations du document</h2>
+
+<div class="document-type">
+<label for="documentType">Type de document</label>
+<select id="documentType" onchange="updateDocumentType()">
+<option value="FACTURE">FACTURE</option>
+<option value="DEVIS">DEVIS / PROFORMA</option>
+</select>
+<div class="muted" id="documentTypeInfo">
+Le document sera imprimé avec le titre FACTURE.
+</div>
+</div>
 
 <div class="grid">
 <div>
@@ -257,7 +291,7 @@ Total : <span id="total">0 Ar</span>
 <label>Notes / conditions</label>
 <textarea id="notes"></textarea>
 
-<button class="primary full" onclick="saveInvoice()">
+<button class="primary full" id="saveButton" onclick="saveInvoice()">
 Enregistrer la facture
 </button>
 
@@ -273,10 +307,10 @@ Générer / imprimer le PDF
 <section id="history" class="pane hidden">
 
 <div class="card">
-<h2>Historique des factures</h2>
+<h2>Historique des documents</h2>
 
 <div class="muted">
-Les factures sont enregistrées localement sur ce téléphone.
+Les devis et factures sont enregistrés localement sur ce téléphone.
 </div>
 
 <button class="danger full" onclick="clearHistory()">
@@ -386,12 +420,10 @@ Les données restent sur ce téléphone. Exportez régulièrement une sauvegarde
 
 <hr style="border-color:#29453a;margin:22px 0">
 
-<!-- SYNCHRONISATION KEMS -->
-
 <h2>Synchronisation KEMS</h2>
 
 <p class="muted">
-Synchronisez vos factures entre votre téléphone Android et votre PC Lenovo.
+Synchronisez vos documents entre votre téléphone Android et votre PC Lenovo.
 </p>
 
 <label>Clé secrète du serveur</label>
@@ -482,6 +514,23 @@ function esc(s) {
         '"':'&quot;',
         "'":'&#39;'
     }[c]));
+}
+
+/* TYPE DE DOCUMENT */
+
+function documentTitle(type) {
+    return type === 'DEVIS' ? 'PROFORMA' : 'FACTURE';
+}
+
+function updateDocumentType() {
+    const type = $('documentType').value;
+    const title = documentTitle(type);
+
+    $('documentTypeInfo').textContent =
+        'Le document sera imprimé avec le titre ' + title + '.';
+
+    $('saveButton').textContent =
+        'Enregistrer le ' + (type === 'DEVIS' ? 'devis' : 'la facture');
 }
 
 /* PARAMETRES */
@@ -600,10 +649,11 @@ function total() {
     );
 }
 
-/* FACTURES */
+/* DOCUMENTS */
 
 function formInvoice() {
     return {
+        type:$('documentType').value,
         number:$('number').value,
         date:$('date').value,
         client:$('client').value,
@@ -633,7 +683,7 @@ function saveInvoice() {
     let old=invoices.findIndex(x=>x.number===f.number);
 
     if(old>=0) {
-        if(!confirm('Ce numéro existe déjà. Remplacer la facture ?')) return;
+        if(!confirm('Ce numéro existe déjà. Remplacer le document ?')) return;
         invoices[old]=f;
     } else {
         invoices.unshift(f);
@@ -650,13 +700,21 @@ function saveInvoice() {
     renderHistory();
     updateNumber();
 
-    alert('Facture enregistrée sur le téléphone.');
+    alert(
+        f.type === 'DEVIS'
+        ? 'Devis PROFORMA enregistré sur le téléphone.'
+        : 'Facture enregistrée sur le téléphone.'
+    );
 }
 
 function renderHistory() {
     $('historyList').innerHTML=invoices.length
     ? invoices.map((f,i)=>`
         <div class="invoice-item">
+            <span class="document-badge">
+                ${esc(documentTitle(f.type || 'FACTURE'))}
+            </span>
+
             <b>${esc(f.number)} — ${esc(f.client)}</b>
 
             <div class="muted">
@@ -678,14 +736,14 @@ function renderHistory() {
             </div>
         </div>
     `).join('')
-    : '<p class="muted">Aucune facture enregistrée.</p>';
+    : '<p class="muted">Aucun document enregistré.</p>';
 }
 
 function deleteInvoice(index) {
     if(index<0 || index>=invoices.length) return;
 
     if(!confirm(
-        'Confirmer la suppression de la facture '+
+        'Confirmer la suppression du document '+
         invoices[index].number+' ?'
     )) return;
 
@@ -694,7 +752,7 @@ function deleteInvoice(index) {
     saveInvoices();
     renderHistory();
 
-    alert('Facture supprimée avec succès.');
+    alert('Document supprimé avec succès.');
 }
 
 function clearHistory() {
@@ -704,7 +762,7 @@ function clearHistory() {
     }
 
     if(!confirm(
-        'ATTENTION ! Voulez-vous supprimer toutes les factures ?'
+        'ATTENTION ! Voulez-vous supprimer tous les documents ?'
     )) return;
 
     invoices=[];
@@ -719,11 +777,14 @@ function loadInvoice(i) {
     let f=invoices[i];
     if(!f) return;
 
+    $('documentType').value=f.type || 'FACTURE';
+    updateDocumentType();
+
     $('number').value=f.number;
     $('date').value=f.date;
     $('client').value=f.client;
-    $('clientAddress').value=f.clientAddress;
-    $('payment').value=f.payment;
+    $('clientAddress').value=f.clientAddress || '';
+    $('payment').value=f.payment || 'Échéance';
     $('dueDate').value=f.dueDate || '';
     $('notes').value=f.notes || '';
 
@@ -741,21 +802,26 @@ function loadInvoice(i) {
 function invoiceHtml(f) {
     let c=cfg;
     let currency=f.currency || c.currency || 'Ar';
+    let title=documentTitle(f.type || 'FACTURE');
+    let numberLabel=f.type==='DEVIS'?'Devis n°':'Facture n°';
 
     return `<!doctype html>
     <html lang="fr">
     <meta charset="utf-8">
     <style>
     body{font:12px Arial;color:#222;padding:28px}
-    h1{color:#174b35}
+    h1{color:#174b35;text-align:center;font-size:28px}
+    h2{color:#174b35}
     table{width:100%;border-collapse:collapse;margin-top:24px}
     th,td{border:1px solid #ccc;padding:9px;text-align:left}
     th{background:#eaf5ee}
     .total{font-size:18px;font-weight:bold;text-align:right;margin-top:25px}
-    .muted{color:#555;white-space:pre-line}
+    .muted{color:#555;white-space:pre-wrap;line-height:1.6}
+    .client-address{white-space:pre-wrap;line-height:1.6;margin-top:6px}
     </style>
 
-    <h1>FACTURE</h1>
+    <h1>${title}</h1>
+
     <h2>${esc(c.company||'Votre entreprise')}</h2>
 
     <div class="muted">
@@ -765,13 +831,13 @@ function invoiceHtml(f) {
     </div>
 
     <p>
-    <b>Facture n° :</b> ${esc(f.number)}<br>
+    <b>${numberLabel}</b> ${esc(f.number)}<br>
     <b>Date :</b> ${esc(f.date)}<br>
     <b>Client :</b> ${esc(f.client)}<br>
-    ${esc(f.clientAddress)}
+    <div class="client-address">${esc(f.clientAddress||'')}</div>
     </p>
 
-    <b>Mode de paiement :</b> ${esc(f.payment)}
+    <b>Mode de paiement :</b> ${esc(f.payment||'')}
 
     <table>
     <thead><tr>
@@ -785,7 +851,7 @@ function invoiceHtml(f) {
     ${(f.lines || []).map(l=>`
     <tr>
     <td>${esc(l.description)}</td>
-    <td>${l.qty}</td>
+    <td>${Number(l.qty)||0}</td>
     <td>${fmt(l.price,currency)}</td>
     <td>${fmt(l.qty*l.price,currency)}</td>
     </tr>`).join('')}
@@ -793,10 +859,15 @@ function invoiceHtml(f) {
     </table>
 
     <div class="total">
-    TOTAL À PAYER : ${fmt(f.total,currency)}
+    TOTAL : ${fmt(f.total,currency)}
     </div>
 
     <p>${esc(f.notes||'')}</p>
+
+    ${f.type==='DEVIS'
+      ? '<p><b>Document PROFORMA – Devis estimatif.</b></p>'
+      : ''}
+
     <hr>
     <small>Merci pour votre confiance.</small>
     </html>`;
@@ -894,13 +965,16 @@ function importData(e) {
             }
 
             if(!confirm(
-                'Importer cette sauvegarde ? Les factures et paramètres actuels seront remplacés.'
+                'Importer cette sauvegarde ? Les documents et paramètres actuels seront remplacés.'
             )) {
                 return;
             }
 
             cfg=d.cfg && typeof d.cfg==='object' ? d.cfg : {};
-            invoices=d.invoices;
+            invoices=d.invoices.map(f=>({
+                ...f,
+                type:f.type==='DEVIS'?'DEVIS':'FACTURE'
+            }));
 
             saveConfig();
             saveInvoices();
@@ -926,9 +1000,7 @@ function importData(e) {
     r.readAsText(file);
 }
 
-/* ==============================
-   SYNCHRONISATION KEMS ANDROID
-================================ */
+/* SYNCHRONISATION KEMS ANDROID */
 
 let syncBusy = false;
 
@@ -939,10 +1011,7 @@ function syncMessage(message, success = true) {
     status.style.color = success ? '#65e6a5' : '#ff7777';
 }
 
-/* Enregistrer la clé */
-
 function saveSyncToken() {
-
     const token = $('syncToken').value.trim();
 
     if (!token) {
@@ -960,24 +1029,17 @@ function saveSyncToken() {
     KemsAndroid.saveSyncToken(token);
 }
 
-/* Vérifier le serveur */
-
 function checkSync() {
-
     if (!window.KemsAndroid) {
         syncMessage('Interface Android indisponible.', false);
         return;
     }
 
     syncMessage('Vérification en cours...');
-
     KemsAndroid.checkSyncServer();
 }
 
-/* Envoyer les données */
-
 function uploadSync() {
-
     if (syncBusy) return;
 
     if (!confirm(
@@ -990,7 +1052,6 @@ function uploadSync() {
     }
 
     syncBusy = true;
-
     syncMessage('Envoi des données en cours...');
 
     const data = JSON.stringify({
@@ -1001,14 +1062,11 @@ function uploadSync() {
     KemsAndroid.uploadSyncData(data);
 }
 
-/* Télécharger les données */
-
 function downloadSync() {
-
     if (syncBusy) return;
 
     if (!confirm(
-        'ATTENTION : les factures et paramètres de ce téléphone seront remplacés par ceux du serveur. Une sauvegarde locale sera créée. Continuer ?'
+        'ATTENTION : les documents et paramètres de ce téléphone seront remplacés par ceux du serveur. Une sauvegarde locale sera créée. Continuer ?'
     )) return;
 
     if (!window.KemsAndroid) {
@@ -1017,16 +1075,12 @@ function downloadSync() {
     }
 
     syncBusy = true;
-
     syncMessage('Téléchargement en cours...');
 
     KemsAndroid.downloadSyncData();
 }
 
-/* Synchronisation manuelle */
-
 function syncNow() {
-
     const choice = confirm(
         'Choisir la synchronisation :\n\n' +
         'OK : envoyer les données du téléphone vers le serveur.\n\n' +
@@ -1040,23 +1094,20 @@ function syncNow() {
     }
 }
 
-/* Réception des réponses Java */
+/* REPONSES JAVA */
 
 window.onKemsSyncResult = function(action, success, message) {
 
     if (action === 'health') {
-
         if (success) {
             syncMessage('Serveur connecté : ' + message);
         } else {
             syncMessage('Connexion impossible : ' + message, false);
         }
-
         return;
     }
 
     if (action === 'saveToken') {
-
         if (success) {
             $('syncToken').value = '';
             syncMessage(message);
@@ -1065,12 +1116,10 @@ window.onKemsSyncResult = function(action, success, message) {
             syncMessage(message, false);
             alert(message);
         }
-
         return;
     }
 
     if (action === 'upload') {
-
         syncBusy = false;
 
         if (success) {
@@ -1080,12 +1129,10 @@ window.onKemsSyncResult = function(action, success, message) {
             syncMessage('Erreur pendant l’envoi : ' + message, false);
             alert('Erreur : ' + message);
         }
-
         return;
     }
 
     if (action === 'download') {
-
         syncBusy = false;
 
         if (!success) {
@@ -1105,7 +1152,6 @@ window.onKemsSyncResult = function(action, success, message) {
                 throw new Error('Données du serveur invalides.');
             }
 
-            // Sauvegarde locale avant remplacement
             localStorage.setItem(
                 'kems_last_sync_backup',
                 JSON.stringify({
@@ -1115,9 +1161,12 @@ window.onKemsSyncResult = function(action, success, message) {
                 })
             );
 
-            // Remplacement des données locales
             cfg = data.cfg;
-            invoices = data.invoices;
+
+            invoices = data.invoices.map(f=>({
+                ...f,
+                type:f.type==='DEVIS'?'DEVIS':'FACTURE'
+            }));
 
             saveConfig();
             saveInvoices();
@@ -1130,7 +1179,7 @@ window.onKemsSyncResult = function(action, success, message) {
 
             alert(
                 'Synchronisation terminée.\n' +
-                invoices.length + ' facture(s) récupérée(s).'
+                invoices.length + ' document(s) récupéré(s).'
             );
 
         } catch (error) {
@@ -1143,7 +1192,6 @@ window.onKemsSyncResult = function(action, success, message) {
 /* NAVIGATION */
 
 function showPage(id) {
-
     document.querySelectorAll('.pane').forEach(p=>{
         p.classList.toggle('hidden',p.id!==id);
     });
@@ -1171,6 +1219,7 @@ d.setDate(d.getDate()+Number(cfg.dueDays||30));
 $('dueDate').value=d.toISOString().slice(0,10);
 
 updateNumber();
+updateDocumentType();
 addLine();
 renderHistory();
 
