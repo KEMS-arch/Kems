@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="fr">
 <head>
@@ -8,12 +7,8 @@
 
 <style>
 :root{
---bg:#0c1714;
---panel:#14251f;
---green:#65e6a5;
---text:#f2fff8;
---muted:#a7bdb2;
---line:#29453a
+--bg:#0c1714;--panel:#14251f;--green:#65e6a5;
+--text:#f2fff8;--muted:#a7bdb2;--line:#29453a
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:15px Arial,sans-serif}
@@ -59,7 +54,7 @@ textarea{min-height:65px}
 <nav>
 <button class="active" data-page="invoice">Nouvelle facture</button>
 <button data-page="history">Historique</button>
-<button data-page="settings">Paramètres 🔒</button>
+<button data-page="settings">Paramètres</button>
 </nav>
 
 <main class="page">
@@ -99,7 +94,6 @@ textarea{min-height:65px}
 <option>Autre</option>
 </select>
 </div>
-
 <div>
 <label>Date d'échéance</label>
 <input id="dueDate" type="date">
@@ -109,7 +103,6 @@ textarea{min-height:65px}
 
 <div class="card">
 <h2>Articles / prestations</h2>
-
 <div id="lines"></div>
 
 <button onclick="addLine()">＋ Ajouter un article</button>
@@ -129,19 +122,12 @@ Total : <span id="total">0 Ar</span>
 
 <section id="history" class="pane hidden">
 <div class="card">
-
 <h2>Historique des factures</h2>
+<div class="muted">Les factures sont enregistrées localement sur ce téléphone.</div>
 
-<div class="muted">
-Les factures sont enregistrées localement sur ce téléphone.
-</div>
-
-<button class="danger full" onclick="clearHistory()">
-Supprimer tout l'historique
-</button>
+<button class="danger full" onclick="clearHistory()">Supprimer tout l'historique</button>
 
 <div id="historyList"></div>
-
 </div>
 </section>
 
@@ -216,15 +202,12 @@ Supprimer tout l'historique
 <input id="dueDays" type="number" min="0" value="30">
 
 <button class="primary full" onclick="saveSettings()">Enregistrer les paramètres</button>
-
 <button class="full" onclick="exportData()">Exporter une sauvegarde JSON</button>
 
 <label>Importer une sauvegarde JSON</label>
-<input type="file" accept="application/json,.json" onchange="importData(event)">
+<input id="jsonFile" type="file" accept=".json,application/json" onchange="importData(event)">
 
-<p class="muted">
-Les données restent sur ce téléphone. Exportez régulièrement une sauvegarde.
-</p>
+<p class="muted">Les données restent sur ce téléphone. Exportez régulièrement une sauvegarde.</p>
 
 </div>
 </section>
@@ -239,9 +222,6 @@ const $ = id => document.getElementById(id);
 let lines = [];
 let cfg = readStorage('kems_cfg', {});
 let invoices = readStorage('kems_invoices', []);
-
-let settingsUnlocked = false;
-let pendingSettingsRequest = false;
 
 function readStorage(key, fallback) {
     try {
@@ -272,11 +252,7 @@ function fmt(n, currency) {
 
 function esc(s) {
     return String(s ?? '').replace(/[&<>"']/g,c=>({
-        '&':'&amp;',
-        '<':'&lt;',
-        '>':'&gt;',
-        '"':'&quot;',
-        "'":'&#39;'
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
     }[c]));
 }
 
@@ -304,11 +280,8 @@ function saveSettings() {
     });
 
     saveConfig();
-
     $('payment').value=cfg.defaultPayment;
-
     alert('Paramètres enregistrés.');
-
     updateNumber();
 }
 
@@ -344,28 +317,21 @@ function renderLines() {
                     <input value="${esc(l.description)}"
                     onchange="editLine(${l.id},'description',this.value)">
                 </div>
-
                 <div>
                     <label>Qté</label>
                     <input type="number" min="0" step="any"
                     value="${l.qty}"
                     onchange="editLine(${l.id},'qty',this.value)">
                 </div>
-
                 <div>
                     <label>Prix unitaire</label>
                     <input type="number" min="0" step="any"
                     value="${l.price}"
                     onchange="editLine(${l.id},'price',this.value)">
                 </div>
-
-                <button class="danger"
-                onclick="removeLine(${l.id})">×</button>
+                <button class="danger" onclick="removeLine(${l.id})">×</button>
             </div>
-
-            <div class="muted">
-            Montant : ${fmt(l.qty*l.price)}
-            </div>
+            <div class="muted">Montant : ${fmt(l.qty*l.price)}</div>
         </div>
     `).join('');
 
@@ -374,7 +340,6 @@ function renderLines() {
 
 function editLine(id,k,v) {
     let l=lines.find(x=>x.id===id);
-
     if(l) {
         l[k]=k==='description'?v:Number(v)||0;
         renderLines();
@@ -427,17 +392,14 @@ function saveInvoice() {
         invoices[old]=f;
     } else {
         invoices.unshift(f);
-
         cfg.nextNumber=Number(cfg.nextNumber || $('nextNumber').value || 1)+1;
-
         $('nextNumber').value=cfg.nextNumber;
-
         saveConfig();
     }
 
     saveInvoices();
     renderHistory();
-
+    updateNumber();
     alert('Facture enregistrée sur le téléphone.');
 }
 
@@ -445,76 +407,49 @@ function renderHistory() {
     $('historyList').innerHTML=invoices.length
     ? invoices.map((f,i)=>`
         <div class="invoice-item">
-
             <b>${esc(f.number)} — ${esc(f.client)}</b>
-
             <div class="muted">
             ${esc(f.date)} • ${fmt(f.total,f.currency)} • ${esc(f.payment)}
             </div>
-
             <div class="history-actions">
-
-                <button onclick="loadInvoice(${i})">
-                Modifier / consulter
-                </button>
-
-                <button onclick="printSaved(${i})">
-                PDF
-                </button>
-
-                <button class="danger" onclick="deleteInvoice(${i})">
-                Supprimer
-                </button>
-
+                <button onclick="loadInvoice(${i})">Modifier / consulter</button>
+                <button onclick="printSaved(${i})">PDF</button>
+                <button class="danger" onclick="deleteInvoice(${i})">Supprimer</button>
             </div>
-
         </div>
     `).join('')
     : '<p class="muted">Aucune facture enregistrée.</p>';
 }
 
-/* SUPPRIMER UNE FACTURE */
 function deleteInvoice(index) {
-
     if(index<0 || index>=invoices.length) return;
 
-    const facture=invoices[index];
-
-    if(!confirm('Confirmer la suppression de la facture '+facture.number+' ?')) {
+    if(!confirm('Confirmer la suppression de la facture '+invoices[index].number+' ?')) {
         return;
     }
 
     invoices.splice(index,1);
-
     saveInvoices();
     renderHistory();
-
     alert('Facture supprimée avec succès.');
 }
 
-/* SUPPRIMER TOUT L'HISTORIQUE */
 function clearHistory() {
-
     if(invoices.length===0) {
         alert('L’historique est déjà vide.');
         return;
     }
 
-    if(!confirm('ATTENTION ! Voulez-vous supprimer toutes les factures ?')) {
-        return;
-    }
+    if(!confirm('ATTENTION ! Voulez-vous supprimer toutes les factures ?')) return;
 
     invoices=[];
-
     saveInvoices();
     renderHistory();
-
     alert('Tout l’historique a été supprimé.');
 }
 
 function loadInvoice(i) {
     let f=invoices[i];
-
     if(!f) return;
 
     $('number').value=f.number;
@@ -525,7 +460,7 @@ function loadInvoice(i) {
     $('dueDate').value=f.dueDate || '';
     $('notes').value=f.notes || '';
 
-    lines=f.lines.map(l=>({
+    lines=(f.lines || []).map(l=>({
         ...l,
         id:Date.now()+Math.random()
     }));
@@ -550,37 +485,27 @@ function invoiceHtml(f) {
     .total{font-size:18px;font-weight:bold;text-align:right;margin-top:25px}
     .muted{color:#555;white-space:pre-line}
     </style>
-
     <h1>FACTURE</h1>
     <h2>${esc(c.company||'Votre entreprise')}</h2>
-
     <div class="muted">
     ${esc(c.companyAddress||'')}
     ${esc(c.phone||'')} ${esc(c.email||'')}
     ${esc(c.legal||'')}
     </div>
-
     <p>
     <b>Facture n° :</b> ${esc(f.number)}<br>
     <b>Date :</b> ${esc(f.date)}<br>
     <b>Client :</b> ${esc(f.client)}<br>
     ${esc(f.clientAddress)}
     </p>
-
     <b>Mode de paiement :</b> ${esc(f.payment)}
-
     <table>
-    <thead>
-    <tr>
-    <th>Désignation</th>
-    <th>Quantité</th>
-    <th>Prix unitaire</th>
-    <th>Montant</th>
-    </tr>
-    </thead>
-
+    <thead><tr>
+    <th>Désignation</th><th>Quantité</th>
+    <th>Prix unitaire</th><th>Montant</th>
+    </tr></thead>
     <tbody>
-    ${f.lines.map(l=>`
+    ${(f.lines || []).map(l=>`
     <tr>
     <td>${esc(l.description)}</td>
     <td>${l.qty}</td>
@@ -589,14 +514,9 @@ function invoiceHtml(f) {
     </tr>`).join('')}
     </tbody>
     </table>
-
-    <div class="total">
-    TOTAL À PAYER : ${fmt(f.total,currency)}
-    </div>
-
+    <div class="total">TOTAL À PAYER : ${fmt(f.total,currency)}</div>
     <p>${esc(f.notes||'')}</p>
-    <hr>
-    <small>Merci pour votre confiance.</small>
+    <hr><small>Merci pour votre confiance.</small>
     </html>`;
 }
 
@@ -624,7 +544,6 @@ function makePdf() {
 
 function printSaved(i) {
     let f=invoices[i];
-
     if(!f) return;
 
     if(window.KemsAndroid && typeof KemsAndroid.printInvoice==='function') {
@@ -641,6 +560,7 @@ function printSaved(i) {
     }
 }
 
+/* EXPORT JSON */
 function exportData() {
     const json=JSON.stringify({cfg,invoices},null,2);
 
@@ -660,9 +580,9 @@ function exportData() {
     setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 
+/* IMPORT JSON */
 function importData(e) {
-    let file=e.target.files[0];
-
+    let file=e.target.files && e.target.files[0];
     if(!file) return;
 
     let r=new FileReader();
@@ -675,8 +595,12 @@ function importData(e) {
                 throw new Error('Format invalide');
             }
 
-            cfg=d.cfg||{};
-            invoices=d.invoices||[];
+            if(!confirm('Importer cette sauvegarde ? Les factures et paramètres actuels seront remplacés.')) {
+                return;
+            }
+
+            cfg=d.cfg && typeof d.cfg==='object' ? d.cfg : {};
+            invoices=d.invoices;
 
             saveConfig();
             saveInvoices();
@@ -685,62 +609,25 @@ function importData(e) {
             renderHistory();
             updateNumber();
 
-            alert('Sauvegarde importée.');
+            alert('Sauvegarde importée avec succès.');
 
         } catch(err) {
-            alert('Fichier de sauvegarde invalide.');
+            alert('Fichier JSON invalide ou impossible à lire.');
+        } finally {
+            $('jsonFile').value='';
         }
+    };
 
-        e.target.value='';
+    r.onerror=()=>{
+        alert('Impossible de lire le fichier.');
+        $('jsonFile').value='';
     };
 
     r.readAsText(file);
 }
 
-/* CODE PIN PARAMÈTRES */
-function requestSettingsAccess() {
-
-    if(window.KemsAndroid &&
-       typeof KemsAndroid.openSettingsWithPin==='function') {
-
-        pendingSettingsRequest=true;
-        KemsAndroid.openSettingsWithPin();
-
-    } else {
-
-        let pin=prompt('Entrez votre code PIN :');
-
-        if(pin==='1707') {
-            settingsUnlocked=true;
-            showPage('settings');
-        } else if(pin!==null) {
-            alert('Code PIN incorrect.');
-        }
-    }
-}
-
-/* Réponse envoyée par MainActivity.java */
-window.kemsSettingsPinResult=function(valid) {
-
-    if(!pendingSettingsRequest) return;
-
-    pendingSettingsRequest=false;
-
-    if(valid===true) {
-        settingsUnlocked=true;
-        showPage('settings');
-    } else {
-        settingsUnlocked=false;
-    }
-};
-
+/* NAVIGATION SANS DEUXIÈME PIN */
 function showPage(id) {
-
-    if(id==='settings' && !settingsUnlocked) {
-        requestSettingsAccess();
-        return;
-    }
-
     document.querySelectorAll('.pane').forEach(p=>{
         p.classList.toggle('hidden',p.id!==id);
     });
@@ -748,33 +635,20 @@ function showPage(id) {
     document.querySelectorAll('nav button').forEach(b=>{
         b.classList.toggle('active',b.dataset.page===id);
     });
-
-    if(id!=='settings') {
-        settingsUnlocked=false;
-    }
 }
 
-/* Navigation */
 document.querySelectorAll('nav button').forEach(b=>{
     b.addEventListener('click',()=>{
-        let id=b.dataset.page;
-
-        if(id==='settings') {
-            requestSettingsAccess();
-        } else {
-            showPage(id);
-        }
+        showPage(b.dataset.page);
     });
 });
 
 /* INITIALISATION */
 fillSettings();
-
 $('date').value=today();
 
 let d=new Date();
 d.setDate(d.getDate()+Number(cfg.dueDays||30));
-
 $('dueDate').value=d.toISOString().slice(0,10);
 
 updateNumber();
