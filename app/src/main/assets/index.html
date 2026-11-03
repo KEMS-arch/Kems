@@ -4,6 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="theme-color" content="#0c1714">
 <title>KEMS Facturation</title>
 
 <style>
@@ -16,76 +17,35 @@
 --line:#29453a
 }
 *{box-sizing:border-box}
-body{
-margin:0;background:var(--bg);color:var(--text);
-font:15px Arial,sans-serif
-}
-header{
-padding:20px 16px;background:#10251d;
-border-bottom:1px solid var(--line)
-}
+body{margin:0;background:var(--bg);color:var(--text);font:15px Arial,sans-serif}
+header{padding:20px 16px;background:#10251d;border-bottom:1px solid var(--line)}
 header small{color:var(--green);letter-spacing:2px}
 h1{font-size:23px;margin:7px 0 0}
-nav{
-display:flex;gap:8px;padding:12px;position:sticky;
-top:0;background:var(--bg);z-index:3;overflow:auto
-}
-button{
-border:0;border-radius:10px;padding:12px 14px;
-font-weight:bold;background:#203a30;color:var(--text);
-cursor:pointer
-}
+nav{display:flex;gap:8px;padding:12px;position:sticky;top:0;background:var(--bg);z-index:3;overflow:auto}
+button{border:0;border-radius:10px;padding:12px 14px;font-weight:bold;background:#203a30;color:var(--text);cursor:pointer}
 button.active,.primary{background:var(--green);color:#082016}
 .page{padding:12px;max-width:760px;margin:auto}
-.card{
-background:var(--panel);border:1px solid var(--line);
-border-radius:14px;padding:15px;margin-bottom:12px
-}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px;margin-bottom:12px}
 h2{font-size:18px;margin:0 0 14px}
-label{
-display:block;color:var(--muted);font-size:13px;
-margin:10px 0 5px
-}
-input,select,textarea{
-width:100%;padding:12px;border:1px solid var(--line);
-border-radius:9px;background:#0b1913;color:var(--text);
-font:inherit
-}
+label{display:block;color:var(--muted);font-size:13px;margin:10px 0 5px}
+input,select,textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:9px;background:#0b1913;color:var(--text);font:inherit}
 textarea{min-height:65px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.row{
-display:grid;grid-template-columns:2fr .7fr 1fr auto;
-gap:6px;align-items:end
-}
+.row{display:grid;grid-template-columns:2fr .7fr 1fr auto;gap:6px;align-items:end}
 .row input{min-width:0;padding:10px}
-.total{
-font-size:22px;color:var(--green);font-weight:bold;
-text-align:right;padding:12px
-}
+.total{font-size:22px;color:var(--green);font-weight:bold;text-align:right;padding:12px}
 .muted{color:var(--muted);font-size:13px}
 .hidden{display:none!important}
-.invoice-item{
-border:1px solid var(--line);padding:10px;
-border-radius:10px;margin:8px 0
-}
+.invoice-item{border:1px solid var(--line);padding:10px;border-radius:10px;margin:8px 0}
 .invoice-item b{display:block}
 .danger{background:#512b2b;color:white}
 .full{width:100%;margin-top:8px}
 .history-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
-.sync-status{
-padding:12px;background:#0b1913;border:1px solid var(--line);
-border-radius:9px;margin-top:12px;overflow-wrap:anywhere
-}
-.document-type{
-border:1px solid var(--green);background:#10251d;
-padding:12px;border-radius:10px;margin-bottom:14px
-}
+.sync-status{padding:12px;background:#0b1913;border:1px solid var(--line);border-radius:9px;margin-top:12px;overflow-wrap:anywhere}
+.document-type{border:1px solid var(--green);background:#10251d;padding:12px;border-radius:10px;margin-bottom:14px}
 .document-type label{margin-top:0}
-.document-badge{
-display:inline-block;padding:4px 8px;border-radius:6px;
-background:#203a30;color:var(--green);font-size:11px;
-font-weight:bold;margin-bottom:5px
-}
+.document-badge{display:inline-block;padding:4px 8px;border-radius:6px;background:#203a30;color:var(--green);font-size:11px;font-weight:bold;margin-bottom:5px}
+.file-name{margin-top:8px;padding:10px;border:1px solid var(--line);border-radius:9px;background:#0b1913;overflow-wrap:anywhere}
 @media(max-width:420px){
 .grid{grid-template-columns:1fr}
 .row{grid-template-columns:1fr 65px 90px auto}
@@ -95,6 +55,7 @@ font-weight:bold;margin-bottom:5px
 </head>
 
 <body>
+
 <header>
 <small>KEMS • GESTION</small>
 <h1>Facturation</h1>
@@ -173,7 +134,7 @@ Le document sera imprimé avec le titre FACTURE.
 <section id="history" class="pane hidden">
 <div class="card">
 <h2>Historique des documents</h2>
-<div class="muted">Les devis et factures sont enregistrés localement sur ce téléphone.</div>
+<div class="muted">Les devis et factures sont enregistrés localement sur cet appareil.</div>
 <button class="danger full" onclick="clearHistory()">Supprimer tout l'historique</button>
 <div id="historyList"></div>
 </div>
@@ -205,6 +166,7 @@ Le document sera imprimé avec le titre FACTURE.
 </select>
 
 <h2 style="margin-top:20px">Numérotation</h2>
+
 <div class="grid">
 <div><label>Préfixe</label><input id="prefix" value="FAC-"></div>
 <div>
@@ -239,17 +201,18 @@ Le document sera imprimé avec le titre FACTURE.
 <button class="full" onclick="exportData()">Exporter une sauvegarde JSON</button>
 
 <label>Importer une sauvegarde JSON</label>
-<input id="jsonFile" type="file" accept=".json,application/json" onchange="importData(event)">
+<input id="jsonFile" type="file" accept=".json,application/json" onchange="importData(event)" onclick="this.value=''">
+<div id="jsonFileName" class="file-name muted">Aucun fichier sélectionné</div>
 
-<p class="muted">Les données restent sur ce téléphone. Exportez régulièrement une sauvegarde.</p>
+<p class="muted">Les données restent sur cet appareil. Exportez régulièrement une sauvegarde.</p>
 
 <hr style="border-color:#29453a;margin:22px 0">
 
 <h2>Synchronisation KEMS</h2>
-<p class="muted">Synchronisez vos documents entre votre téléphone Android et votre PC Lenovo.</p>
+<p class="muted">Synchronisez vos documents entre votre téléphone Android et votre PC.</p>
 
 <label>Clé secrète du serveur</label>
-<input id="syncToken" type="password" placeholder="Coller la clé du serveur" autocomplete="off">
+<input id="syncToken" type="password" placeholder="Coller la clé du serveur" autocomplete="off" oninput="this.dataset.saved='false';this.placeholder='Coller la clé du serveur'">
 
 <button class="primary full" onclick="saveSyncToken()">Enregistrer la clé de connexion</button>
 <button class="full" onclick="checkSync()">Vérifier la connexion</button>
@@ -296,7 +259,8 @@ function saveConfig() {
 }
 
 function today() {
-    return new Date().toISOString().slice(0,10);
+    const d = new Date();
+    return new Date(d.getTime() - d.getTimezoneOffset()*60000).toISOString().slice(0,10);
 }
 
 function fmt(n, currency) {
@@ -325,7 +289,7 @@ function updateDocumentType() {
         'Le document sera imprimé avec le titre ' + title + '.';
 
     $('saveButton').textContent =
-        'Enregistrer le ' + (type === 'DEVIS' ? 'devis' : 'la facture');
+        'Enregistrer ' + (type === 'DEVIS' ? 'le devis' : 'la facture');
 }
 
 /* PARAMETRES */
@@ -377,8 +341,8 @@ function addLine(d={}) {
     lines.push({
         id,
         description:d.description || '',
-        qty:d.qty || 1,
-        price:d.price || 0
+        qty:d.qty ?? 1,
+        price:d.price ?? 0
     });
 
     renderLines();
@@ -396,18 +360,18 @@ function renderLines() {
                 <div>
                     <label>Qté</label>
                     <input type="number" min="0" step="any"
-                    value="${l.qty}"
+                    value="${Number(l.qty)||0}"
                     onchange="editLine(${l.id},'qty',this.value)">
                 </div>
                 <div>
                     <label>Prix unitaire</label>
                     <input type="number" min="0" step="any"
-                    value="${l.price}"
+                    value="${Number(l.price)||0}"
                     onchange="editLine(${l.id},'price',this.value)">
                 </div>
                 <button class="danger" onclick="removeLine(${l.id})">×</button>
             </div>
-            <div class="muted">Montant : ${fmt(l.qty*l.price)}</div>
+            <div class="muted">Montant : ${fmt((Number(l.qty)||0)*(Number(l.price)||0))}</div>
         </div>
     `).join('');
 
@@ -481,8 +445,8 @@ function saveInvoice() {
     updateNumber();
 
     alert(f.type==='DEVIS'
-        ? 'Devis PROFORMA enregistré sur le téléphone.'
-        : 'Facture enregistrée sur le téléphone.'
+        ? 'Devis PROFORMA enregistré.'
+        : 'Facture enregistrée.'
     );
 }
 
@@ -553,81 +517,171 @@ function loadInvoice(i) {
     showPage('invoice');
 }
 
-/* PDF */
+/* PDF : alignement à gauche pour entreprise et client */
 
 function invoiceHtml(f) {
-    let c=cfg;
-    let currency=f.currency || c.currency || 'Ar';
-    let title=documentTitle(f.type || 'FACTURE');
-    let numberLabel=f.type==='DEVIS'?'Devis n°':'Facture n°';
+    const c=cfg;
+    const currency=f.currency || c.currency || 'Ar';
+    const title=documentTitle(f.type || 'FACTURE');
+    const numberLabel=f.type==='DEVIS'?'Devis n°':'Facture n°';
 
     return `<!doctype html>
-    <html lang="fr">
-    <meta charset="utf-8">
-    <style>
-    body{font:12px Arial;color:#222;padding:28px}
-    h1{
-        color:#174b35;
-        text-align:left !important;
-        font-size:28px;
-        width:100%;
-        margin:0 0 25px;
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${title} ${esc(f.number)}</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;width:100%}
+body{
+    font:12px Arial,sans-serif;
+    color:#222;
+    padding:28px;
+    line-height:1.5;
+    text-align:left!important;
+}
+h1{
+    color:#174b35;
+    font-size:28px;
+    margin:0 0 25px;
+    text-align:left!important;
+    width:100%;
+}
+h2{color:#174b35;margin:0 0 8px;text-align:left!important}
+p{margin:8px 0;text-align:left!important}
+.company-block,.client-block{
+    width:100%;
+    text-align:left!important;
+    margin-bottom:20px;
+}
+.company-name{
+    font-size:17px;
+    font-weight:bold;
+    color:#174b35;
+    text-align:left!important;
+}
+.company-info,.client-address{
+    white-space:pre-wrap;
+    line-height:1.7;
+    text-align:left!important;
+}
+.client-block{margin:18px 0}
+.client-name{font-weight:bold;text-align:left!important}
+.document-info{text-align:left!important;line-height:1.9;margin-bottom:18px}
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:22px;
+    text-align:left!important;
+}
+th,td{
+    border:1px solid #ccc;
+    padding:9px;
+    text-align:left!important;
+    vertical-align:top;
+}
+th{background:#eaf5ee;color:#174b35}
+.total{
+    font-size:18px;
+    font-weight:bold;
+    text-align:right!important;
+    margin-top:25px;
+    color:#174b35;
+}
+.notes{white-space:pre-wrap;text-align:left!important;margin-top:20px}
+.footer{text-align:left!important;margin-top:25px}
+@media print{
+    body{padding:15mm;text-align:left!important}
+    h1,h2,p,.company-block,.company-info,.client-block,
+    .client-name,.client-address,.document-info,td,th{
+        text-align:left!important;
     }
-    h2{color:#174b35}
-    table{width:100%;border-collapse:collapse;margin-top:24px}
-    th,td{border:1px solid #ccc;padding:9px;text-align:left}
-    th{background:#eaf5ee}
-    .total{font-size:18px;font-weight:bold;text-align:right;margin-top:25px}
-    .muted{color:#555;white-space:pre-wrap;line-height:1.6}
-    .client-address{white-space:pre-wrap;line-height:1.6;margin-top:6px}
-    </style>
+    .total{text-align:right!important}
+    tr{page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
 
-    <h1>${title}</h1>
-    <h2>${esc(c.company||'Votre entreprise')}</h2>
+<h1>${title}</h1>
 
-    <div class="muted">
-    ${esc(c.companyAddress||'')}
-    ${esc(c.phone||'')} ${esc(c.email||'')}
-    ${esc(c.legal||'')}
-    </div>
+<div class="company-block">
+    <div class="company-name">${esc(c.company || 'Votre entreprise')}</div>
+    <div class="company-info">${esc(c.companyAddress || '')}</div>
+    <div class="company-info">${esc(c.phone || '')}</div>
+    <div class="company-info">${esc(c.email || '')}</div>
+    <div class="company-info">${esc(c.legal || '')}</div>
+</div>
 
-    <p>
-    <b>${numberLabel}</b> ${esc(f.number)}<br>
-    <b>Date :</b> ${esc(f.date)}<br>
-    <b>Client :</b> ${esc(f.client)}<br>
-    </p>
-    <div class="client-address">${esc(f.clientAddress||'')}</div>
+<div class="document-info">
+    <div><b>${numberLabel}</b> ${esc(f.number)}</div>
+    <div><b>Date :</b> ${esc(f.date)}</div>
+</div>
 
-    <p><b>Mode de paiement :</b> ${esc(f.payment||'')}</p>
+<div class="client-block">
+    <div class="client-name">CLIENT : ${esc(f.client)}</div>
+    <div class="client-address">${esc(f.clientAddress || '')}</div>
+</div>
 
-    <table>
-    <thead><tr>
+<p><b>Mode de paiement :</b> ${esc(f.payment || '')}</p>
+${f.dueDate ? `<p><b>Date d'échéance :</b> ${esc(f.dueDate)}</p>` : ''}
+
+<table>
+<thead>
+<tr>
     <th>Désignation</th>
     <th>Quantité</th>
     <th>Prix unitaire</th>
     <th>Montant</th>
-    </tr></thead>
-    <tbody>
-    ${(f.lines || []).map(l=>`
-    <tr>
+</tr>
+</thead>
+<tbody>
+${(f.lines || []).map(l=>`
+<tr>
     <td>${esc(l.description)}</td>
     <td>${Number(l.qty)||0}</td>
     <td>${fmt(l.price,currency)}</td>
     <td>${fmt(l.qty*l.price,currency)}</td>
-    </tr>`).join('')}
-    </tbody>
-    </table>
+</tr>
+`).join('')}
+</tbody>
+</table>
 
-    <div class="total">TOTAL : ${fmt(f.total,currency)}</div>
-    <p>${esc(f.notes||'')}</p>
+<div class="total">TOTAL : ${fmt(f.total,currency)}</div>
+<div class="notes">${esc(f.notes || '')}</div>
 
-    ${f.type==='DEVIS'
-      ? '<p><b>Document PROFORMA – Devis estimatif.</b></p>'
-      : ''}
+${f.type==='DEVIS'
+    ? '<p><b>Document PROFORMA – Devis estimatif.</b></p>'
+    : ''}
 
+<div class="footer">
     <hr>
     <small>Merci pour votre confiance.</small>
-    </html>`;
+</div>
+
+</body>
+</html>`;
+}
+
+function printDocument(f) {
+    if(window.KemsAndroid &&
+       typeof KemsAndroid.printInvoice==='function') {
+        KemsAndroid.printInvoice(invoiceHtml(f));
+    } else {
+        let w=window.open('','_blank');
+        if(!w) {
+            alert('Impossible d’ouvrir la fenêtre PDF.');
+            return;
+        }
+        w.document.open();
+        w.document.write(invoiceHtml(f));
+        w.document.close();
+        w.onload=()=>{
+            w.focus();
+            w.print();
+        };
+    }
 }
 
 function makePdf() {
@@ -638,38 +692,12 @@ function makePdf() {
         return;
     }
 
-    if(window.KemsAndroid &&
-       typeof KemsAndroid.printInvoice==='function') {
-        KemsAndroid.printInvoice(invoiceHtml(f));
-    } else {
-        let w=window.open('','_blank');
-        if(!w) {
-            alert('Impossible d’ouvrir la fenêtre PDF.');
-            return;
-        }
-        w.document.write(invoiceHtml(f));
-        w.document.close();
-        w.print();
-    }
+    printDocument(f);
 }
 
 function printSaved(i) {
     let f=invoices[i];
-    if(!f) return;
-
-    if(window.KemsAndroid &&
-       typeof KemsAndroid.printInvoice==='function') {
-        KemsAndroid.printInvoice(invoiceHtml(f));
-    } else {
-        let w=window.open('','_blank');
-        if(!w) {
-            alert('Impossible d’ouvrir la fenêtre PDF.');
-            return;
-        }
-        w.document.write(invoiceHtml(f));
-        w.document.close();
-        w.print();
-    }
+    if(f) printDocument(f);
 }
 
 /* EXPORT JSON */
@@ -692,26 +720,40 @@ function exportData() {
     setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 
-/* IMPORT JSON */
+/* IMPORT JSON : conserver le nom du fichier affiché */
 
 function importData(e) {
-    let file=e.target.files && e.target.files[0];
+    const file=e.target.files && e.target.files[0];
+
     if(!file) return;
 
-    let r=new FileReader();
+    $('jsonFileName').textContent='Fichier sélectionné : '+file.name;
 
-    r.onload=()=>{
+    if(!file.name.toLowerCase().endsWith('.json')) {
+        alert('Veuillez sélectionner un fichier JSON.');
+        return;
+    }
+
+    const reader=new FileReader();
+
+    reader.onload=()=>{
         try {
-            let d=JSON.parse(r.result);
+            const data=JSON.parse(reader.result);
 
-            if(!d || !Array.isArray(d.invoices)) {
-                throw new Error('Format invalide');
+            if(!data || !Array.isArray(data.invoices)) {
+                throw new Error('Format JSON invalide.');
             }
 
-            if(!confirm('Importer cette sauvegarde ? Les documents et paramètres actuels seront remplacés.')) return;
+            if(!confirm(
+                'Importer cette sauvegarde ? Les documents et paramètres actuels seront remplacés.'
+            )) {
+                return;
+            }
 
-            cfg=d.cfg && typeof d.cfg==='object' ? d.cfg : {};
-            invoices=d.invoices.map(f=>({
+            cfg=data.cfg && typeof data.cfg==='object'
+                ? data.cfg : {};
+
+            invoices=data.invoices.map(f=>({
                 ...f,
                 type:f.type==='DEVIS'?'DEVIS':'FACTURE'
             }));
@@ -722,44 +764,45 @@ function importData(e) {
             renderHistory();
             updateNumber();
 
-            alert('Sauvegarde importée avec succès.');
+            alert('Sauvegarde importée avec succès : '+file.name);
 
-        } catch(err) {
+        } catch(error) {
             alert('Fichier JSON invalide ou impossible à lire.');
-        } finally {
-            $('jsonFile').value='';
         }
     };
 
-    r.onerror=()=>{
+    reader.onerror=()=>{
         alert('Impossible de lire le fichier.');
-        $('jsonFile').value='';
     };
 
-    r.readAsText(file);
+    reader.readAsText(file);
 }
 
 /* SYNCHRONISATION KEMS ANDROID */
 
-let syncBusy = false;
+let syncBusy=false;
 
-function syncMessage(message, success = true) {
-    const status = $('syncStatus');
-    status.textContent = 'État : ' + message;
-    status.style.color = success ? '#65e6a5' : '#ff7777';
+function syncMessage(message,success=true) {
+    const status=$('syncStatus');
+    status.textContent='État : '+message;
+    status.style.color=success?'#65e6a5':'#ff7777';
 }
 
 function saveSyncToken() {
-    const token = $('syncToken').value.trim();
+    const token=$('syncToken').value.trim();
 
-    if (!token) {
+    if(!token) {
+        if($('syncToken').dataset.saved==='true') {
+            syncMessage('Clé de connexion déjà enregistrée.');
+            return;
+        }
         alert('Veuillez saisir la clé secrète du serveur.');
         return;
     }
 
-    if (!window.KemsAndroid ||
-        typeof KemsAndroid.saveSyncToken !== 'function') {
-        syncMessage('Fonction Android indisponible.', false);
+    if(!window.KemsAndroid ||
+       typeof KemsAndroid.saveSyncToken!=='function') {
+        syncMessage('Fonction Android indisponible.',false);
         return;
     }
 
@@ -767,8 +810,8 @@ function saveSyncToken() {
 }
 
 function checkSync() {
-    if (!window.KemsAndroid) {
-        syncMessage('Interface Android indisponible.', false);
+    if(!window.KemsAndroid) {
+        syncMessage('Interface Android indisponible.',false);
         return;
     }
 
@@ -777,96 +820,97 @@ function checkSync() {
 }
 
 function uploadSync() {
-    if (syncBusy) return;
+    if(syncBusy) return;
 
-    if (!confirm('ATTENTION : les données présentes sur le serveur seront remplacées par celles de ce téléphone. Continuer ?')) return;
+    if(!confirm('ATTENTION : les données présentes sur le serveur seront remplacées par celles de ce téléphone. Continuer ?')) return;
 
-    if (!window.KemsAndroid) {
-        syncMessage('Interface Android indisponible.', false);
+    if(!window.KemsAndroid) {
+        syncMessage('Interface Android indisponible.',false);
         return;
     }
 
-    syncBusy = true;
+    syncBusy=true;
     syncMessage('Envoi des données en cours...');
-
-    const data = JSON.stringify({cfg:cfg,invoices:invoices});
-    KemsAndroid.uploadSyncData(data);
+    KemsAndroid.uploadSyncData(JSON.stringify({cfg:cfg,invoices:invoices}));
 }
 
 function downloadSync() {
-    if (syncBusy) return;
+    if(syncBusy) return;
 
-    if (!confirm('ATTENTION : les documents et paramètres de ce téléphone seront remplacés par ceux du serveur. Une sauvegarde locale sera créée. Continuer ?')) return;
+    if(!confirm('ATTENTION : les documents et paramètres de ce téléphone seront remplacés par ceux du serveur. Une sauvegarde locale sera créée. Continuer ?')) return;
 
-    if (!window.KemsAndroid) {
-        syncMessage('Interface Android indisponible.', false);
+    if(!window.KemsAndroid) {
+        syncMessage('Interface Android indisponible.',false);
         return;
     }
 
-    syncBusy = true;
+    syncBusy=true;
     syncMessage('Téléchargement en cours...');
     KemsAndroid.downloadSyncData();
 }
 
 function syncNow() {
-    const choice = confirm(
+    const choice=confirm(
         'Choisir la synchronisation :\n\n' +
         'OK : envoyer les données du téléphone vers le serveur.\n\n' +
         'ANNULER : télécharger les données du serveur vers le téléphone.'
     );
 
-    if (choice) uploadSync();
+    if(choice) uploadSync();
     else downloadSync();
 }
 
 /* REPONSES JAVA */
 
-window.onKemsSyncResult = function(action, success, message) {
+window.onKemsSyncResult=function(action,success,message) {
 
-    if (action === 'health') {
-        if (success) syncMessage('Serveur connecté : ' + message);
-        else syncMessage('Connexion impossible : ' + message, false);
+    if(action==='health') {
+        if(success) syncMessage('Serveur connecté : '+message);
+        else syncMessage('Connexion impossible : '+message,false);
         return;
     }
 
-    if (action === 'saveToken') {
-        if (success) {
-            $('syncToken').value = '';
-            syncMessage(message);
-            alert(message);
+    if(action==='saveToken') {
+        if(success) {
+            $('syncToken').value='';
+            $('syncToken').placeholder='✓ Clé enregistrée';
+            $('syncToken').dataset.saved='true';
+            syncMessage('Clé secrète enregistrée avec succès.');
+            alert('Clé de connexion enregistrée.');
         } else {
-            syncMessage(message, false);
+            $('syncToken').dataset.saved='false';
+            syncMessage(message,false);
             alert(message);
         }
         return;
     }
 
-    if (action === 'upload') {
-        syncBusy = false;
-        if (success) {
+    if(action==='upload') {
+        syncBusy=false;
+        if(success) {
             syncMessage('Envoi terminé avec succès.');
             alert('Les données ont été envoyées au serveur.');
         } else {
-            syncMessage('Erreur pendant l’envoi : ' + message, false);
-            alert('Erreur : ' + message);
+            syncMessage('Erreur pendant l’envoi : '+message,false);
+            alert('Erreur : '+message);
         }
         return;
     }
 
-    if (action === 'download') {
-        syncBusy = false;
+    if(action==='download') {
+        syncBusy=false;
 
-        if (!success) {
-            syncMessage('Erreur de téléchargement : ' + message, false);
-            alert('Erreur : ' + message);
+        if(!success) {
+            syncMessage('Erreur de téléchargement : '+message,false);
+            alert('Erreur : '+message);
             return;
         }
 
         try {
-            const data = JSON.parse(message);
+            const data=JSON.parse(message);
 
-            if (!data || typeof data.cfg !== 'object' ||
-                data.cfg === null || !Array.isArray(data.invoices)) {
+            if(!data || typeof data.cfg!=='object' ||
+               data.cfg===null || !Array.isArray(data.invoices)) {
                 throw new Error('Données du serveur invalides.');
             }
 
@@ -878,8 +922,8 @@ window.onKemsSyncResult = function(action, success, message) {
                 })
             );
 
-            cfg = data.cfg;
-            invoices = data.invoices.map(f=>({
+            cfg=data.cfg;
+            invoices=data.invoices.map(f=>({
                 ...f,
                 type:f.type==='DEVIS'?'DEVIS':'FACTURE'
             }));
@@ -891,12 +935,11 @@ window.onKemsSyncResult = function(action, success, message) {
             updateNumber();
 
             syncMessage('Téléchargement terminé avec succès.');
-            alert('Synchronisation terminée.\n' +
-                  invoices.length + ' document(s) récupéré(s).');
+            alert('Synchronisation terminée.\n'+invoices.length+' document(s) récupéré(s).');
 
-        } catch (error) {
-            syncMessage(error.message, false);
-            alert('Erreur : ' + error.message);
+        } catch(error) {
+            syncMessage(error.message,false);
+            alert('Erreur : '+error.message);
         }
     }
 };
@@ -914,9 +957,7 @@ function showPage(id) {
 }
 
 document.querySelectorAll('nav button').forEach(b=>{
-    b.addEventListener('click',()=>{
-        showPage(b.dataset.page);
-    });
+    b.addEventListener('click',()=>showPage(b.dataset.page));
 });
 
 /* INITIALISATION */
@@ -924,15 +965,16 @@ document.querySelectorAll('nav button').forEach(b=>{
 fillSettings();
 $('date').value=today();
 
-let d=new Date();
-d.setDate(d.getDate()+Number(cfg.dueDays||30));
-$('dueDate').value=d.toISOString().slice(0,10);
+let due=new Date();
+due.setDate(due.getDate()+Number(cfg.dueDays ?? 30));
+$('dueDate').value=new Date(
+    due.getTime()-due.getTimezoneOffset()*60000
+).toISOString().slice(0,10);
 
 updateNumber();
 updateDocumentType();
 addLine();
 renderHistory();
-
 </script>
 </body>
 </html>
