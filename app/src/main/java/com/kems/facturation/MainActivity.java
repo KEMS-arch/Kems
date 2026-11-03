@@ -47,6 +47,7 @@ public class MainActivity extends Activity {
     private WebView webView;
 
     private static final String APP_PIN = "1707";
+
     private static final String SERVER_URL =
             "http://100.95.210.16:3000";
 
@@ -73,14 +74,18 @@ public class MainActivity extends Activity {
         showStartupPin();
     }
 
+    // PIN DE DEMARRAGE
+
     private void showStartupPin() {
 
         EditText pinInput = new EditText(this);
         pinInput.setHint("Saisir le code PIN");
+
         pinInput.setInputType(
                 InputType.TYPE_CLASS_NUMBER |
                 InputType.TYPE_NUMBER_VARIATION_PASSWORD
         );
+
         pinInput.setSingleLine(true);
 
         AlertDialog dialog = new AlertDialog.Builder(this)
@@ -112,11 +117,14 @@ public class MainActivity extends Activity {
         dialog.show();
     }
 
+    // INITIALISATION WEBVIEW
+
     private void initializeWebView() {
 
         webView = new WebView(this);
 
         WebSettings settings = webView.getSettings();
+
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
         settings.setAllowFileAccess(true);
@@ -133,6 +141,7 @@ public class MainActivity extends Activity {
                     String message,
                     JsResult result
             ) {
+
                 new AlertDialog.Builder(MainActivity.this)
                         .setTitle("Confirmation")
                         .setMessage(message)
@@ -153,6 +162,7 @@ public class MainActivity extends Activity {
                     String message,
                     JsResult result
             ) {
+
                 new AlertDialog.Builder(MainActivity.this)
                         .setTitle("KEMS Facturation")
                         .setMessage(message)
@@ -182,10 +192,16 @@ public class MainActivity extends Activity {
                 intent.setType("application/json");
 
                 try {
-                    startActivityForResult(intent, REQUEST_IMPORT_JSON);
+                    startActivityForResult(
+                            intent,
+                            REQUEST_IMPORT_JSON
+                    );
+
                 } catch (Exception e) {
+
                     fileUploadCallback = null;
                     callback.onReceiveValue(null);
+
                     return false;
                 }
 
@@ -199,14 +215,19 @@ public class MainActivity extends Activity {
         );
 
         setContentView(webView);
-        webView.loadUrl("file:///android_asset/index.html");
+
+        webView.loadUrl(
+                "file:///android_asset/index.html"
+        );
     }
 
     // SECURITE DE LA CLE
 
     private SecretKey getEncryptionKey() throws Exception {
 
-        KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
+        KeyStore keyStore =
+                KeyStore.getInstance("AndroidKeyStore");
+
         keyStore.load(null);
 
         if (keyStore.containsAlias(KEY_ALIAS)) {
@@ -218,34 +239,47 @@ public class MainActivity extends Activity {
                 "AndroidKeyStore"
         );
 
-        generator.init(new KeyGenParameterSpec.Builder(
-                KEY_ALIAS,
-                KeyProperties.PURPOSE_ENCRYPT |
-                KeyProperties.PURPOSE_DECRYPT
-        )
-                .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
-                .setEncryptionPaddings(
-                        KeyProperties.ENCRYPTION_PADDING_NONE
+        generator.init(
+                new KeyGenParameterSpec.Builder(
+                        KEY_ALIAS,
+                        KeyProperties.PURPOSE_ENCRYPT |
+                        KeyProperties.PURPOSE_DECRYPT
                 )
-                .setRandomizedEncryptionRequired(true)
-                .build());
+                        .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+                        .setEncryptionPaddings(
+                                KeyProperties.ENCRYPTION_PADDING_NONE
+                        )
+                        .setRandomizedEncryptionRequired(true)
+                        .build()
+        );
 
         return generator.generateKey();
     }
 
     private void saveEncryptedToken(String token) throws Exception {
 
-        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-        cipher.init(Cipher.ENCRYPT_MODE, getEncryptionKey());
+        Cipher cipher =
+                Cipher.getInstance("AES/GCM/NoPadding");
+
+        cipher.init(
+                Cipher.ENCRYPT_MODE,
+                getEncryptionKey()
+        );
 
         byte[] encrypted = cipher.doFinal(
                 token.getBytes(StandardCharsets.UTF_8)
         );
 
         byte[] iv = cipher.getIV();
+
         byte[] combined = new byte[iv.length + encrypted.length];
 
-        System.arraycopy(iv, 0, combined, 0, iv.length);
+        System.arraycopy(
+                iv, 0,
+                combined, 0,
+                iv.length
+        );
+
         System.arraycopy(
                 encrypted, 0,
                 combined, iv.length,
@@ -265,26 +299,47 @@ public class MainActivity extends Activity {
 
     private String getDecryptedToken() throws Exception {
 
-        String encoded = getSharedPreferences(PREFS, MODE_PRIVATE)
-                .getString(TOKEN_KEY, null);
+        String encoded = getSharedPreferences(
+                PREFS,
+                MODE_PRIVATE
+        ).getString(TOKEN_KEY, null);
 
         if (encoded == null || encoded.isEmpty()) {
-            throw new Exception("Clé du serveur non configurée.");
+            throw new Exception(
+                    "Clé du serveur non configurée."
+            );
         }
 
-        byte[] combined = Base64.decode(encoded, Base64.NO_WRAP);
+        byte[] combined = Base64.decode(
+                encoded,
+                Base64.NO_WRAP
+        );
 
         if (combined.length <= 12) {
-            throw new Exception("Clé enregistrée invalide.");
+            throw new Exception(
+                    "Clé enregistrée invalide."
+            );
         }
 
         byte[] iv = new byte[12];
-        byte[] encrypted = new byte[combined.length - 12];
 
-        System.arraycopy(combined, 0, iv, 0, 12);
-        System.arraycopy(combined, 12, encrypted, 0, encrypted.length);
+        byte[] encrypted =
+                new byte[combined.length - 12];
 
-        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+        System.arraycopy(
+                combined, 0,
+                iv, 0,
+                12
+        );
+
+        System.arraycopy(
+                combined, 12,
+                encrypted, 0,
+                encrypted.length
+        );
+
+        Cipher cipher =
+                Cipher.getInstance("AES/GCM/NoPadding");
 
         cipher.init(
                 Cipher.DECRYPT_MODE,
@@ -310,10 +365,16 @@ public class MainActivity extends Activity {
         HttpURLConnection connection = null;
 
         try {
-            URL url = new URL(SERVER_URL + endpoint);
-            connection = (HttpURLConnection) url.openConnection();
+
+            URL url = new URL(
+                    SERVER_URL + endpoint
+            );
+
+            connection =
+                    (HttpURLConnection) url.openConnection();
 
             connection.setRequestMethod(method);
+
             connection.setConnectTimeout(15000);
             connection.setReadTimeout(20000);
 
@@ -323,6 +384,7 @@ public class MainActivity extends Activity {
             );
 
             if (authenticated) {
+
                 connection.setRequestProperty(
                         "x-kems-token",
                         getDecryptedToken()
@@ -330,29 +392,40 @@ public class MainActivity extends Activity {
             }
 
             if (body != null) {
+
                 connection.setDoOutput(true);
 
-                try (OutputStream output = connection.getOutputStream()) {
-                    output.write(body.getBytes(StandardCharsets.UTF_8));
+                try (OutputStream output =
+                             connection.getOutputStream()) {
+
+                    output.write(
+                            body.getBytes(StandardCharsets.UTF_8)
+                    );
                 }
             }
 
             int status = connection.getResponseCode();
 
-            InputStream stream = status >= 200 && status < 300
-                    ? connection.getInputStream()
-                    : connection.getErrorStream();
+            InputStream stream =
+                    status >= 200 && status < 300
+                            ? connection.getInputStream()
+                            : connection.getErrorStream();
 
-            StringBuilder response = new StringBuilder();
+            StringBuilder response =
+                    new StringBuilder();
 
             if (stream != null) {
-                try (BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(
-                                stream,
-                                StandardCharsets.UTF_8
-                        )
-                )) {
+
+                try (BufferedReader reader =
+                             new BufferedReader(
+                                     new InputStreamReader(
+                                             stream,
+                                             StandardCharsets.UTF_8
+                                     )
+                             )) {
+
                     String line;
+
                     while ((line = reader.readLine()) != null) {
                         response.append(line);
                     }
@@ -360,19 +433,24 @@ public class MainActivity extends Activity {
             }
 
             if (status < 200 || status >= 300) {
+
                 throw new Exception(
-                        "Erreur serveur HTTP " + status + " : " + response
+                        "Erreur serveur HTTP " +
+                        status + " : " + response
                 );
             }
 
             return response.toString();
 
         } finally {
+
             if (connection != null) {
                 connection.disconnect();
             }
         }
     }
+
+    // RETOUR VERS JAVASCRIPT
 
     private void sendResult(
             String action,
@@ -392,7 +470,10 @@ public class MainActivity extends Activity {
                     JSONObject.quote(message) +
                     ");}";
 
-            webView.evaluateJavascript(script, null);
+            webView.evaluateJavascript(
+                    script,
+                    null
+            );
         });
     }
 
@@ -404,7 +485,12 @@ public class MainActivity extends Activity {
             int resultCode,
             Intent data
     ) {
-        super.onActivityResult(requestCode, resultCode, data);
+
+        super.onActivityResult(
+                requestCode,
+                resultCode,
+                data
+        );
 
         if (requestCode == REQUEST_IMPORT_JSON) {
 
@@ -416,10 +502,13 @@ public class MainActivity extends Activity {
                         data != null &&
                         data.getData() != null) {
 
-                    results = new Uri[]{data.getData()};
+                    results = new Uri[]{
+                            data.getData()
+                    };
                 }
 
                 fileUploadCallback.onReceiveValue(results);
+
                 fileUploadCallback = null;
             }
         }
@@ -432,26 +521,33 @@ public class MainActivity extends Activity {
                     pendingJson != null) {
 
                 try {
+
                     android.os.ParcelFileDescriptor pfd =
                             getContentResolver().openFileDescriptor(
-                                    data.getData(), "w"
+                                    data.getData(),
+                                    "w"
                             );
 
                     if (pfd != null) {
+
                         java.io.FileOutputStream output =
                                 new java.io.FileOutputStream(
                                         pfd.getFileDescriptor()
                                 );
 
                         output.write(
-                                pendingJson.getBytes(StandardCharsets.UTF_8)
+                                pendingJson.getBytes(
+                                        StandardCharsets.UTF_8
+                                )
                         );
 
                         output.close();
                         pfd.close();
 
                         new AlertDialog.Builder(this)
-                                .setMessage("Sauvegarde JSON enregistrée.")
+                                .setMessage(
+                                        "Sauvegarde JSON enregistrée."
+                                )
                                 .setPositiveButton("OK", null)
                                 .show();
                     }
@@ -459,7 +555,9 @@ public class MainActivity extends Activity {
                 } catch (Exception e) {
 
                     new AlertDialog.Builder(this)
-                            .setMessage("Erreur pendant la sauvegarde JSON.")
+                            .setMessage(
+                                    "Erreur pendant la sauvegarde JSON."
+                            )
                             .setPositiveButton("OK", null)
                             .show();
                 }
@@ -489,6 +587,8 @@ public class MainActivity extends Activity {
             context = c;
         }
 
+        // SAUVEGARDE JSON
+
         @JavascriptInterface
         public void saveJson(String json) {
 
@@ -500,8 +600,12 @@ public class MainActivity extends Activity {
                         Intent.ACTION_CREATE_DOCUMENT
                 );
 
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.addCategory(
+                        Intent.CATEGORY_OPENABLE
+                );
+
                 intent.setType("application/json");
+
                 intent.putExtra(
                         Intent.EXTRA_TITLE,
                         "KEMS_Facturation_Sauvegarde.json"
@@ -514,18 +618,27 @@ public class MainActivity extends Activity {
             });
         }
 
+        // IMPRESSION FACTURE
+
         @JavascriptInterface
         public void printInvoice(String html) {
 
             runOnUiThread(() -> {
 
-                WebView printView = new WebView(context);
-                printView.getSettings().setJavaScriptEnabled(false);
+                WebView printView =
+                        new WebView(context);
 
-                printView.setWebViewClient(new WebViewClient() {
+                printView.getSettings()
+                        .setJavaScriptEnabled(false);
+
+                printView.setWebViewClient(
+                        new WebViewClient() {
 
                     @Override
-                    public void onPageFinished(WebView view, String url) {
+                    public void onPageFinished(
+                            WebView view,
+                            String url
+                    ) {
 
                         PrintManager manager =
                                 (PrintManager) getSystemService(
@@ -536,7 +649,9 @@ public class MainActivity extends Activity {
 
                         manager.print(
                                 jobName,
-                                view.createPrintDocumentAdapter(jobName),
+                                view.createPrintDocumentAdapter(
+                                        jobName
+                                ),
                                 new PrintAttributes.Builder()
                                         .setMediaSize(
                                                 PrintAttributes.MediaSize.ISO_A4
@@ -567,16 +682,26 @@ public class MainActivity extends Activity {
             });
         }
 
+        // ENREGISTRER LA CLE DU SERVEUR
+
         @JavascriptInterface
         public void saveSyncToken(String token) {
 
             executor.execute(() -> {
+
                 try {
-                    if (token == null || token.trim().isEmpty()) {
-                        throw new Exception("Veuillez saisir la clé.");
+
+                    if (token == null ||
+                            token.trim().isEmpty()) {
+
+                        throw new Exception(
+                                "Veuillez saisir la clé."
+                        );
                     }
 
-                    saveEncryptedToken(token.trim());
+                    saveEncryptedToken(
+                            token.trim()
+                    );
 
                     sendResult(
                             "saveToken",
@@ -585,16 +710,25 @@ public class MainActivity extends Activity {
                     );
 
                 } catch (Exception e) {
-                    sendResult("saveToken", false, e.getMessage());
+
+                    sendResult(
+                            "saveToken",
+                            false,
+                            e.getMessage()
+                    );
                 }
             });
         }
+
+        // TEST CONNEXION SERVEUR
 
         @JavascriptInterface
         public void checkSyncServer() {
 
             executor.execute(() -> {
+
                 try {
+
                     String response = serverRequest(
                             "/api/health",
                             "GET",
@@ -602,19 +736,65 @@ public class MainActivity extends Activity {
                             false
                     );
 
-                    sendResult("health", true, response);
+                    sendResult(
+                            "health",
+                            true,
+                            response
+                    );
 
                 } catch (Exception e) {
-                    sendResult("health", false, e.getMessage());
+
+                    sendResult(
+                            "health",
+                            false,
+                            e.getMessage()
+                    );
                 }
             });
         }
+
+        // NOUVEAU : RECUPERER LA BASE PRIX
+
+        @JavascriptInterface
+        public void getPriceCatalog() {
+
+            executor.execute(() -> {
+
+                try {
+
+                    String response = serverRequest(
+                            "/api/prix",
+                            "GET",
+                            null,
+                            true
+                    );
+
+                    sendResult(
+                            "prices",
+                            true,
+                            response
+                    );
+
+                } catch (Exception e) {
+
+                    sendResult(
+                            "prices",
+                            false,
+                            e.getMessage()
+                    );
+                }
+            });
+        }
+
+        // TELECHARGER LES DONNEES
 
         @JavascriptInterface
         public void downloadSyncData() {
 
             executor.execute(() -> {
+
                 try {
+
                     String response = serverRequest(
                             "/api/data",
                             "GET",
@@ -622,24 +802,41 @@ public class MainActivity extends Activity {
                             true
                     );
 
-                    sendResult("download", true, response);
+                    sendResult(
+                            "download",
+                            true,
+                            response
+                    );
 
                 } catch (Exception e) {
-                    sendResult("download", false, e.getMessage());
+
+                    sendResult(
+                            "download",
+                            false,
+                            e.getMessage()
+                    );
                 }
             });
         }
+
+        // ENVOYER LES DONNEES
 
         @JavascriptInterface
         public void uploadSyncData(String json) {
 
             executor.execute(() -> {
+
                 try {
-                    JSONObject data = new JSONObject(json);
+
+                    JSONObject data =
+                            new JSONObject(json);
 
                     if (!(data.opt("cfg") instanceof JSONObject) ||
                             !(data.opt("invoices") instanceof JSONArray)) {
-                        throw new Exception("Format des données invalide.");
+
+                        throw new Exception(
+                                "Format des données invalide."
+                        );
                     }
 
                     String response = serverRequest(
@@ -649,10 +846,19 @@ public class MainActivity extends Activity {
                             true
                     );
 
-                    sendResult("upload", true, response);
+                    sendResult(
+                            "upload",
+                            true,
+                            response
+                    );
 
                 } catch (Exception e) {
-                    sendResult("upload", false, e.getMessage());
+
+                    sendResult(
+                            "upload",
+                            false,
+                            e.getMessage()
+                    );
                 }
             });
         }
