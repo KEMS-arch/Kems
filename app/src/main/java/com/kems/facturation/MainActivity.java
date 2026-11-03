@@ -49,7 +49,7 @@ public class MainActivity extends Activity {
     private static final String APP_PIN = "1707";
 
     private static final String SERVER_URL =
-            "http://100.95.210.16:3000";
+            "http://192.168.12.32:3000";
 
     private static final String KEY_ALIAS = "KEMS_SYNC_KEY";
     private static final String PREFS = "kems_secure";
