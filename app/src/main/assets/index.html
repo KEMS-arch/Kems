@@ -16,254 +16,106 @@
 --muted:#a7bdb2;
 --line:#29453a
 }
-
 *{box-sizing:border-box}
-
 body{
-margin:0;
-background:var(--bg);
-color:var(--text);
+margin:0;background:var(--bg);color:var(--text);
 font:15px Arial,sans-serif
 }
-
 header{
-padding:20px 16px;
-background:#10251d;
+padding:20px 16px;background:#10251d;
 border-bottom:1px solid var(--line)
 }
-
-header small{
-color:var(--green);
-letter-spacing:2px
-}
-
+header small{color:var(--green);letter-spacing:2px}
 h1{font-size:23px;margin:7px 0 0}
-
 nav{
-display:flex;
-gap:8px;
-padding:12px;
-position:sticky;
-top:0;
-background:var(--bg);
-z-index:3;
-overflow:auto
+display:flex;gap:8px;padding:12px;position:sticky;
+top:0;background:var(--bg);z-index:3;overflow:auto
 }
-
 button{
-border:0;
-border-radius:10px;
-padding:12px 14px;
-font-weight:bold;
-background:#203a30;
-color:var(--text);
+border:0;border-radius:10px;padding:12px 14px;
+font-weight:bold;background:#203a30;color:var(--text);
 cursor:pointer
 }
-
-button.active,.primary{
-background:var(--green);
-color:#082016
-}
-
-button:disabled{
-opacity:.5;
-cursor:not-allowed
-}
-
-.page{
-padding:12px;
-max-width:760px;
-margin:auto
-}
-
+button.active,.primary{background:var(--green);color:#082016}
+button:disabled{opacity:.5;cursor:not-allowed}
+.page{padding:12px;max-width:760px;margin:auto}
 .card{
-background:var(--panel);
-border:1px solid var(--line);
-border-radius:14px;
-padding:15px;
-margin-bottom:12px
+background:var(--panel);border:1px solid var(--line);
+border-radius:14px;padding:15px;margin-bottom:12px
 }
-
 h2{font-size:18px;margin:0 0 14px}
-
 label{
-display:block;
-color:var(--muted);
-font-size:13px;
+display:block;color:var(--muted);font-size:13px;
 margin:10px 0 5px
 }
-
 input,select,textarea{
-width:100%;
-padding:12px;
-border:1px solid var(--line);
-border-radius:9px;
-background:#0b1913;
-color:var(--text);
+width:100%;padding:12px;border:1px solid var(--line);
+border-radius:9px;background:#0b1913;color:var(--text);
 font:inherit
 }
-
 textarea{min-height:65px}
-
 input:focus,select:focus,textarea:focus{
-outline:none;
-border-color:var(--green)
+outline:none;border-color:var(--green)
 }
-
-.grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px
-}
-
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .row{
-display:grid;
-grid-template-columns:2fr .7fr 1fr auto;
-gap:6px;
-align-items:end
+display:grid;grid-template-columns:2fr .7fr 1fr auto;
+gap:6px;align-items:end
 }
-
-.row input{
-min-width:0;
-padding:10px
-}
-
+.row input{min-width:0;padding:10px}
 .total{
-font-size:22px;
-color:var(--green);
-font-weight:bold;
-text-align:right;
-padding:12px
+font-size:22px;color:var(--green);font-weight:bold;
+text-align:right;padding:12px
 }
-
-.muted{
-color:var(--muted);
-font-size:13px
-}
-
+.muted{color:var(--muted);font-size:13px}
 .hidden{display:none!important}
-
 .invoice-item{
-border:1px solid var(--line);
-padding:10px;
-border-radius:10px;
-margin:8px 0
+border:1px solid var(--line);padding:10px;
+border-radius:10px;margin:8px 0
 }
-
 .invoice-item b{display:block}
-
-.danger{
-background:#512b2b;
-color:white
-}
-
-.full{
-width:100%;
-margin-top:8px
-}
-
-.history-actions{
-display:flex;
-flex-wrap:wrap;
-gap:7px;
-margin-top:10px
-}
-
+.danger{background:#512b2b;color:white}
+.full{width:100%;margin-top:8px}
+.history-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
 .sync-status{
-padding:12px;
-background:#0b1913;
-border:1px solid var(--line);
-border-radius:9px;
-margin-top:12px;
-overflow-wrap:anywhere
+padding:12px;background:#0b1913;border:1px solid var(--line);
+border-radius:9px;margin-top:12px;overflow-wrap:anywhere
 }
-
 .document-type{
-border:1px solid var(--green);
-background:#10251d;
-padding:12px;
-border-radius:10px;
-margin-bottom:14px
+border:1px solid var(--green);background:#10251d;
+padding:12px;border-radius:10px;margin-bottom:14px
 }
-
 .document-type label{margin-top:0}
-
 .document-badge{
-display:inline-block;
-padding:4px 8px;
-border-radius:6px;
-background:#203a30;
-color:var(--green);
-font-size:11px;
-font-weight:bold;
-margin-bottom:5px
+display:inline-block;padding:4px 8px;border-radius:6px;
+background:#203a30;color:var(--green);
+font-size:11px;font-weight:bold;margin-bottom:5px
 }
-
 .file-name{
-margin-top:8px;
-padding:10px;
-border:1px solid var(--line);
-border-radius:9px;
-background:#0b1913;
-overflow-wrap:anywhere
+margin-top:8px;padding:10px;border:1px solid var(--line);
+border-radius:9px;background:#0b1913;overflow-wrap:anywhere
 }
-
-/* BASE PRIX */
-
 .price-toolbar{
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:8px;
-flex-wrap:wrap;
-margin-bottom:10px
+display:flex;align-items:center;justify-content:space-between;
+gap:8px;flex-wrap:wrap;margin-bottom:10px
 }
-
 .price-status{
-padding:10px;
-background:#0b1913;
-border:1px solid var(--line);
-border-radius:9px;
-font-size:13px;
-color:var(--muted);
-margin-bottom:12px;
-overflow-wrap:anywhere
+padding:10px;background:#0b1913;border:1px solid var(--line);
+border-radius:9px;font-size:13px;color:var(--muted);
+margin-bottom:12px;overflow-wrap:anywhere
 }
-
 .price-status.ok{color:var(--green)}
 .price-status.error{color:#ff7777}
-
 .product-info{
-color:var(--green);
-font-size:12px;
-margin-top:7px;
-line-height:1.5
+color:var(--green);font-size:12px;margin-top:7px;line-height:1.5
 }
-
 .product-info.empty{color:var(--muted)}
-
-.catalog-count{
-font-size:12px;
-color:var(--muted)
-}
-
+.catalog-count{font-size:12px;color:var(--muted)}
 @media(max-width:420px){
-
 .grid{grid-template-columns:1fr}
-
-.row{
-grid-template-columns:1fr 65px 90px auto
-}
-
-.row input{
-font-size:13px;
-padding:9px
-}
-
-.price-toolbar button{
-font-size:12px;
-padding:10px
-}
+.row{grid-template-columns:1fr 65px 90px auto}
+.row input{font-size:13px;padding:9px}
+.price-toolbar button{font-size:12px;padding:10px}
 }
 </style>
 </head>
@@ -285,40 +137,31 @@ padding:10px
 <main class="page">
 
 <!-- NOUVEAU DOCUMENT -->
-
 <section id="invoice" class="pane">
 
 <div class="card">
-
 <h2>Informations du document</h2>
 
 <div class="document-type">
-
 <label for="documentType">Type de document</label>
-
 <select id="documentType" onchange="updateDocumentType()">
 <option value="FACTURE">FACTURE</option>
 <option value="DEVIS">DEVIS / PROFORMA</option>
 </select>
-
 <div class="muted" id="documentTypeInfo">
 Le document sera imprimé avec le titre FACTURE.
 </div>
-
 </div>
 
 <div class="grid">
-
 <div>
 <label>Numéro</label>
 <input id="number" readonly>
 </div>
-
 <div>
 <label>Date</label>
 <input id="date" type="date">
 </div>
-
 </div>
 
 <label>Nom du client</label>
@@ -328,10 +171,8 @@ Le document sera imprimé avec le titre FACTURE.
 <textarea id="clientAddress" placeholder="Adresse, téléphone..."></textarea>
 
 <div class="grid">
-
 <div>
 <label>Mode de paiement</label>
-
 <select id="payment">
 <option>Échéance</option>
 <option>Espèces</option>
@@ -342,35 +183,23 @@ Le document sera imprimé avec le titre FACTURE.
 <option>Autre</option>
 </select>
 </div>
-
 <div>
 <label>Date d'échéance</label>
 <input id="dueDate" type="date">
 </div>
-
 </div>
-
 </div>
 
 <!-- ARTICLES -->
-
 <div class="card">
-
 <h2>Articles / prestations</h2>
 
 <div class="price-toolbar">
-
 <div>
 <strong>Catalogue Base Prix</strong>
-<div class="catalog-count" id="catalogCount">
-Catalogue non chargé
+<div class="catalog-count" id="catalogCount">Catalogue non chargé</div>
 </div>
-</div>
-
-<button type="button" onclick="refreshPriceCatalog()">
-↻ Actualiser les prix
-</button>
-
+<button type="button" onclick="refreshPriceCatalog()">↻ Actualiser les prix</button>
 </div>
 
 <div id="priceStatus" class="price-status">
@@ -378,16 +207,11 @@ Connexion au catalogue en attente...
 </div>
 
 <datalist id="priceCatalogOptions"></datalist>
-
 <div id="lines"></div>
 
-<button type="button" onclick="addLine()">
-＋ Ajouter un article
-</button>
+<button type="button" onclick="addLine()">＋ Ajouter un article</button>
 
-<div class="total">
-Total : <span id="total">0 Ar</span>
-</div>
+<div class="total">Total : <span id="total">0 Ar</span></div>
 
 <label>Notes / conditions</label>
 <textarea id="notes"></textarea>
@@ -396,42 +220,25 @@ Total : <span id="total">0 Ar</span>
 Enregistrer la facture
 </button>
 
-<button class="full" onclick="makePdf()">
-Générer / imprimer le PDF
-</button>
-
+<button class="full" onclick="makePdf()">Générer / imprimer le PDF</button>
 </div>
-
 </section>
 
 <!-- HISTORIQUE -->
-
 <section id="history" class="pane hidden">
-
 <div class="card">
-
 <h2>Historique des documents</h2>
-
 <div class="muted">
 Les devis et factures sont enregistrés localement sur cet appareil.
 </div>
-
-<button class="danger full" onclick="clearHistory()">
-Supprimer tout l'historique
-</button>
-
+<button class="danger full" onclick="clearHistory()">Supprimer tout l'historique</button>
 <div id="historyList"></div>
-
 </div>
-
 </section>
 
 <!-- PARAMETRES -->
-
 <section id="settings" class="pane hidden">
-
 <div class="card">
-
 <h2>Paramètres de l'entreprise</h2>
 
 <label>Nom de l'entreprise</label>
@@ -441,24 +248,20 @@ Supprimer tout l'historique
 <textarea id="companyAddress"></textarea>
 
 <div class="grid">
-
 <div>
 <label>Téléphone</label>
 <input id="phone" type="tel">
 </div>
-
 <div>
 <label>Email</label>
 <input id="email" type="email">
 </div>
-
 </div>
 
 <label>NIF / STAT / RCS</label>
 <input id="legal">
 
 <label>Devise</label>
-
 <select id="currency">
 <option value="Ar">Ariary (Ar)</option>
 <option value="€">Euro (€)</option>
@@ -468,34 +271,26 @@ Supprimer tout l'historique
 <h2 style="margin-top:20px">Numérotation</h2>
 
 <div class="grid">
-
 <div>
 <label>Préfixe</label>
 <input id="prefix" value="FAC-">
 </div>
-
 <div>
 <label>Année dans le numéro</label>
-
 <select id="yearInNumber">
 <option value="yes">Oui</option>
 <option value="no">Non</option>
 </select>
-
 </div>
-
 </div>
 
 <div class="grid">
-
 <div>
 <label>Prochain numéro</label>
 <input id="nextNumber" type="number" min="1" value="1">
 </div>
-
 <div>
 <label>Mode de paiement par défaut</label>
-
 <select id="defaultPayment">
 <option>Échéance</option>
 <option>Espèces</option>
@@ -505,35 +300,20 @@ Supprimer tout l'historique
 <option>Carte bancaire</option>
 <option>Autre</option>
 </select>
-
 </div>
-
 </div>
 
 <label>Délai de paiement par défaut (jours)</label>
 <input id="dueDays" type="number" min="0" value="30">
 
-<button class="primary full" onclick="saveSettings()">
-Enregistrer les paramètres
-</button>
-
-<button class="full" onclick="exportData()">
-Exporter une sauvegarde JSON
-</button>
+<button class="primary full" onclick="saveSettings()">Enregistrer les paramètres</button>
+<button class="full" onclick="exportData()">Exporter une sauvegarde JSON</button>
 
 <label>Importer une sauvegarde JSON</label>
+<input id="jsonFile" type="file" accept=".json,application/json"
+onchange="importData(event)" onclick="this.value=''">
 
-<input
-id="jsonFile"
-type="file"
-accept=".json,application/json"
-onchange="importData(event)"
-onclick="this.value=''"
->
-
-<div id="jsonFileName" class="file-name muted">
-Aucun fichier sélectionné
-</div>
+<div id="jsonFileName" class="file-name muted">Aucun fichier sélectionné</div>
 
 <p class="muted">
 Les données restent sur cet appareil. Exportez régulièrement une sauvegarde.
@@ -542,53 +322,29 @@ Les données restent sur cet appareil. Exportez régulièrement une sauvegarde.
 <hr style="border-color:#29453a;margin:22px 0">
 
 <h2>Synchronisation KEMS</h2>
-
 <p class="muted">
 Synchronisez vos documents entre votre téléphone Android et votre PC.
 </p>
 
 <label>Clé secrète du serveur</label>
+<input id="syncToken" type="password"
+placeholder="Coller la clé du serveur" autocomplete="off"
+oninput="this.dataset.saved='false';this.placeholder='Coller la clé du serveur'">
 
-<input
-id="syncToken"
-type="password"
-placeholder="Coller la clé du serveur"
-autocomplete="off"
-oninput="this.dataset.saved='false';this.placeholder='Coller la clé du serveur'"
->
+<button class="primary full" onclick="saveSyncToken()">Enregistrer la clé de connexion</button>
+<button class="full" onclick="checkSync()">Vérifier la connexion</button>
+<button class="full" onclick="uploadSync()">Envoyer les données vers le serveur</button>
+<button class="full" onclick="downloadSync()">Télécharger les données du serveur</button>
+<button class="primary full" onclick="syncNow()">Synchroniser maintenant</button>
 
-<button class="primary full" onclick="saveSyncToken()">
-Enregistrer la clé de connexion
-</button>
-
-<button class="full" onclick="checkSync()">
-Vérifier la connexion
-</button>
-
-<button class="full" onclick="uploadSync()">
-Envoyer les données vers le serveur
-</button>
-
-<button class="full" onclick="downloadSync()">
-Télécharger les données du serveur
-</button>
-
-<button class="primary full" onclick="syncNow()">
-Synchroniser maintenant
-</button>
-
-<div id="syncStatus" class="sync-status muted">
-État : non vérifié
-</div>
+<div id="syncStatus" class="sync-status muted">État : non vérifié</div>
 
 <p class="muted">
 Attention : l'envoi remplace les données du serveur.
 Le téléchargement remplace les données locales.
 Une sauvegarde locale est créée avant le téléchargement.
 </p>
-
 </div>
-
 </section>
 
 </main>
@@ -599,66 +355,46 @@ Une sauvegarde locale est créée avant le téléchargement.
 const $ = id => document.getElementById(id);
 
 let lines = [];
-
 let cfg = readStorage('kems_cfg', {});
 let invoices = readStorage('kems_invoices', []);
-
-/* CATALOGUE BASE PRIX */
 
 let priceCatalog = [];
 let priceCatalogLoaded = false;
 let priceCatalogBusy = false;
+let syncBusy = false;
 
 /* STOCKAGE */
 
 function readStorage(key, fallback) {
-
     try {
-
         const value = localStorage.getItem(key);
-
         return value ? JSON.parse(value) : fallback;
-
     } catch(e) {
-
         return fallback;
     }
 }
 
 function saveInvoices() {
-    localStorage.setItem(
-        'kems_invoices',
-        JSON.stringify(invoices)
-    );
+    localStorage.setItem('kems_invoices', JSON.stringify(invoices));
 }
 
 function saveConfig() {
-    localStorage.setItem(
-        'kems_cfg',
-        JSON.stringify(cfg)
-    );
+    localStorage.setItem('kems_cfg', JSON.stringify(cfg));
 }
 
 function today() {
-
     const d = new Date();
-
-    return new Date(
-        d.getTime() - d.getTimezoneOffset()*60000
-    ).toISOString().slice(0,10);
+    return new Date(d.getTime() - d.getTimezoneOffset()*60000)
+        .toISOString().slice(0,10);
 }
 
 function fmt(n, currency) {
-
     return Number(n || 0).toLocaleString('fr-FR',{
         maximumFractionDigits:2
-    }) + ' ' + (
-        currency || $('currency').value || 'Ar'
-    );
+    }) + ' ' + (currency || $('currency').value || 'Ar');
 }
 
 function esc(s) {
-
     return String(s ?? '').replace(/[&<>"']/g,c=>({
         '&':'&amp;',
         '<':'&lt;',
@@ -668,232 +404,153 @@ function esc(s) {
     }[c]));
 }
 
-/* TYPE DE DOCUMENT */
+/* TYPE DOCUMENT */
 
 function documentTitle(type) {
-
-    return type === 'DEVIS'
-        ? 'PROFORMA'
-        : 'FACTURE';
+    return type === 'DEVIS' ? 'PROFORMA' : 'FACTURE';
 }
 
 function updateDocumentType() {
-
     const type = $('documentType').value;
-
     const title = documentTitle(type);
 
     $('documentTypeInfo').textContent =
         'Le document sera imprimé avec le titre ' + title + '.';
 
     $('saveButton').textContent =
-        'Enregistrer ' +
-        (type === 'DEVIS' ? 'le devis' : 'la facture');
+        'Enregistrer ' + (type === 'DEVIS' ? 'le devis' : 'la facture');
 }
 
 /* PARAMETRES */
 
 function fillSettings() {
-
     [
-        'company',
-        'companyAddress',
-        'phone',
-        'email',
-        'legal',
-        'currency',
-        'prefix',
-        'yearInNumber',
-        'nextNumber',
-        'defaultPayment',
-        'dueDays'
-
+        'company','companyAddress','phone','email','legal',
+        'currency','prefix','yearInNumber','nextNumber',
+        'defaultPayment','dueDays'
     ].forEach(k=>{
-
-        if(cfg[k] !== undefined) {
-            $(k).value = cfg[k];
-        }
-
+        if(cfg[k] !== undefined) $(k).value = cfg[k];
     });
 
-    $('payment').value =
-        cfg.defaultPayment || 'Échéance';
+    $('payment').value = cfg.defaultPayment || 'Échéance';
 }
 
 function saveSettings() {
-
     cfg = {};
 
     [
-        'company',
-        'companyAddress',
-        'phone',
-        'email',
-        'legal',
-        'currency',
-        'prefix',
-        'yearInNumber',
-        'nextNumber',
-        'defaultPayment',
-        'dueDays'
-
+        'company','companyAddress','phone','email','legal',
+        'currency','prefix','yearInNumber','nextNumber',
+        'defaultPayment','dueDays'
     ].forEach(k=>{
-
         cfg[k] = $(k).value;
-
     });
 
     saveConfig();
-
     $('payment').value = cfg.defaultPayment;
-
-    alert('Paramètres enregistrés.');
-
     updateNumber();
+    alert('Paramètres enregistrés.');
 }
 
 function updateNumber() {
+    const n = Number(cfg.nextNumber || $('nextNumber').value || 1);
+    const p = cfg.prefix ?? $('prefix').value ?? 'FAC-';
 
-    let n = Number(
-        cfg.nextNumber ||
-        $('nextNumber').value ||
-        1
-    );
+    const y = (
+        cfg.yearInNumber ?? $('yearInNumber').value ?? 'yes'
+    ) === 'yes' ? new Date().getFullYear() + '-' : '';
 
-    let p = cfg.prefix ??
-        $('prefix').value ??
-        'FAC-';
-
-    let y = (
-        cfg.yearInNumber ??
-        $('yearInNumber').value ??
-        'yes'
-    ) === 'yes'
-        ? new Date().getFullYear() + '-'
-        : '';
-
-    $('number').value =
-        p + y + String(n).padStart(4,'0');
+    $('number').value = p + y + String(n).padStart(4,'0');
 }
 
-/* =========================================
-   BASE PRIX : CONNEXION ANDROID
-========================================= */
+/* BASE PRIX */
 
 function setPriceStatus(message, type='normal') {
-
     const el = $('priceStatus');
-
     el.textContent = message;
-
     el.className = 'price-status';
 
-    if(type === 'ok') {
-        el.classList.add('ok');
-    }
-
-    if(type === 'error') {
-        el.classList.add('error');
-    }
+    if(type === 'ok') el.classList.add('ok');
+    if(type === 'error') el.classList.add('error');
 }
 
 function refreshPriceCatalog() {
+    if(priceCatalogBusy) return;
 
-    if(priceCatalogBusy) {
-        return;
-    }
-
-    if(
-        !window.KemsAndroid ||
-        typeof KemsAndroid.getPriceCatalog !== 'function'
-    ) {
-
+    if(!window.KemsAndroid ||
+       typeof KemsAndroid.getPriceCatalog !== 'function') {
         setPriceStatus(
             'Connexion Base Prix disponible uniquement dans l’application Android.',
             'error'
         );
-
         return;
     }
 
     priceCatalogBusy = true;
-
-    setPriceStatus(
-        'Connexion au serveur et récupération des produits...'
-    );
-
-    $('catalogCount').textContent =
-        'Chargement en cours...';
+    setPriceStatus('Connexion au serveur et récupération des produits...');
+    $('catalogCount').textContent = 'Chargement en cours...';
 
     try {
-
         KemsAndroid.getPriceCatalog();
-
     } catch(error) {
-
         priceCatalogBusy = false;
-
-        setPriceStatus(
-            'Erreur : ' + error.message,
-            'error'
-        );
+        setPriceStatus('Erreur : ' + error.message,'error');
     }
 }
 
 /* TRAITEMENT DES PRODUITS */
 
 function receivePriceCatalog(response) {
-
     try {
-
         const data = typeof response === 'string'
             ? JSON.parse(response)
             : response;
 
-        if(
-            !data ||
-            data.success !== true ||
-            !Array.isArray(data.products)
-        ) {
+        // Accepter le JSON brut et les réponses enveloppées
+        const products = Array.isArray(data?.products)
+            ? data.products
+            : Array.isArray(data?.data?.products)
+                ? data.data.products
+                : null;
 
-            throw new Error(
-                data?.error || 'Format du catalogue invalide.'
-            );
+        if(!data || data.success === false || !products) {
+            throw new Error(data?.error || 'Format du catalogue invalide.');
         }
 
-        priceCatalog = data.products.filter(p=>{
+        priceCatalog = products.map(p=>({
+            id: p.id,
+            designation: String(p.designation || '').trim(),
+            category: String(p.category || p.categorie || '').trim(),
+            unit: String(p.unit || p.unite || '').trim(),
+            price: Number(p.price ?? p.prix ?? 0),
+            prixInitial: Number(p.prixInitial ?? 0),
+            benefice: Number(p.benefice ?? 0),
+            observation: String(p.observation || '')
+        })).filter(p=>
+            p.designation !== '' &&
+            p.category !== '' &&
+            p.unit !== '' &&
+            Number.isFinite(p.price) &&
+            p.price >= 0
+        );
 
-            return (
-                p &&
-                String(p.designation || '').trim() &&
-                String(p.category || '').trim() &&
-                String(p.unit || '').trim() &&
-                Number.isFinite(Number(p.price)) &&
-                Number(p.price) >= 0
-            );
-
-        });
+        if(priceCatalog.length === 0) {
+            throw new Error('Aucun produit valide dans le catalogue.');
+        }
 
         priceCatalogLoaded = true;
-
         updatePriceOptions();
 
         $('catalogCount').textContent =
-            priceCatalog.length +
-            ' référence(s) disponible(s)';
+            priceCatalog.length + ' référence(s) disponible(s)';
 
         setPriceStatus(
-            'Catalogue chargé avec succès. ' +
-            priceCatalog.length +
-            ' produit(s) disponible(s).',
+            'Catalogue chargé avec succès : ' +
+            priceCatalog.length + ' produit(s) disponible(s).',
             'ok'
         );
 
-        // Mettre à jour les articles déjà présents
-        // uniquement si leur désignation correspond exactement.
-
         lines.forEach(line=>{
-
             if(!line.description) return;
 
             const product = findPriceProduct(
@@ -902,21 +559,22 @@ function receivePriceCatalog(response) {
             );
 
             if(product) {
-
+                line.description = product.designation;
                 line.category = product.category;
                 line.unit = product.unit;
-                line.price = Number(product.price);
+                line.price = product.price;
                 line.productId = product.id;
             }
-
         });
 
         renderLines();
 
     } catch(error) {
-
+        priceCatalog = [];
         priceCatalogLoaded = false;
+        updatePriceOptions();
 
+        $('catalogCount').textContent = 'Catalogue indisponible';
         setPriceStatus(
             'Erreur de lecture du catalogue : ' + error.message,
             'error'
@@ -924,89 +582,57 @@ function receivePriceCatalog(response) {
     }
 }
 
-/* LISTE DES SUGGESTIONS */
+/* SUGGESTIONS */
 
 function updatePriceOptions() {
-
     $('priceCatalogOptions').innerHTML =
         priceCatalog.map(p=>{
-
-            const value =
-                p.designation + ' — ' + p.unit;
-
-            return `
-                <option value="${esc(value)}"></option>
-            `;
-
+            const value = p.designation + ' — ' + p.unit;
+            return `<option value="${esc(value)}"></option>`;
         }).join('');
 }
 
-/* RECHERCHE D'UN PRODUIT */
-
 function normalizeSearch(value) {
-
-    return String(value || '')
-        .trim()
-        .toLowerCase();
+    return String(value || '').trim().toLowerCase();
 }
 
 function findPriceProduct(value, unit='') {
-
     const search = normalizeSearch(value);
-
     if(!search) return null;
 
-    // Correspondance exacte désignation + unité
-
     if(unit) {
-
         const exact = priceCatalog.find(p=>
             normalizeSearch(p.designation) === search &&
             normalizeSearch(p.unit) === normalizeSearch(unit)
         );
-
         if(exact) return exact;
     }
-
-    // Correspondance désignation exacte
 
     const exactDesignation = priceCatalog.find(p=>
         normalizeSearch(p.designation) === search
     );
-
     if(exactDesignation) return exactDesignation;
 
-    // Format de suggestion : Désignation — Unité
-
-    const matching = priceCatalog.find(p=>
-        normalizeSearch(
-            p.designation + ' — ' + p.unit
-        ) === search
-    );
-
-    return matching || null;
+    return priceCatalog.find(p=>
+        normalizeSearch(p.designation + ' — ' + p.unit) === search
+    ) || null;
 }
 
-/* SELECTION AUTOMATIQUE DU PRODUIT */
+/* SELECTION PRODUIT */
 
 function selectCatalogProduct(id, value) {
-
     const line = lines.find(x=>x.id === id);
-
     if(!line) return;
 
     const product = findPriceProduct(value);
 
     if(product) {
-
         line.description = product.designation;
         line.category = product.category;
         line.unit = product.unit;
         line.price = Number(product.price);
         line.productId = product.id;
-
     } else {
-
         line.description = value;
         line.category = '';
         line.unit = '';
@@ -1019,294 +645,177 @@ function selectCatalogProduct(id, value) {
 /* ARTICLES */
 
 function addLine(d={}) {
-
-    let id = Date.now() + Math.random();
+    const id = Date.now() + Math.random();
 
     lines.push({
-
         id,
-
         description: d.description || '',
-
         category: d.category || '',
-
         unit: d.unit || '',
-
         productId: d.productId || null,
-
         qty: d.qty ?? 1,
-
         price: d.price ?? 0
-
     });
 
     renderLines();
 }
 
 function renderLines() {
-
     $('lines').innerHTML = lines.map(l=>`
-
         <div class="invoice-item">
-
             <div class="row">
-
                 <div>
-
                     <label>Désignation</label>
-
                     <input
                         list="priceCatalogOptions"
                         value="${esc(l.description)}"
                         placeholder="Rechercher un produit..."
                         onchange="selectCatalogProduct(${l.id},this.value)"
                     >
-
                 </div>
 
                 <div>
-
                     <label>Qté</label>
-
-                    <input
-                        type="number"
-                        min="0"
-                        step="any"
+                    <input type="number" min="0" step="any"
                         value="${Number(l.qty)||0}"
-                        onchange="editLine(${l.id},'qty',this.value)"
-                    >
-
+                        onchange="editLine(${l.id},'qty',this.value)">
                 </div>
 
                 <div>
-
                     <label>Prix unitaire</label>
-
-                    <input
-                        type="number"
-                        min="0"
-                        step="any"
+                    <input type="number" min="0" step="any"
                         value="${Number(l.price)||0}"
-                        onchange="editLine(${l.id},'price',this.value)"
-                    >
-
+                        onchange="editLine(${l.id},'price',this.value)">
                 </div>
 
-                <button
-                    class="danger"
-                    onclick="removeLine(${l.id})"
-                >×</button>
-
+                <button class="danger"
+                    onclick="removeLine(${l.id})">×</button>
             </div>
 
-            <div class="product-info ${
-                l.category || l.unit ? '' : 'empty'
-            }">
-
-                ${
-                    l.category
+            <div class="product-info ${l.category || l.unit ? '' : 'empty'}">
+                ${l.category
                     ? 'Catégorie : ' + esc(l.category)
-                    : 'Produit personnalisé'
-                }
-
-                ${
-                    l.unit
-                    ? ' • Unité : ' + esc(l.unit)
-                    : ''
-                }
-
+                    : 'Produit personnalisé'}
+                ${l.unit ? ' • Unité : ' + esc(l.unit) : ''}
             </div>
 
             <div class="muted">
                 Montant :
-                ${fmt(
-                    (Number(l.qty)||0) *
-                    (Number(l.price)||0)
-                )}
+                ${fmt((Number(l.qty)||0)*(Number(l.price)||0))}
             </div>
-
         </div>
-
     `).join('');
 
     $('total').textContent = fmt(total());
 }
 
 function editLine(id,k,v) {
+    const l = lines.find(x=>x.id === id);
+    if(!l) return;
 
-    let l = lines.find(x=>x.id === id);
-
-    if(l) {
-
-        if(k === 'description') {
-
-            selectCatalogProduct(id,v);
-
-            return;
-        }
-
-        l[k] = Number(v) || 0;
-
-        renderLines();
+    if(k === 'description') {
+        selectCatalogProduct(id,v);
+        return;
     }
+
+    l[k] = Number(v) || 0;
+    renderLines();
 }
 
 function removeLine(id) {
-
     lines = lines.filter(l=>l.id !== id);
-
     renderLines();
 }
 
 function total() {
-
     return lines.reduce((s,l)=>
-        s +
-        (Number(l.qty)||0) *
-        (Number(l.price)||0),
-        0
+        s + (Number(l.qty)||0)*(Number(l.price)||0),0
     );
 }
 
 /* DOCUMENTS */
 
 function formInvoice() {
-
     return {
-
         type: $('documentType').value,
-
         number: $('number').value,
-
         date: $('date').value,
-
         client: $('client').value,
-
         clientAddress: $('clientAddress').value,
-
         payment: $('payment').value,
-
         dueDate: $('dueDate').value,
-
         notes: $('notes').value,
-
         lines: JSON.parse(JSON.stringify(lines)),
-
         total: total(),
-
         currency: $('currency').value
     };
 }
 
 function saveInvoice() {
-
-    let f = formInvoice();
+    const f = formInvoice();
 
     if(!f.client.trim()) {
-
         alert('Veuillez saisir le nom du client.');
-
         return;
     }
 
     if(!f.lines.length) {
-
         alert('Ajoutez au moins un article.');
-
         return;
     }
 
-    let old = invoices.findIndex(
-        x=>x.number === f.number
-    );
+    const old = invoices.findIndex(x=>x.number === f.number);
 
     if(old >= 0) {
-
-        if(!confirm(
-            'Ce numéro existe déjà. Remplacer le document ?'
-        )) return;
-
+        if(!confirm('Ce numéro existe déjà. Remplacer le document ?')) return;
         invoices[old] = f;
-
     } else {
-
         invoices.unshift(f);
 
         cfg.nextNumber =
-            Number(
-                cfg.nextNumber ||
-                $('nextNumber').value ||
-                1
-            ) + 1;
+            Number(cfg.nextNumber || $('nextNumber').value || 1) + 1;
 
         $('nextNumber').value = cfg.nextNumber;
-
         saveConfig();
     }
 
     saveInvoices();
-
     renderHistory();
-
     updateNumber();
 
-    alert(
-        f.type === 'DEVIS'
-            ? 'Devis PROFORMA enregistré.'
-            : 'Facture enregistrée.'
-    );
+    alert(f.type === 'DEVIS'
+        ? 'Devis PROFORMA enregistré.'
+        : 'Facture enregistrée.');
 }
 
 function renderHistory() {
-
     $('historyList').innerHTML = invoices.length
+        ? invoices.map((f,i)=>`
+            <div class="invoice-item">
+                <span class="document-badge">
+                    ${esc(documentTitle(f.type || 'FACTURE'))}
+                </span>
 
-    ? invoices.map((f,i)=>`
+                <b>${esc(f.number)} — ${esc(f.client)}</b>
 
-        <div class="invoice-item">
+                <div class="muted">
+                    ${esc(f.date)} • ${fmt(f.total,f.currency)} •
+                    ${esc(f.payment)}
+                </div>
 
-            <span class="document-badge">
-                ${esc(documentTitle(f.type || 'FACTURE'))}
-            </span>
-
-            <b>
-                ${esc(f.number)} — ${esc(f.client)}
-            </b>
-
-            <div class="muted">
-                ${esc(f.date)} •
-                ${fmt(f.total,f.currency)} •
-                ${esc(f.payment)}
+                <div class="history-actions">
+                    <button onclick="loadInvoice(${i})">Modifier / consulter</button>
+                    <button onclick="printSaved(${i})">PDF</button>
+                    <button class="danger" onclick="deleteInvoice(${i})">
+                        Supprimer
+                    </button>
+                </div>
             </div>
-
-            <div class="history-actions">
-
-                <button onclick="loadInvoice(${i})">
-                    Modifier / consulter
-                </button>
-
-                <button onclick="printSaved(${i})">
-                    PDF
-                </button>
-
-                <button
-                    class="danger"
-                    onclick="deleteInvoice(${i})"
-                >
-                    Supprimer
-                </button>
-
-            </div>
-
-        </div>
-
-    `).join('')
-
-    : '<p class="muted">Aucun document enregistré.</p>';
+        `).join('')
+        : '<p class="muted">Aucun document enregistré.</p>';
 }
 
 function deleteInvoice(index) {
-
     if(index < 0 || index >= invoices.length) return;
 
     if(!confirm(
@@ -1315,423 +824,225 @@ function deleteInvoice(index) {
     )) return;
 
     invoices.splice(index,1);
-
     saveInvoices();
-
     renderHistory();
-
     alert('Document supprimé avec succès.');
 }
 
 function clearHistory() {
-
     if(invoices.length === 0) {
-
         alert('L’historique est déjà vide.');
-
         return;
     }
 
-    if(!confirm(
-        'ATTENTION ! Voulez-vous supprimer tous les documents ?'
-    )) return;
+    if(!confirm('ATTENTION ! Voulez-vous supprimer tous les documents ?')) return;
 
     invoices = [];
-
     saveInvoices();
-
     renderHistory();
-
     alert('Tout l’historique a été supprimé.');
 }
 
 function loadInvoice(i) {
-
-    let f = invoices[i];
-
+    const f = invoices[i];
     if(!f) return;
 
     $('documentType').value = f.type || 'FACTURE';
-
     updateDocumentType();
 
     $('number').value = f.number;
-
     $('date').value = f.date;
-
     $('client').value = f.client;
-
-    $('clientAddress').value =
-        f.clientAddress || '';
-
-    $('payment').value =
-        f.payment || 'Échéance';
-
-    $('dueDate').value =
-        f.dueDate || '';
-
-    $('notes').value =
-        f.notes || '';
+    $('clientAddress').value = f.clientAddress || '';
+    $('payment').value = f.payment || 'Échéance';
+    $('dueDate').value = f.dueDate || '';
+    $('notes').value = f.notes || '';
 
     lines = (f.lines || []).map(l=>({
-
         ...l,
-
         category: l.category || '',
-
         unit: l.unit || '',
-
         productId: l.productId || null,
-
         id: Date.now() + Math.random()
-
     }));
 
     renderLines();
-
     showPage('invoice');
 }
 
 /* PDF */
 
 function invoiceHtml(f) {
-
     const c = cfg;
+    const currency = f.currency || c.currency || 'Ar';
+    const title = documentTitle(f.type || 'FACTURE');
 
-    const currency =
-        f.currency || c.currency || 'Ar';
-
-    const title =
-        documentTitle(f.type || 'FACTURE');
-
-    const numberLabel =
-        f.type === 'DEVIS'
-            ? 'Devis n°'
-            : 'Facture n°';
+    const numberLabel = f.type === 'DEVIS'
+        ? 'Devis n°'
+        : 'Facture n°';
 
     return `<!doctype html>
-
 <html lang="fr">
-
 <head>
-
 <meta charset="utf-8">
-
 <meta name="viewport" content="width=device-width,initial-scale=1">
-
 <title>${title} ${esc(f.number)}</title>
 
 <style>
-
 *{box-sizing:border-box}
-
-html,body{
-margin:0;
-padding:0;
-width:100%
-}
-
+html,body{margin:0;padding:0;width:100%}
 body{
-font:12px Arial,sans-serif;
-color:#222;
-padding:28px;
-line-height:1.5;
-text-align:left!important
+font:12px Arial,sans-serif;color:#222;padding:28px;
+line-height:1.5;text-align:left!important
 }
-
 h1{
-color:#174b35;
-font-size:28px;
-margin:0 0 25px;
-text-align:left!important;
-width:100%
+color:#174b35;font-size:28px;margin:0 0 25px;
+text-align:left!important;width:100%
 }
-
-h2{
-color:#174b35;
-margin:0 0 8px;
-text-align:left!important
-}
-
-p{
-margin:8px 0;
-text-align:left!important
-}
-
+h2,p{text-align:left!important}
+h2{color:#174b35;margin:0 0 8px}
+p{margin:8px 0}
 .company-block,.client-block{
-width:100%;
-text-align:left!important;
-margin-bottom:20px
+width:100%;text-align:left!important;margin-bottom:20px
 }
-
 .company-name{
-font-size:17px;
-font-weight:bold;
-color:#174b35;
+font-size:17px;font-weight:bold;color:#174b35;
 text-align:left!important
 }
-
 .company-info,.client-address{
-white-space:pre-wrap;
-line-height:1.7;
-text-align:left!important
+white-space:pre-wrap;line-height:1.7;text-align:left!important
 }
-
 .client-block{margin:18px 0}
-
-.client-name{
-font-weight:bold;
-text-align:left!important
-}
-
+.client-name{font-weight:bold;text-align:left!important}
 .document-info{
-text-align:left!important;
-line-height:1.9;
-margin-bottom:18px
+text-align:left!important;line-height:1.9;margin-bottom:18px
 }
-
 table{
-width:100%;
-border-collapse:collapse;
-margin-top:22px;
+width:100%;border-collapse:collapse;margin-top:22px;
 text-align:left!important
 }
-
 th,td{
-border:1px solid #ccc;
-padding:9px;
-text-align:left!important;
-vertical-align:top
+border:1px solid #ccc;padding:9px;
+text-align:left!important;vertical-align:top
 }
-
-th{
-background:#eaf5ee;
-color:#174b35
-}
-
+th{background:#eaf5ee;color:#174b35}
 .total{
-font-size:18px;
-font-weight:bold;
-text-align:right!important;
-margin-top:25px;
-color:#174b35
+font-size:18px;font-weight:bold;text-align:right!important;
+margin-top:25px;color:#174b35
 }
-
 .notes{
-white-space:pre-wrap;
-text-align:left!important;
-margin-top:20px
+white-space:pre-wrap;text-align:left!important;margin-top:20px
 }
-
-.footer{
-text-align:left!important;
-margin-top:25px
-}
-
+.footer{text-align:left!important;margin-top:25px}
 @media print{
-
-body{
-padding:15mm;
+body{padding:15mm;text-align:left!important}
+h1,h2,p,.company-block,.company-info,.client-block,
+.client-name,.client-address,.document-info,td,th{
 text-align:left!important
 }
-
-h1,h2,p,.company-block,.company-info,
-.client-block,.client-name,.client-address,
-.document-info,td,th{
-text-align:left!important
-}
-
 .total{text-align:right!important}
-
 tr{page-break-inside:avoid}
-
 }
-
 </style>
-
 </head>
 
 <body>
-
 <h1>${title}</h1>
 
 <div class="company-block">
-
-    <div class="company-name">
-        ${esc(c.company || 'Votre entreprise')}
-    </div>
-
-    <div class="company-info">
-        ${esc(c.companyAddress || '')}
-    </div>
-
-    <div class="company-info">
-        ${esc(c.phone || '')}
-    </div>
-
-    <div class="company-info">
-        ${esc(c.email || '')}
-    </div>
-
-    <div class="company-info">
-        ${esc(c.legal || '')}
-    </div>
-
+    <div class="company-name">${esc(c.company || 'Votre entreprise')}</div>
+    <div class="company-info">${esc(c.companyAddress || '')}</div>
+    <div class="company-info">${esc(c.phone || '')}</div>
+    <div class="company-info">${esc(c.email || '')}</div>
+    <div class="company-info">${esc(c.legal || '')}</div>
 </div>
 
 <div class="document-info">
-
-    <div>
-        <b>${numberLabel}</b>
-        ${esc(f.number)}
-    </div>
-
-    <div>
-        <b>Date :</b>
-        ${esc(f.date)}
-    </div>
-
+    <div><b>${numberLabel}</b> ${esc(f.number)}</div>
+    <div><b>Date :</b> ${esc(f.date)}</div>
 </div>
 
 <div class="client-block">
-
-    <div class="client-name">
-        CLIENT : ${esc(f.client)}
-    </div>
-
-    <div class="client-address">
-        ${esc(f.clientAddress || '')}
-    </div>
-
+    <div class="client-name">CLIENT : ${esc(f.client)}</div>
+    <div class="client-address">${esc(f.clientAddress || '')}</div>
 </div>
 
-<p>
-    <b>Mode de paiement :</b>
-    ${esc(f.payment || '')}
-</p>
+<p><b>Mode de paiement :</b> ${esc(f.payment || '')}</p>
 
 ${f.dueDate ? `
-<p>
-    <b>Date d'échéance :</b>
-    ${esc(f.dueDate)}
-</p>
+<p><b>Date d'échéance :</b> ${esc(f.dueDate)}</p>
 ` : ''}
 
 <table>
-
 <thead>
-
 <tr>
-    <th>Désignation</th>
-    <th>Catégorie</th>
-    <th>Unité</th>
-    <th>Quantité</th>
-    <th>Prix unitaire</th>
-    <th>Montant</th>
+<th>Désignation</th>
+<th>Catégorie</th>
+<th>Unité</th>
+<th>Quantité</th>
+<th>Prix unitaire</th>
+<th>Montant</th>
 </tr>
-
 </thead>
 
 <tbody>
-
 ${(f.lines || []).map(l=>`
-
 <tr>
-
-    <td>${esc(l.description)}</td>
-
-    <td>${esc(l.category || '')}</td>
-
-    <td>${esc(l.unit || '')}</td>
-
-    <td>${Number(l.qty)||0}</td>
-
-    <td>${fmt(l.price,currency)}</td>
-
-    <td>${fmt(
-        (Number(l.qty)||0) *
-        (Number(l.price)||0),
-        currency
-    )}</td>
-
+<td>${esc(l.description)}</td>
+<td>${esc(l.category || '')}</td>
+<td>${esc(l.unit || '')}</td>
+<td>${Number(l.qty)||0}</td>
+<td>${fmt(l.price,currency)}</td>
+<td>${fmt((Number(l.qty)||0)*(Number(l.price)||0),currency)}</td>
 </tr>
-
 `).join('')}
-
 </tbody>
-
 </table>
 
-<div class="total">
-    TOTAL : ${fmt(f.total,currency)}
-</div>
+<div class="total">TOTAL : ${fmt(f.total,currency)}</div>
 
-<div class="notes">
-    ${esc(f.notes || '')}
-</div>
+<div class="notes">${esc(f.notes || '')}</div>
 
 ${f.type === 'DEVIS'
     ? '<p><b>Document PROFORMA – Devis estimatif.</b></p>'
     : ''}
 
 <div class="footer">
-
-    <hr>
-
-    <small>Merci pour votre confiance.</small>
-
+<hr>
+<small>Merci pour votre confiance.</small>
 </div>
-
 </body>
-
 </html>`;
 }
 
 function printDocument(f) {
-
-    if(
-        window.KemsAndroid &&
-        typeof KemsAndroid.printInvoice === 'function'
-    ) {
-
+    if(window.KemsAndroid &&
+       typeof KemsAndroid.printInvoice === 'function') {
         KemsAndroid.printInvoice(invoiceHtml(f));
-
     } else {
-
-        let w = window.open('','_blank');
+        const w = window.open('','_blank');
 
         if(!w) {
-
             alert('Impossible d’ouvrir la fenêtre PDF.');
-
             return;
         }
 
         w.document.open();
-
         w.document.write(invoiceHtml(f));
-
         w.document.close();
 
         w.onload = ()=>{
-
             w.focus();
-
             w.print();
         };
     }
 }
 
 function makePdf() {
-
-    let f = formInvoice();
+    const f = formInvoice();
 
     if(!f.client.trim() || !f.lines.length) {
-
-        alert(
-            'Saisissez le client et ajoutez au moins un article.'
-        );
-
+        alert('Saisissez le client et ajoutez au moins un article.');
         return;
     }
 
@@ -1739,183 +1050,112 @@ function makePdf() {
 }
 
 function printSaved(i) {
-
-    let f = invoices[i];
-
+    const f = invoices[i];
     if(f) printDocument(f);
 }
 
 /* EXPORT JSON */
 
 function exportData() {
+    const json = JSON.stringify({cfg,invoices},null,2);
 
-    const json = JSON.stringify({
-        cfg,
-        invoices
-    },null,2);
-
-    if(
-        window.KemsAndroid &&
-        typeof KemsAndroid.saveJson === 'function'
-    ) {
-
+    if(window.KemsAndroid &&
+       typeof KemsAndroid.saveJson === 'function') {
         KemsAndroid.saveJson(json);
-
         return;
     }
 
-    let blob = new Blob(
-        [json],
-        {type:'application/json'}
-    );
-
-    let a = document.createElement('a');
-
-    let url = URL.createObjectURL(blob);
+    const blob = new Blob([json],{type:'application/json'});
+    const a = document.createElement('a');
+    const url = URL.createObjectURL(blob);
 
     a.href = url;
-
     a.download = 'KEMS_sauvegarde.json';
-
     a.click();
 
-    setTimeout(
-        ()=>URL.revokeObjectURL(url),
-        1000
-    );
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 
 /* IMPORT JSON */
 
 function importData(e) {
-
-    const file =
-        e.target.files && e.target.files[0];
-
+    const file = e.target.files && e.target.files[0];
     if(!file) return;
 
-    $('jsonFileName').textContent =
-        'Fichier sélectionné : ' + file.name;
+    $('jsonFileName').textContent = 'Fichier sélectionné : ' + file.name;
 
     if(!file.name.toLowerCase().endsWith('.json')) {
-
         alert('Veuillez sélectionner un fichier JSON.');
-
         return;
     }
 
     const reader = new FileReader();
 
     reader.onload = ()=>{
-
         try {
-
             const data = JSON.parse(reader.result);
 
             if(!data || !Array.isArray(data.invoices)) {
-
                 throw new Error('Format JSON invalide.');
             }
 
             if(!confirm(
                 'Importer cette sauvegarde ? Les documents et paramètres actuels seront remplacés.'
-            )) {
+            )) return;
 
-                return;
-            }
-
-            cfg = data.cfg &&
-                typeof data.cfg === 'object'
-                    ? data.cfg
-                    : {};
+            cfg = data.cfg && typeof data.cfg === 'object'
+                ? data.cfg
+                : {};
 
             invoices = data.invoices.map(f=>({
-
                 ...f,
-
-                type: f.type === 'DEVIS'
-                    ? 'DEVIS'
-                    : 'FACTURE'
-
+                type: f.type === 'DEVIS' ? 'DEVIS' : 'FACTURE'
             }));
 
             saveConfig();
-
             saveInvoices();
-
             fillSettings();
-
             renderHistory();
-
             updateNumber();
 
-            alert(
-                'Sauvegarde importée avec succès : ' +
-                file.name
-            );
+            alert('Sauvegarde importée avec succès : ' + file.name);
 
         } catch(error) {
-
-            alert(
-                'Fichier JSON invalide ou impossible à lire.'
-            );
+            alert('Fichier JSON invalide ou impossible à lire.');
         }
     };
 
     reader.onerror = ()=>{
-
         alert('Impossible de lire le fichier.');
     };
 
     reader.readAsText(file);
 }
 
-/* SYNCHRONISATION KEMS ANDROID */
-
-let syncBusy = false;
+/* SYNCHRONISATION ANDROID */
 
 function syncMessage(message,success=true) {
-
     const status = $('syncStatus');
-
     status.textContent = 'État : ' + message;
-
-    status.style.color =
-        success ? '#65e6a5' : '#ff7777';
+    status.style.color = success ? '#65e6a5' : '#ff7777';
 }
 
 function saveSyncToken() {
-
     const token = $('syncToken').value.trim();
 
     if(!token) {
-
         if($('syncToken').dataset.saved === 'true') {
-
-            syncMessage(
-                'Clé de connexion déjà enregistrée.'
-            );
-
+            syncMessage('Clé de connexion déjà enregistrée.');
             return;
         }
 
-        alert(
-            'Veuillez saisir la clé secrète du serveur.'
-        );
-
+        alert('Veuillez saisir la clé secrète du serveur.');
         return;
     }
 
-    if(
-        !window.KemsAndroid ||
-        typeof KemsAndroid.saveSyncToken !== 'function'
-    ) {
-
-        syncMessage(
-            'Fonction Android indisponible.',
-            false
-        );
-
+    if(!window.KemsAndroid ||
+       typeof KemsAndroid.saveSyncToken !== 'function') {
+        syncMessage('Fonction Android indisponible.',false);
         return;
     }
 
@@ -1923,303 +1163,177 @@ function saveSyncToken() {
 }
 
 function checkSync() {
-
-    if(!window.KemsAndroid) {
-
-        syncMessage(
-            'Interface Android indisponible.',
-            false
-        );
-
+    if(!window.KemsAndroid ||
+       typeof KemsAndroid.checkSyncServer !== 'function') {
+        syncMessage('Interface Android indisponible.',false);
         return;
     }
 
     syncMessage('Vérification en cours...');
-
     KemsAndroid.checkSyncServer();
 }
 
 function uploadSync() {
-
     if(syncBusy) return;
 
     if(!confirm(
         'ATTENTION : les données présentes sur le serveur seront remplacées par celles de ce téléphone. Continuer ?'
     )) return;
 
-    if(!window.KemsAndroid) {
-
-        syncMessage(
-            'Interface Android indisponible.',
-            false
-        );
-
+    if(!window.KemsAndroid ||
+       typeof KemsAndroid.uploadSyncData !== 'function') {
+        syncMessage('Interface Android indisponible.',false);
         return;
     }
 
     syncBusy = true;
-
     syncMessage('Envoi des données en cours...');
 
-    KemsAndroid.uploadSyncData(
-        JSON.stringify({
-            cfg:cfg,
-            invoices:invoices
-        })
-    );
+    KemsAndroid.uploadSyncData(JSON.stringify({
+        cfg:cfg,
+        invoices:invoices
+    }));
 }
 
 function downloadSync() {
-
     if(syncBusy) return;
 
     if(!confirm(
         'ATTENTION : les documents et paramètres de ce téléphone seront remplacés par ceux du serveur. Une sauvegarde locale sera créée. Continuer ?'
     )) return;
 
-    if(!window.KemsAndroid) {
-
-        syncMessage(
-            'Interface Android indisponible.',
-            false
-        );
-
+    if(!window.KemsAndroid ||
+       typeof KemsAndroid.downloadSyncData !== 'function') {
+        syncMessage('Interface Android indisponible.',false);
         return;
     }
 
     syncBusy = true;
-
     syncMessage('Téléchargement en cours...');
-
     KemsAndroid.downloadSyncData();
 }
 
 function syncNow() {
-
     const choice = confirm(
-
         'Choisir la synchronisation :\n\n' +
-
         'OK : envoyer les données du téléphone vers le serveur.\n\n' +
-
         'ANNULER : télécharger les données du serveur vers le téléphone.'
-
     );
 
     if(choice) uploadSync();
-
     else downloadSync();
 }
 
-/* =========================================
-   REPONSES ANDROID
-========================================= */
+/* REPONSES ANDROID */
 
-window.onKemsSyncResult = function(
-    action,
-    success,
-    message
-) {
-
-    /* CATALOGUE BASE PRIX */
+window.onKemsSyncResult = function(action,success,message) {
 
     if(action === 'prices') {
-
         priceCatalogBusy = false;
 
         if(success) {
-
             receivePriceCatalog(message);
-
         } else {
-
             setPriceStatus(
-                'Impossible de récupérer la Base Prix : ' +
-                message,
+                'Impossible de récupérer la Base Prix : ' + message,
                 'error'
             );
 
-            $('catalogCount').textContent =
-                'Catalogue indisponible';
+            $('catalogCount').textContent = 'Catalogue indisponible';
         }
-
         return;
     }
-
-    /* TEST SERVEUR */
 
     if(action === 'health') {
-
         if(success) {
-
-            syncMessage(
-                'Serveur connecté : ' + message
-            );
-
+            syncMessage('Serveur connecté : ' + message);
         } else {
-
-            syncMessage(
-                'Connexion impossible : ' + message,
-                false
-            );
+            syncMessage('Connexion impossible : ' + message,false);
         }
-
         return;
     }
-
-    /* ENREGISTREMENT CLE */
 
     if(action === 'saveToken') {
-
         if(success) {
-
             $('syncToken').value = '';
-
-            $('syncToken').placeholder =
-                '✓ Clé enregistrée';
-
+            $('syncToken').placeholder = '✓ Clé enregistrée';
             $('syncToken').dataset.saved = 'true';
 
-            syncMessage(
-                'Clé secrète enregistrée avec succès.'
-            );
-
+            syncMessage('Clé secrète enregistrée avec succès.');
             alert('Clé de connexion enregistrée.');
 
-            // Récupération du catalogue après enregistrement
-
             refreshPriceCatalog();
-
         } else {
-
             $('syncToken').dataset.saved = 'false';
-
             syncMessage(message,false);
-
             alert(message);
         }
-
         return;
     }
 
-    /* ENVOI */
-
     if(action === 'upload') {
-
         syncBusy = false;
 
         if(success) {
-
-            syncMessage(
-                'Envoi terminé avec succès.'
-            );
-
-            alert(
-                'Les données ont été envoyées au serveur.'
-            );
-
+            syncMessage('Envoi terminé avec succès.');
+            alert('Les données ont été envoyées au serveur.');
         } else {
-
-            syncMessage(
-                'Erreur pendant l’envoi : ' + message,
-                false
-            );
-
+            syncMessage('Erreur pendant l’envoi : ' + message,false);
             alert('Erreur : ' + message);
         }
-
         return;
     }
 
-    /* TELECHARGEMENT */
-
     if(action === 'download') {
-
         syncBusy = false;
 
         if(!success) {
-
-            syncMessage(
-                'Erreur de téléchargement : ' + message,
-                false
-            );
-
+            syncMessage('Erreur de téléchargement : ' + message,false);
             alert('Erreur : ' + message);
-
             return;
         }
 
         try {
-
             const data = JSON.parse(message);
 
-            if(
-                !data ||
-                typeof data.cfg !== 'object' ||
-                data.cfg === null ||
-                !Array.isArray(data.invoices)
-            ) {
-
-                throw new Error(
-                    'Données du serveur invalides.'
-                );
+            if(!data ||
+               typeof data.cfg !== 'object' ||
+               data.cfg === null ||
+               !Array.isArray(data.invoices)) {
+                throw new Error('Données du serveur invalides.');
             }
 
-            localStorage.setItem(
-                'kems_last_sync_backup',
+            localStorage.setItem('kems_last_sync_backup',
                 JSON.stringify({
-
                     cfg:cfg,
-
                     invoices:invoices,
-
                     backupDate:new Date().toISOString()
-
                 })
             );
 
             cfg = data.cfg;
 
             invoices = data.invoices.map(f=>({
-
                 ...f,
-
-                type: f.type === 'DEVIS'
-                    ? 'DEVIS'
-                    : 'FACTURE'
-
+                type: f.type === 'DEVIS' ? 'DEVIS' : 'FACTURE'
             }));
 
             saveConfig();
-
             saveInvoices();
-
             fillSettings();
-
             renderHistory();
-
             updateNumber();
 
-            syncMessage(
-                'Téléchargement terminé avec succès.'
-            );
+            syncMessage('Téléchargement terminé avec succès.');
 
             alert(
                 'Synchronisation terminée.\n' +
-                invoices.length +
-                ' document(s) récupéré(s).'
+                invoices.length + ' document(s) récupéré(s).'
             );
 
         } catch(error) {
-
-            syncMessage(
-                error.message,
-                false
-            );
-
-            alert(
-                'Erreur : ' + error.message
-            );
+            syncMessage(error.message,false);
+            alert('Erreur : ' + error.message);
         }
     }
 };
@@ -2227,33 +1341,17 @@ window.onKemsSyncResult = function(
 /* NAVIGATION */
 
 function showPage(id) {
-
     document.querySelectorAll('.pane').forEach(p=>{
-
-        p.classList.toggle(
-            'hidden',
-            p.id !== id
-        );
-
+        p.classList.toggle('hidden',p.id !== id);
     });
 
     document.querySelectorAll('nav button').forEach(b=>{
-
-        b.classList.toggle(
-            'active',
-            b.dataset.page === id
-        );
-
+        b.classList.toggle('active',b.dataset.page === id);
     });
 }
 
 document.querySelectorAll('nav button').forEach(b=>{
-
-    b.addEventListener(
-        'click',
-        ()=>showPage(b.dataset.page)
-    );
-
+    b.addEventListener('click',()=>showPage(b.dataset.page));
 });
 
 /* INITIALISATION */
@@ -2262,44 +1360,29 @@ fillSettings();
 
 $('date').value = today();
 
-let due = new Date();
-
-due.setDate(
-    due.getDate() + Number(cfg.dueDays ?? 30)
-);
+const due = new Date();
+due.setDate(due.getDate() + Number(cfg.dueDays ?? 30));
 
 $('dueDate').value = new Date(
-
-    due.getTime() -
-    due.getTimezoneOffset()*60000
-
+    due.getTime() - due.getTimezoneOffset()*60000
 ).toISOString().slice(0,10);
 
 updateNumber();
-
 updateDocumentType();
-
 addLine();
-
 renderHistory();
 
 /* CHARGEMENT AUTOMATIQUE BASE PRIX */
 
-if(
-    window.KemsAndroid &&
-    typeof KemsAndroid.getPriceCatalog === 'function'
-) {
-
+if(window.KemsAndroid &&
+   typeof KemsAndroid.getPriceCatalog === 'function') {
     refreshPriceCatalog();
-
 } else {
-
     setPriceStatus(
         'Ouvrez KEMS Facturation sur Android pour accéder au catalogue.',
         'error'
     );
 }
-
 </script>
 
 </body>
