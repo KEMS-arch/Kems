@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
+import android.net.wifi.DhcpInfo;
 import android.os.Bundle;
 import android.print.PrintAttributes;
 import android.print.PrintManager;
@@ -34,8 +36,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyStore;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -48,12 +56,13 @@ public class MainActivity extends Activity {
 
     private static final String APP_PIN = "1707";
 
-    private static final String SERVER_URL =
-            "http://192.168.12.32:3000";
+    private static final String DEFAULT_SERVER_URL =
+            "http://192.168.8.100:3000";
 
-    private static final String KEY_ALIAS = "KEMS_SYNC_KEY";
     private static final String PREFS = "kems_secure";
     private static final String TOKEN_KEY = "server_token";
+    private static final String SERVER_KEY = "server_url";
+    private static final String KEY_ALIAS = "KEMS_SYNC_KEY";
 
     private static final int REQUEST_SAVE_JSON = 1001;
     private static final int REQUEST_IMPORT_JSON = 1002;
@@ -63,6 +72,8 @@ public class MainActivity extends Activity {
 
     private final ExecutorService executor =
             Executors.newSingleThreadExecutor();
+
+    private volatile boolean discoveryRunning = false;
 
     @Override
     public void onCreate(Bundle state) {
@@ -196,12 +207,9 @@ public class MainActivity extends Activity {
                             intent,
                             REQUEST_IMPORT_JSON
                     );
-
                 } catch (Exception e) {
-
                     fileUploadCallback = null;
                     callback.onReceiveValue(null);
-
                     return false;
                 }
 
@@ -216,9 +224,48 @@ public class MainActivity extends Activity {
 
         setContentView(webView);
 
-        webView.loadUrl(
-                "file:///android_asset/index.html"
-        );
+        webView.loadUrl("file:///android_asset/index.html");
+    }
+
+    // ADRESSE DU SERVEUR
+
+    private String getServerUrl() {
+        return getSharedPreferences(PREFS, MODE_PRIVATE)
+                .getString(SERVER_KEY, DEFAULT_SERVER_URL);
+    }
+
+    private void saveServerUrl(String value) throws Exception {
+
+        if (value == null || value.trim().isEmpty()) {
+            throw new Exception("Adresse serveur vide.");
+        }
+
+        String address = value.trim();
+
+        URL url = new URL(address);
+
+        if (!url.getProtocol().equals("http") &&
+                !url.getProtocol().equals("https")) {
+            throw new Exception("Utilisez une adresse HTTP ou HTTPS.");
+        }
+
+        if (url.getHost() == null || url.getHost().isEmpty()) {
+            throw new Exception("Nom du serveur invalide.");
+        }
+
+        if (url.getPath() != null &&
+                !url.getPath().isEmpty() &&
+                !url.getPath().equals("/")) {
+            throw new Exception("Saisissez uniquement l'adresse du serveur, sans chemin.");
+        }
+
+        String normalized =
+                url.getProtocol() + "://" + url.getAuthority();
+
+        getSharedPreferences(PREFS, MODE_PRIVATE)
+                .edit()
+                .putString(SERVER_KEY, normalized)
+                .apply();
     }
 
     // SECURITE DE LA CLE
@@ -274,17 +321,8 @@ public class MainActivity extends Activity {
 
         byte[] combined = new byte[iv.length + encrypted.length];
 
-        System.arraycopy(
-                iv, 0,
-                combined, 0,
-                iv.length
-        );
-
-        System.arraycopy(
-                encrypted, 0,
-                combined, iv.length,
-                encrypted.length
-        );
+        System.arraycopy(iv, 0, combined, 0, iv.length);
+        System.arraycopy(encrypted, 0, combined, iv.length, encrypted.length);
 
         String encoded = Base64.encodeToString(
                 combined,
@@ -305,9 +343,7 @@ public class MainActivity extends Activity {
         ).getString(TOKEN_KEY, null);
 
         if (encoded == null || encoded.isEmpty()) {
-            throw new Exception(
-                    "Clé du serveur non configurée."
-            );
+            throw new Exception("Clé du serveur non configurée.");
         }
 
         byte[] combined = Base64.decode(
@@ -316,27 +352,14 @@ public class MainActivity extends Activity {
         );
 
         if (combined.length <= 12) {
-            throw new Exception(
-                    "Clé enregistrée invalide."
-            );
+            throw new Exception("Clé enregistrée invalide.");
         }
 
         byte[] iv = new byte[12];
+        byte[] encrypted = new byte[combined.length - 12];
 
-        byte[] encrypted =
-                new byte[combined.length - 12];
-
-        System.arraycopy(
-                combined, 0,
-                iv, 0,
-                12
-        );
-
-        System.arraycopy(
-                combined, 12,
-                encrypted, 0,
-                encrypted.length
-        );
+        System.arraycopy(combined, 0, iv, 0, 12);
+        System.arraycopy(combined, 12, encrypted, 0, encrypted.length);
 
         Cipher cipher =
                 Cipher.getInstance("AES/GCM/NoPadding");
@@ -366,15 +389,10 @@ public class MainActivity extends Activity {
 
         try {
 
-            URL url = new URL(
-                    SERVER_URL + endpoint
-            );
+            URL url = new URL(getServerUrl() + endpoint);
 
-            connection =
-                    (HttpURLConnection) url.openConnection();
-
+            connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(method);
-
             connection.setConnectTimeout(15000);
             connection.setReadTimeout(20000);
 
@@ -384,7 +402,6 @@ public class MainActivity extends Activity {
             );
 
             if (authenticated) {
-
                 connection.setRequestProperty(
                         "x-kems-token",
                         getDecryptedToken()
@@ -392,15 +409,10 @@ public class MainActivity extends Activity {
             }
 
             if (body != null) {
-
                 connection.setDoOutput(true);
 
-                try (OutputStream output =
-                             connection.getOutputStream()) {
-
-                    output.write(
-                            body.getBytes(StandardCharsets.UTF_8)
-                    );
+                try (OutputStream output = connection.getOutputStream()) {
+                    output.write(body.getBytes(StandardCharsets.UTF_8));
                 }
             }
 
@@ -411,11 +423,9 @@ public class MainActivity extends Activity {
                             ? connection.getInputStream()
                             : connection.getErrorStream();
 
-            StringBuilder response =
-                    new StringBuilder();
+            StringBuilder response = new StringBuilder();
 
             if (stream != null) {
-
                 try (BufferedReader reader =
                              new BufferedReader(
                                      new InputStreamReader(
@@ -425,7 +435,6 @@ public class MainActivity extends Activity {
                              )) {
 
                     String line;
-
                     while ((line = reader.readLine()) != null) {
                         response.append(line);
                     }
@@ -433,21 +442,224 @@ public class MainActivity extends Activity {
             }
 
             if (status < 200 || status >= 300) {
-
                 throw new Exception(
-                        "Erreur serveur HTTP " +
-                        status + " : " + response
+                        "Erreur serveur HTTP " + status + " : " + response
                 );
             }
 
             return response.toString();
 
         } finally {
-
             if (connection != null) {
                 connection.disconnect();
             }
         }
+    }
+
+    // TEST D'UNE ADRESSE
+
+    private boolean isKemsServer(String address) {
+
+        HttpURLConnection connection = null;
+
+        try {
+            URL url = new URL(address + "/api/health");
+
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setConnectTimeout(700);
+            connection.setReadTimeout(900);
+
+            int status = connection.getResponseCode();
+
+            if (status < 200 || status >= 300) return false;
+
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(
+                            connection.getInputStream(),
+                            StandardCharsets.UTF_8
+                    )
+            )) {
+
+                StringBuilder response = new StringBuilder();
+                String line;
+
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+
+                JSONObject json = new JSONObject(response.toString());
+
+                return "online".equalsIgnoreCase(
+                        json.optString("status")
+                );
+            }
+
+        } catch (Exception e) {
+            return false;
+        } finally {
+            if (connection != null) connection.disconnect();
+        }
+    }
+
+    // CONVERSION IP WIFI
+
+    private String intToIp(int value) {
+        return (value & 0xFF) + "." +
+                ((value >> 8) & 0xFF) + "." +
+                ((value >> 16) & 0xFF) + "." +
+                ((value >> 24) & 0xFF);
+    }
+
+    // RECHERCHE AUTOMATIQUE SUR LE WIFI
+
+    private List<String> getLocalAddresses() throws Exception {
+
+        WifiManager wifiManager =
+                (WifiManager) getApplicationContext()
+                        .getSystemService(Context.WIFI_SERVICE);
+
+        if (wifiManager == null) {
+            throw new Exception("Service Wi-Fi indisponible.");
+        }
+
+        DhcpInfo dhcp = wifiManager.getDhcpInfo();
+
+        if (dhcp == null || dhcp.ipAddress == 0) {
+            throw new Exception(
+                    "Connectez le téléphone au Wi-Fi avant la recherche."
+            );
+        }
+
+        int ip = dhcp.ipAddress;
+        int mask = dhcp.netmask;
+
+        if (mask == 0) {
+            mask = 0x00FFFFFF;
+        }
+
+        int network = ip & mask;
+        int broadcast = network | ~mask;
+
+        long hostCount = ((long) broadcast - (long) network) - 1;
+
+        // Limite la recherche aux petits réseaux.
+        // Pour un réseau trop grand, recherche dans le /24 local.
+        if (hostCount < 1 || hostCount > 512) {
+            network = ip & 0x00FFFFFF;
+            broadcast = network | 0xFF000000;
+        }
+
+        List<String> addresses = new ArrayList<>();
+
+        for (long current = (long) network + 1;
+             current < (long) broadcast;
+             current++) {
+
+            int candidate = (int) current;
+
+            if (candidate == ip) continue;
+
+            addresses.add(
+                    "http://" + intToIp(candidate) + ":3000"
+            );
+        }
+
+        return addresses;
+    }
+
+    private void discoverKemsServer() {
+
+        if (discoveryRunning) return;
+
+        discoveryRunning = true;
+
+        executor.execute(() -> {
+
+            try {
+
+                // Vérifie d'abord l'adresse déjà enregistrée.
+                String saved = getServerUrl();
+
+                if (isKemsServer(saved)) {
+                    sendResult(
+                            "discovery",
+                            true,
+                            new JSONObject()
+                                    .put("url", saved)
+                                    .toString()
+                    );
+                    return;
+                }
+
+                List<String> addresses = getLocalAddresses();
+
+                ExecutorService scanPool =
+                        Executors.newFixedThreadPool(32);
+
+                CompletionService<String> completion =
+                        new ExecutorCompletionService<>(scanPool);
+
+                int submitted = 0;
+
+                try {
+
+                    for (String address : addresses) {
+                        completion.submit(() ->
+                                isKemsServer(address) ? address : null
+                        );
+                        submitted++;
+                    }
+
+                    for (int i = 0; i < submitted; i++) {
+
+                        Future<String> future =
+                                completion.poll(12, TimeUnit.SECONDS);
+
+                        if (future == null) break;
+
+                        String found = future.get();
+
+                        if (found != null) {
+
+                            saveServerUrl(found);
+
+                            sendResult(
+                                    "discovery",
+                                    true,
+                                    new JSONObject()
+                                            .put("url", found)
+                                            .toString()
+                            );
+
+                            return;
+                        }
+                    }
+
+                } finally {
+                    scanPool.shutdownNow();
+                }
+
+                sendResult(
+                        "discovery",
+                        false,
+                        "Aucun serveur KEMS trouvé. Vérifiez le Wi-Fi, le port 3000 et le pare-feu Windows."
+                );
+
+            } catch (Exception e) {
+
+                sendResult(
+                        "discovery",
+                        false,
+                        e.getMessage() == null
+                                ? "Erreur de recherche du serveur."
+                                : e.getMessage()
+                );
+
+            } finally {
+                discoveryRunning = false;
+            }
+        });
     }
 
     // RETOUR VERS JAVASCRIPT
@@ -470,10 +682,7 @@ public class MainActivity extends Activity {
                     JSONObject.quote(message) +
                     ");}";
 
-            webView.evaluateJavascript(
-                    script,
-                    null
-            );
+            webView.evaluateJavascript(script, null);
         });
     }
 
@@ -486,11 +695,7 @@ public class MainActivity extends Activity {
             Intent data
     ) {
 
-        super.onActivityResult(
-                requestCode,
-                resultCode,
-                data
-        );
+        super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_IMPORT_JSON) {
 
@@ -502,13 +707,10 @@ public class MainActivity extends Activity {
                         data != null &&
                         data.getData() != null) {
 
-                    results = new Uri[]{
-                            data.getData()
-                    };
+                    results = new Uri[]{data.getData()};
                 }
 
                 fileUploadCallback.onReceiveValue(results);
-
                 fileUploadCallback = null;
             }
         }
@@ -536,18 +738,14 @@ public class MainActivity extends Activity {
                                 );
 
                         output.write(
-                                pendingJson.getBytes(
-                                        StandardCharsets.UTF_8
-                                )
+                                pendingJson.getBytes(StandardCharsets.UTF_8)
                         );
 
                         output.close();
                         pfd.close();
 
                         new AlertDialog.Builder(this)
-                                .setMessage(
-                                        "Sauvegarde JSON enregistrée."
-                                )
+                                .setMessage("Sauvegarde JSON enregistrée.")
                                 .setPositiveButton("OK", null)
                                 .show();
                     }
@@ -555,9 +753,7 @@ public class MainActivity extends Activity {
                 } catch (Exception e) {
 
                     new AlertDialog.Builder(this)
-                            .setMessage(
-                                    "Erreur pendant la sauvegarde JSON."
-                            )
+                            .setMessage("Erreur pendant la sauvegarde JSON.")
                             .setPositiveButton("OK", null)
                             .show();
                 }
@@ -569,7 +765,6 @@ public class MainActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-
         if (webView != null && webView.canGoBack()) {
             webView.goBack();
         } else {
@@ -587,6 +782,28 @@ public class MainActivity extends Activity {
             context = c;
         }
 
+        @JavascriptInterface
+        public String getServerUrl() {
+            return MainActivity.this.getServerUrl();
+        }
+
+        @JavascriptInterface
+        public void setServerUrl(String url) {
+            executor.execute(() -> {
+                try {
+                    saveServerUrl(url);
+                    sendResult("serverUrl", true, getServerUrl());
+                } catch (Exception e) {
+                    sendResult("serverUrl", false, e.getMessage());
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void discoverServer() {
+            discoverKemsServer();
+        }
+
         // SAUVEGARDE JSON
 
         @JavascriptInterface
@@ -596,14 +813,8 @@ public class MainActivity extends Activity {
 
                 pendingJson = json;
 
-                Intent intent = new Intent(
-                        Intent.ACTION_CREATE_DOCUMENT
-                );
-
-                intent.addCategory(
-                        Intent.CATEGORY_OPENABLE
-                );
-
+                Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
                 intent.setType("application/json");
 
                 intent.putExtra(
@@ -611,10 +822,7 @@ public class MainActivity extends Activity {
                         "KEMS_Facturation_Sauvegarde.json"
                 );
 
-                startActivityForResult(
-                        intent,
-                        REQUEST_SAVE_JSON
-                );
+                startActivityForResult(intent, REQUEST_SAVE_JSON);
             });
         }
 
@@ -625,20 +833,14 @@ public class MainActivity extends Activity {
 
             runOnUiThread(() -> {
 
-                WebView printView =
-                        new WebView(context);
+                WebView printView = new WebView(context);
 
-                printView.getSettings()
-                        .setJavaScriptEnabled(false);
+                printView.getSettings().setJavaScriptEnabled(false);
 
-                printView.setWebViewClient(
-                        new WebViewClient() {
+                printView.setWebViewClient(new WebViewClient() {
 
                     @Override
-                    public void onPageFinished(
-                            WebView view,
-                            String url
-                    ) {
+                    public void onPageFinished(WebView view, String url) {
 
                         PrintManager manager =
                                 (PrintManager) getSystemService(
@@ -649,9 +851,7 @@ public class MainActivity extends Activity {
 
                         manager.print(
                                 jobName,
-                                view.createPrintDocumentAdapter(
-                                        jobName
-                                ),
+                                view.createPrintDocumentAdapter(jobName),
                                 new PrintAttributes.Builder()
                                         .setMediaSize(
                                                 PrintAttributes.MediaSize.ISO_A4
@@ -682,7 +882,7 @@ public class MainActivity extends Activity {
             });
         }
 
-        // ENREGISTRER LA CLE DU SERVEUR
+        // ENREGISTRER LA CLE
 
         @JavascriptInterface
         public void saveSyncToken(String token) {
@@ -691,17 +891,11 @@ public class MainActivity extends Activity {
 
                 try {
 
-                    if (token == null ||
-                            token.trim().isEmpty()) {
-
-                        throw new Exception(
-                                "Veuillez saisir la clé."
-                        );
+                    if (token == null || token.trim().isEmpty()) {
+                        throw new Exception("Veuillez saisir la clé.");
                     }
 
-                    saveEncryptedToken(
-                            token.trim()
-                    );
+                    saveEncryptedToken(token.trim());
 
                     sendResult(
                             "saveToken",
@@ -720,7 +914,7 @@ public class MainActivity extends Activity {
             });
         }
 
-        // TEST CONNEXION SERVEUR
+        // TEST CONNEXION
 
         @JavascriptInterface
         public void checkSyncServer() {
@@ -736,24 +930,16 @@ public class MainActivity extends Activity {
                             false
                     );
 
-                    sendResult(
-                            "health",
-                            true,
-                            response
-                    );
+                    sendResult("health", true, response);
 
                 } catch (Exception e) {
 
-                    sendResult(
-                            "health",
-                            false,
-                            e.getMessage()
-                    );
+                    sendResult("health", false, e.getMessage());
                 }
             });
         }
 
-        // NOUVEAU : RECUPERER LA BASE PRIX
+        // BASE PRIX
 
         @JavascriptInterface
         public void getPriceCatalog() {
@@ -769,19 +955,11 @@ public class MainActivity extends Activity {
                             true
                     );
 
-                    sendResult(
-                            "prices",
-                            true,
-                            response
-                    );
+                    sendResult("prices", true, response);
 
                 } catch (Exception e) {
 
-                    sendResult(
-                            "prices",
-                            false,
-                            e.getMessage()
-                    );
+                    sendResult("prices", false, e.getMessage());
                 }
             });
         }
@@ -802,19 +980,11 @@ public class MainActivity extends Activity {
                             true
                     );
 
-                    sendResult(
-                            "download",
-                            true,
-                            response
-                    );
+                    sendResult("download", true, response);
 
                 } catch (Exception e) {
 
-                    sendResult(
-                            "download",
-                            false,
-                            e.getMessage()
-                    );
+                    sendResult("download", false, e.getMessage());
                 }
             });
         }
@@ -828,15 +998,12 @@ public class MainActivity extends Activity {
 
                 try {
 
-                    JSONObject data =
-                            new JSONObject(json);
+                    JSONObject data = new JSONObject(json);
 
                     if (!(data.opt("cfg") instanceof JSONObject) ||
                             !(data.opt("invoices") instanceof JSONArray)) {
 
-                        throw new Exception(
-                                "Format des données invalide."
-                        );
+                        throw new Exception("Format des données invalide.");
                     }
 
                     String response = serverRequest(
@@ -846,19 +1013,11 @@ public class MainActivity extends Activity {
                             true
                     );
 
-                    sendResult(
-                            "upload",
-                            true,
-                            response
-                    );
+                    sendResult("upload", true, response);
 
                 } catch (Exception e) {
 
-                    sendResult(
-                            "upload",
-                            false,
-                            e.getMessage()
-                    );
+                    sendResult("upload", false, e.getMessage());
                 }
             });
         }
