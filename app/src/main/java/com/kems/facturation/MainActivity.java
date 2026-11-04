@@ -7,8 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
-import android.net.wifi.DhcpInfo;
 import android.os.Bundle;
 import android.print.PrintAttributes;
 import android.print.PrintManager;
@@ -608,8 +608,6 @@ public class MainActivity extends Activity {
         long hostCount =
                 broadcastUnsigned - networkUnsigned - 1L;
 
-        // Limitation au réseau /24 si le réseau est trop grand.
-
         if (hostCount < 1 || hostCount > 512) {
 
             network = ip & 0x00FFFFFF;
@@ -656,8 +654,6 @@ public class MainActivity extends Activity {
         executor.execute(() -> {
 
             try {
-
-                // Vérifier d'abord l'adresse enregistrée.
 
                 String saved = getServerUrl();
 
@@ -883,14 +879,10 @@ public class MainActivity extends Activity {
             context = c;
         }
 
-        // OBTENIR L'ADRESSE DU SERVEUR
-
         @JavascriptInterface
         public String getServerUrl() {
             return MainActivity.this.getServerUrl();
         }
-
-        // ENREGISTRER L'ADRESSE DU SERVEUR
 
         @JavascriptInterface
         public void setServerUrl(String url) {
@@ -918,14 +910,10 @@ public class MainActivity extends Activity {
             });
         }
 
-        // RECHERCHE AUTOMATIQUE
-
         @JavascriptInterface
         public void discoverServer() {
             discoverKemsServer();
         }
-
-        // SAUVEGARDE JSON
 
         @JavascriptInterface
         public void saveJson(String json) {
@@ -952,8 +940,6 @@ public class MainActivity extends Activity {
                 );
             });
         }
-
-        // IMPRESSION FACTURE PDF
 
         @JavascriptInterface
         public void printInvoice(String html) {
@@ -1012,8 +998,6 @@ public class MainActivity extends Activity {
             });
         }
 
-        // ENREGISTRER LA CLE SERVEUR
-
         @JavascriptInterface
         public void saveSyncToken(String token) {
 
@@ -1047,8 +1031,6 @@ public class MainActivity extends Activity {
             });
         }
 
-        // TEST CONNEXION SERVEUR
-
         @JavascriptInterface
         public void checkSyncServer() {
 
@@ -1075,8 +1057,6 @@ public class MainActivity extends Activity {
                 }
             });
         }
-
-        // BASE DE PRIX
 
         @JavascriptInterface
         public void getPriceCatalog() {
@@ -1105,8 +1085,6 @@ public class MainActivity extends Activity {
             });
         }
 
-        // TELECHARGER LES DONNEES
-
         @JavascriptInterface
         public void downloadSyncData() {
 
@@ -1133,8 +1111,6 @@ public class MainActivity extends Activity {
                 }
             });
         }
-
-        // ENVOYER LES DONNEES
 
         @JavascriptInterface
         public void uploadSyncData(String json) {
