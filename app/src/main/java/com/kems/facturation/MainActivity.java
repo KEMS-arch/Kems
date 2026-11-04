@@ -23,7 +23,6 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
-
 import android.util.Base64;
 
 import org.json.JSONArray;
@@ -588,7 +587,6 @@ public class MainActivity extends Activity {
         }
 
         int ip = dhcp.ipAddress;
-
         int mask = dhcp.netmask;
 
         if (mask == 0) {
@@ -596,7 +594,6 @@ public class MainActivity extends Activity {
         }
 
         int network = ip & mask;
-
         int broadcast = network | ~mask;
 
         long networkUnsigned =
@@ -611,7 +608,6 @@ public class MainActivity extends Activity {
         if (hostCount < 1 || hostCount > 512) {
 
             network = ip & 0x00FFFFFF;
-
             broadcast = network | 0xFF000000;
 
             networkUnsigned =
@@ -797,7 +793,6 @@ public class MainActivity extends Activity {
                 }
 
                 fileUploadCallback.onReceiveValue(results);
-
                 fileUploadCallback = null;
             }
         }
@@ -829,7 +824,6 @@ public class MainActivity extends Activity {
                         );
 
                         output.close();
-
                         pfd.close();
 
                         new AlertDialog.Builder(this)
@@ -860,11 +854,8 @@ public class MainActivity extends Activity {
     public void onBackPressed() {
 
         if (webView != null && webView.canGoBack()) {
-
             webView.goBack();
-
         } else {
-
             super.onBackPressed();
         }
     }
@@ -904,7 +895,9 @@ public class MainActivity extends Activity {
                     sendResult(
                             "serverUrl",
                             false,
-                            e.getMessage()
+                            e.getMessage() == null
+                                    ? "Adresse serveur invalide."
+                                    : e.getMessage()
                     );
                 }
             });
@@ -914,6 +907,61 @@ public class MainActivity extends Activity {
         public void discoverServer() {
             discoverKemsServer();
         }
+
+        // TEST D'UNE ADRESSE SERVEUR SAISIE
+
+        @JavascriptInterface
+        public void testServerUrl(String url) {
+
+            executor.execute(() -> {
+
+                try {
+
+                    if (url == null || url.trim().isEmpty()) {
+                        throw new Exception("Adresse serveur vide.");
+                    }
+
+                    String address = url.trim();
+
+                    URL parsed = new URL(address);
+
+                    if (!parsed.getProtocol().equals("http") &&
+                            !parsed.getProtocol().equals("https")) {
+                        throw new Exception("Adresse HTTP ou HTTPS requise.");
+                    }
+
+                    if (parsed.getPath() != null &&
+                            !parsed.getPath().isEmpty() &&
+                            !parsed.getPath().equals("/")) {
+                        throw new Exception("Ne saisissez pas de chemin après l'adresse.");
+                    }
+
+                    boolean success = isKemsServer(
+                            parsed.getProtocol() + "://" + parsed.getAuthority()
+                    );
+
+                    sendResult(
+                            "health",
+                            success,
+                            success
+                                    ? "Connexion au serveur KEMS réussie."
+                                    : "Serveur inaccessible. Vérifiez l'adresse, le port 3000 et le pare-feu Windows."
+                    );
+
+                } catch (Exception e) {
+
+                    sendResult(
+                            "health",
+                            false,
+                            e.getMessage() == null
+                                    ? "Erreur de test du serveur."
+                                    : e.getMessage()
+                    );
+                }
+            });
+        }
+
+        // EXPORTATION JSON
 
         @JavascriptInterface
         public void saveJson(String json) {
@@ -926,7 +974,6 @@ public class MainActivity extends Activity {
                         new Intent(Intent.ACTION_CREATE_DOCUMENT);
 
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
-
                 intent.setType("application/json");
 
                 intent.putExtra(
@@ -940,6 +987,8 @@ public class MainActivity extends Activity {
                 );
             });
         }
+
+        // IMPRESSION PDF A4
 
         @JavascriptInterface
         public void printInvoice(String html) {
@@ -998,6 +1047,8 @@ public class MainActivity extends Activity {
             });
         }
 
+        // ENREGISTREMENT SECURISE DE LA CLE
+
         @JavascriptInterface
         public void saveSyncToken(String token) {
 
@@ -1006,10 +1057,7 @@ public class MainActivity extends Activity {
                 try {
 
                     if (token == null || token.trim().isEmpty()) {
-
-                        throw new Exception(
-                                "Veuillez saisir la clé."
-                        );
+                        throw new Exception("Veuillez saisir la clé.");
                     }
 
                     saveEncryptedToken(token.trim());
@@ -1025,11 +1073,15 @@ public class MainActivity extends Activity {
                     sendResult(
                             "saveToken",
                             false,
-                            e.getMessage()
+                            e.getMessage() == null
+                                    ? "Erreur d'enregistrement de la clé."
+                                    : e.getMessage()
                     );
                 }
             });
         }
+
+        // VERIFICATION DU SERVEUR ENREGISTRE
 
         @JavascriptInterface
         public void checkSyncServer() {
@@ -1052,11 +1104,15 @@ public class MainActivity extends Activity {
                     sendResult(
                             "health",
                             false,
-                            e.getMessage()
+                            e.getMessage() == null
+                                    ? "Connexion impossible."
+                                    : e.getMessage()
                     );
                 }
             });
         }
+
+        // CATALOGUE DES PRIX
 
         @JavascriptInterface
         public void getPriceCatalog() {
@@ -1079,11 +1135,15 @@ public class MainActivity extends Activity {
                     sendResult(
                             "prices",
                             false,
-                            e.getMessage()
+                            e.getMessage() == null
+                                    ? "Impossible de récupérer les prix."
+                                    : e.getMessage()
                     );
                 }
             });
         }
+
+        // TELECHARGEMENT DES DONNEES
 
         @JavascriptInterface
         public void downloadSyncData() {
@@ -1106,11 +1166,15 @@ public class MainActivity extends Activity {
                     sendResult(
                             "download",
                             false,
-                            e.getMessage()
+                            e.getMessage() == null
+                                    ? "Erreur de téléchargement."
+                                    : e.getMessage()
                     );
                 }
             });
         }
+
+        // ENVOI DES DONNEES AU SERVEUR
 
         @JavascriptInterface
         public void uploadSyncData(String json) {
@@ -1143,10 +1207,32 @@ public class MainActivity extends Activity {
                     sendResult(
                             "upload",
                             false,
-                            e.getMessage()
+                            e.getMessage() == null
+                                    ? "Erreur d'envoi des données."
+                                    : e.getMessage()
                     );
                 }
             });
         }
+    }
+
+    // FERMETURE PROPRE
+
+    @Override
+    protected void onDestroy() {
+
+        if (fileUploadCallback != null) {
+            fileUploadCallback.onReceiveValue(null);
+            fileUploadCallback = null;
+        }
+
+        if (webView != null) {
+            webView.destroy();
+            webView = null;
+        }
+
+        executor.shutdownNow();
+
+        super.onDestroy();
     }
 }
