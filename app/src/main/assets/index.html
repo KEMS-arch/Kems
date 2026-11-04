@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="fr">
 <head>
@@ -77,6 +76,7 @@ textarea{min-height:65px}
 <section id="invoice" class="pane">
 <div class="card">
 <h2>Informations du document</h2>
+
 <div class="document-type">
 <label for="documentType">Type de document</label>
 <select id="documentType" onchange="updateDocumentType()">
@@ -93,6 +93,7 @@ textarea{min-height:65px}
 
 <label>Nom du client</label>
 <input id="client" placeholder="Nom ou entreprise">
+
 <label>Adresse du client</label>
 <textarea id="clientAddress" placeholder="Adresse, téléphone..."></textarea>
 
@@ -100,9 +101,13 @@ textarea{min-height:65px}
 <div>
 <label>Mode de paiement</label>
 <select id="payment">
-<option>Échéance</option><option>Espèces</option>
-<option>Virement bancaire</option><option>Chèque</option>
-<option>Mobile Money</option><option>Carte bancaire</option><option>Autre</option>
+<option>Échéance</option>
+<option>Espèces</option>
+<option>Virement bancaire</option>
+<option>Chèque</option>
+<option>Mobile Money</option>
+<option>Carte bancaire</option>
+<option>Autre</option>
 </select>
 </div>
 <div><label>Date d'échéance</label><input id="dueDate" type="date"></div>
@@ -111,18 +116,26 @@ textarea{min-height:65px}
 
 <div class="card">
 <h2>Articles / prestations</h2>
+
 <div class="catalog-box">
-<div class="catalog-head"><b>Base Prix</b><span id="catalogCount" class="muted">Catalogue non chargé</span></div>
+<div class="catalog-head">
+<b>Base Prix</b>
+<span id="catalogCount" class="muted">Catalogue non chargé</span>
+</div>
 <p id="priceStatus" class="muted">Importez base_prix.json dans Paramètres pour utiliser le catalogue hors ligne.</p>
 <button type="button" class="full" onclick="refreshPriceCatalog()">Actualiser depuis le serveur</button>
 <datalist id="priceCatalogOptions"></datalist>
 </div>
 
 <div id="lines"></div>
+
 <button onclick="addLine()">＋ Ajouter un article</button>
+
 <div class="total">Total : <span id="total">0 Ar</span></div>
+
 <label>Notes / conditions</label>
 <textarea id="notes"></textarea>
+
 <button class="primary full" id="saveButton" onclick="saveInvoice()">Enregistrer la facture</button>
 <button class="full" onclick="makePdf()">Générer / imprimer le PDF</button>
 </div>
@@ -140,71 +153,112 @@ textarea{min-height:65px}
 <section id="settings" class="pane hidden">
 <div class="card">
 <h2>Paramètres de l'entreprise</h2>
-<label>Nom de l'entreprise</label><input id="company">
-<label>Adresse</label><textarea id="companyAddress"></textarea>
+
+<label>Nom de l'entreprise</label>
+<input id="company">
+
+<label>Adresse</label>
+<textarea id="companyAddress"></textarea>
+
 <div class="grid">
 <div><label>Téléphone</label><input id="phone" type="tel"></div>
 <div><label>Email</label><input id="email" type="email"></div>
 </div>
-<label>NIF / STAT / RCS</label><input id="legal">
+
+<label>NIF / STAT / RCS</label>
+<input id="legal">
+
 <label>Devise</label>
 <select id="currency">
-<option value="Ar">Ariary (Ar)</option><option value="€">Euro (€)</option><option value="$">Dollar ($)</option>
+<option value="Ar">Ariary (Ar)</option>
+<option value="€">Euro (€)</option>
+<option value="$">Dollar ($)</option>
 </select>
 
 <h2 style="margin-top:20px">Numérotation</h2>
+
 <div class="grid">
 <div><label>Préfixe</label><input id="prefix" value="FAC-"></div>
-<div><label>Année dans le numéro</label>
-<select id="yearInNumber"><option value="yes">Oui</option><option value="no">Non</option></select>
-</div>
-</div>
-<div class="grid">
-<div><label>Prochain numéro</label><input id="nextNumber" type="number" min="1" value="1"></div>
-<div><label>Mode de paiement par défaut</label>
-<select id="defaultPayment">
-<option>Échéance</option><option>Espèces</option><option>Virement bancaire</option><option>Chèque</option><option>Mobile Money</option><option>Carte bancaire</option><option>Autre</option>
+<div>
+<label>Année dans le numéro</label>
+<select id="yearInNumber">
+<option value="yes">Oui</option>
+<option value="no">Non</option>
 </select>
 </div>
 </div>
+
+<div class="grid">
+<div><label>Prochain numéro</label><input id="nextNumber" type="number" min="1" value="1"></div>
+<div>
+<label>Mode de paiement par défaut</label>
+<select id="defaultPayment">
+<option>Échéance</option>
+<option>Espèces</option>
+<option>Virement bancaire</option>
+<option>Chèque</option>
+<option>Mobile Money</option>
+<option>Carte bancaire</option>
+<option>Autre</option>
+</select>
+</div>
+</div>
+
 <label>Délai de paiement par défaut (jours)</label>
 <input id="dueDays" type="number" min="0" value="30">
+
 <button class="primary full" onclick="saveSettings()">Enregistrer les paramètres</button>
 <button class="full" onclick="exportData()">Exporter une sauvegarde JSON</button>
 
 <hr style="border-color:#29453a;margin:22px 0">
+
 <h2>Importation et restauration</h2>
+
 <label>Importer une sauvegarde KEMS ou une Base Prix</label>
 <input id="jsonFile" type="file" accept=".json,application/json" onchange="importData(event)" style="display:none">
+
 <button type="button" class="full" onclick="$('jsonFile').click()">Choisir un fichier JSON</button>
-<div class="file-name"><strong>Fichier sélectionné :</strong><span id="jsonFileName">Aucun fichier sélectionné.</span></div>
+
+<div class="file-name">
+<strong>Fichier sélectionné :</strong>
+<span id="jsonFileName">Aucun fichier sélectionné.</span>
+</div>
+
 <p class="muted">Choisissez KEMS_sauvegarde.json pour restaurer vos factures, ou base_prix.json pour enregistrer le catalogue sur cet appareil. La Base Prix restera disponible hors connexion.</p>
 <p class="muted">Les données restent sur cet appareil. Exportez régulièrement une sauvegarde.</p>
 
 <hr style="border-color:#29453a;margin:22px 0">
+
 <h2>Connexion au serveur</h2>
 <p class="muted">Adresse du PC Windows qui héberge le serveur KEMS. Le téléphone et le PC doivent être connectés au même réseau Wi-Fi.</p>
 
 <div class="server-box">
 <label>Adresse IP du serveur</label>
 <input id="serverUrl" type="url" placeholder="http://192.168.1.100:3000" autocomplete="url">
+
 <button class="primary full" onclick="saveServerUrl()">Enregistrer l'adresse du serveur</button>
 <button class="full" onclick="discoverServer()">Rechercher automatiquement le serveur</button>
 <button class="full" onclick="testServerAddress()">Tester cette adresse</button>
+
 <div id="serverStatus" class="sync-status muted">Adresse du serveur non vérifiée.</div>
 </div>
 
 <hr style="border-color:#29453a;margin:22px 0">
+
 <h2>Synchronisation KEMS</h2>
 <p class="muted">Synchronisez vos documents entre votre téléphone Android et votre PC Lenovo.</p>
+
 <label>Clé secrète du serveur</label>
 <input id="syncToken" type="password" placeholder="Coller la clé du serveur" autocomplete="off">
+
 <button class="primary full" onclick="saveSyncToken()">Enregistrer la clé de connexion</button>
 <button class="full" onclick="checkSync()">Vérifier la connexion</button>
 <button class="full" onclick="uploadSync()">Envoyer les données vers le serveur</button>
 <button class="full" onclick="downloadSync()">Télécharger les données du serveur</button>
 <button class="primary full" onclick="syncNow()">Synchroniser maintenant</button>
+
 <div id="syncStatus" class="sync-status muted">État : non vérifié</div>
+
 <p class="muted">Attention : l'envoi remplace les données du serveur. Le téléchargement remplace les données locales. Une sauvegarde locale est créée avant le téléchargement.</p>
 </div>
 </section>
@@ -224,18 +278,39 @@ function readStorage(key,fallback){
         return value?JSON.parse(value):fallback;
     }catch(e){return fallback;}
 }
-function saveInvoices(){localStorage.setItem('kems_invoices',JSON.stringify(invoices));}
-function saveConfig(){localStorage.setItem('kems_cfg',JSON.stringify(cfg));}
-function today(){return new Date().toISOString().slice(0,10);}
+
+function saveInvoices(){
+    localStorage.setItem('kems_invoices',JSON.stringify(invoices));
+}
+
+function saveConfig(){
+    localStorage.setItem('kems_cfg',JSON.stringify(cfg));
+}
+
+function today(){
+    return new Date().toISOString().slice(0,10);
+}
+
 function fmt(n,currency){
     return Number(n||0).toLocaleString('fr-FR',{maximumFractionDigits:2})+' '+(currency||$('currency').value||'Ar');
 }
+
 function esc(s){
-    return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    return String(s??'').replace(/[&<>"']/g,c=>({
+        '&':'&amp;',
+        '<':'&lt;',
+        '>':'&gt;',
+        '"':'&quot;',
+        "'":'&#39;'
+    }[c]));
 }
 
 /* TYPE DOCUMENT */
-function documentTitle(type){return type==='DEVIS'?'PROFORMA':'FACTURE';}
+
+function documentTitle(type){
+    return type==='DEVIS'?'PROFORMA':'FACTURE';
+}
+
 function updateDocumentType(){
     const type=$('documentType').value;
     $('documentTypeInfo').textContent='Le document sera imprimé avec le titre '+documentTitle(type)+'.';
@@ -243,41 +318,64 @@ function updateDocumentType(){
 }
 
 /* PARAMETRES */
+
 function fillSettings(){
-    ['company','companyAddress','phone','email','legal','currency','prefix','yearInNumber','nextNumber','defaultPayment','dueDays'].forEach(k=>{
+    [
+        'company','companyAddress','phone','email','legal',
+        'currency','prefix','yearInNumber','nextNumber',
+        'defaultPayment','dueDays'
+    ].forEach(k=>{
         if(cfg[k]!==undefined)$(k).value=cfg[k];
     });
+
     $('payment').value=cfg.defaultPayment||'Échéance';
 }
+
 function saveSettings(){
     const newCfg={};
-    ['company','companyAddress','phone','email','legal','currency','prefix','yearInNumber','nextNumber','defaultPayment','dueDays'].forEach(k=>newCfg[k]=$(k).value);
+
+    [
+        'company','companyAddress','phone','email','legal',
+        'currency','prefix','yearInNumber','nextNumber',
+        'defaultPayment','dueDays'
+    ].forEach(k=>newCfg[k]=$(k).value);
+
     cfg={...cfg,...newCfg};
     saveConfig();
+
     $('payment').value=cfg.defaultPayment;
+
     alert('Paramètres enregistrés.');
     updateNumber();
 }
+
 function updateNumber(){
     let n=Number(cfg.nextNumber||$('nextNumber').value||1);
     let p=cfg.prefix??$('prefix').value??'FAC-';
     let y=(cfg.yearInNumber??$('yearInNumber').value??'yes')==='yes'?new Date().getFullYear()+'-':'';
+
     $('number').value=p+y+String(n).padStart(4,'0');
 }
 
 /* SERVEUR : ADRESSE ET PLATEFORME */
+
 let serverBusy=false;
 
 function cleanServerUrl(value){
     let url=String(value||'').trim().replace(/\/+$/,'');
+
     if(!url)return '';
+
     if(!/^https?:\/\//i.test(url))url='http://'+url;
+
     return url.replace(/\/+$/,'');
 }
 
 function setServerStatus(message,success=true){
     const el=$('serverStatus');
+
     if(!el)return;
+
     el.textContent='État : '+message;
     el.style.color=success?'#65e6a5':'#ff7777';
 }
@@ -288,12 +386,15 @@ function getServerUrl(){
 
 async function saveServerUrl(){
     const url=cleanServerUrl($('serverUrl').value);
+
     if(!url){
         alert('Veuillez saisir l’adresse IP du serveur.');
         return;
     }
+
     try{
         new URL(url);
+
         localStorage.setItem('kems_server_url',url);
         $('serverUrl').value=url;
 
@@ -301,11 +402,13 @@ async function saveServerUrl(){
             KemsAndroid.setServerUrl(url);
         }else if(window.KemsSync && typeof KemsSync.setServerUrl==='function'){
             const result=await KemsSync.setServerUrl(url);
+
             if(result===false)throw new Error('Enregistrement refusé par Windows.');
         }
 
         setServerStatus('Adresse enregistrée : '+url);
         alert('Adresse du serveur enregistrée.');
+
     }catch(error){
         setServerStatus('Adresse invalide ou erreur : '+error.message,false);
     }
@@ -313,6 +416,7 @@ async function saveServerUrl(){
 
 async function discoverServer(){
     if(serverBusy)return;
+
     serverBusy=true;
     setServerStatus('Recherche du serveur en cours...');
 
@@ -326,9 +430,11 @@ async function discoverServer(){
 
         if(window.KemsSync && typeof KemsSync.discoverServer==='function'){
             result=await KemsSync.discoverServer();
+
             if(result && typeof result==='object'){
                 result=result.url||result.serverUrl||result.address||result.data||'';
             }
+
             if(typeof result==='string' && result.startsWith('http')){
                 $('serverUrl').value=cleanServerUrl(result);
                 localStorage.setItem('kems_server_url',$('serverUrl').value);
@@ -336,10 +442,12 @@ async function discoverServer(){
                 serverBusy=false;
                 return;
             }
+
             throw new Error('Aucun serveur trouvé sur le réseau.');
         }
 
         throw new Error('La recherche automatique nécessite le module natif Android ou Windows. Saisissez l’adresse manuellement.');
+
     }catch(error){
         serverBusy=false;
         setServerStatus(error.message,false);
@@ -348,24 +456,34 @@ async function discoverServer(){
 
 async function testServerAddress(){
     const url=getServerUrl();
+
     if(!url){
         alert('Saisissez d’abord l’adresse du serveur.');
         return;
     }
+
     setServerStatus('Test de connexion...');
+
     try{
         let response;
+
         if(window.KemsAndroid && typeof KemsAndroid.testServerUrl==='function'){
             KemsAndroid.testServerUrl(url);
             return;
         }
+
         if(window.KemsSync && typeof KemsSync.setServerUrl==='function'){
             await KemsSync.setServerUrl(url);
         }
+
         response=await fetch(url+'/api/health',{method:'GET'});
+
         if(!response.ok)throw new Error('Réponse HTTP '+response.status);
+
         const data=await response.json();
+
         setServerStatus('Serveur accessible : '+url+(data.status?' — '+data.status:''));
+
     }catch(error){
         setServerStatus('Connexion impossible : '+error.message,false);
     }
@@ -373,42 +491,74 @@ async function testServerAddress(){
 
 function loadServerUrl(){
     const saved=localStorage.getItem('kems_server_url');
-    if(saved)$('serverUrl').value=saved;
-    else if(window.KemsAndroid && typeof KemsAndroid.getServerUrl==='function'){
+
+    if(saved){
+        $('serverUrl').value=saved;
+    }else if(window.KemsAndroid && typeof KemsAndroid.getServerUrl==='function'){
         try{
             const nativeUrl=KemsAndroid.getServerUrl();
-            if(nativeUrl){$('serverUrl').value=nativeUrl;localStorage.setItem('kems_server_url',nativeUrl);}
+
+            if(nativeUrl){
+                $('serverUrl').value=nativeUrl;
+                localStorage.setItem('kems_server_url',nativeUrl);
+            }
         }catch(e){}
     }else if(window.KemsSync && typeof KemsSync.getServerUrl==='function'){
         Promise.resolve(KemsSync.getServerUrl()).then(url=>{
-            if(url){$('serverUrl').value=url;localStorage.setItem('kems_server_url',url);}
+            if(url){
+                $('serverUrl').value=url;
+                localStorage.setItem('kems_server_url',url);
+            }
         }).catch(()=>{});
     }
 }
 
 /* BASE PRIX */
+
 let priceCatalog=[];
 let priceCatalogLoaded=false;
 let priceCatalogBusy=false;
 
 function setPriceStatus(message,success=true){
     const el=$('priceStatus');
+
     if(!el)return;
+
     el.textContent=message;
     el.className=success?'muted price-status-ok':'muted price-status-error';
 }
+
 function extractPriceProducts(data){
     if(Array.isArray(data))return data;
+
     if(!data||typeof data!=='object')return null;
-    const candidates=[data.products,data.data&&data.data.products,data.data,data.base_prix,data.prix,data.items,data.articles,data.result&&data.result.products];
+
+    const candidates=[
+        data.products,
+        data.data&&data.data.products,
+        data.data,
+        data.base_prix,
+        data.prix,
+        data.items,
+        data.articles,
+        data.result&&data.result.products
+    ];
+
     return candidates.find(Array.isArray)||null;
 }
+
 function normalizePriceProducts(products){
     if(!Array.isArray(products))return [];
+
     return products.map((p,index)=>{
         p=p&&typeof p==='object'?p:{};
-        const rawPrice=p.price??p.prix??p.prix_vente??p.prixVente??p.prix_unitaire??p.prixUnitaire??p.PU??p.PRIX??0;
+
+        const rawPrice=
+            p.price??p.prix??p.prix_vente??p.prixVente??
+            p.prix_unitaire??p.prixUnitaire??p.PU??p.PRIX??0;
+
         const price=Number(String(rawPrice).replace(/\s/g,'').replace(',','.'));
+
         return {
             id:String(p.id??p.reference??p.ref??index+1),
             designation:String(p.designation??p.designation_produit??p.nom??p.name??p.DESIGNATION??'').trim(),
@@ -419,55 +569,106 @@ function normalizePriceProducts(products){
             benefice:Number(p.benefice??0)||0,
             observation:String(p.observation??p.description??'')
         };
+
     }).filter(p=>p.designation&&Number.isFinite(p.price)&&p.price>=0);
 }
+
 function saveLocalPriceCatalog(products){
-    try{localStorage.setItem('kems_price_catalog',JSON.stringify(products));return true;}
-    catch(error){console.error(error);alert('Le catalogue est trop volumineux pour le stockage local.');return false;}
+    try{
+        localStorage.setItem('kems_price_catalog',JSON.stringify(products));
+        return true;
+    }catch(error){
+        console.error(error);
+        alert('Le catalogue est trop volumineux pour le stockage local.');
+        return false;
+    }
 }
+
 function loadLocalPriceCatalog(){
     const saved=readStorage('kems_price_catalog',[]);
+
     if(!Array.isArray(saved)||!saved.length){
-        priceCatalog=[];priceCatalogLoaded=false;updatePriceOptions();
-        $('catalogCount').textContent='Aucun catalogue local';return false;
+        priceCatalog=[];
+        priceCatalogLoaded=false;
+        updatePriceOptions();
+        $('catalogCount').textContent='Aucun catalogue local';
+        return false;
     }
+
     const normalized=normalizePriceProducts(saved);
+
     if(!normalized.length)return false;
-    priceCatalog=normalized;priceCatalogLoaded=true;updatePriceOptions();
+
+    priceCatalog=normalized;
+    priceCatalogLoaded=true;
+
+    updatePriceOptions();
+
     $('catalogCount').textContent=priceCatalog.length+' référence(s) — disponible hors ligne';
+
     setPriceStatus('Catalogue local chargé. Vous pouvez l’utiliser sans connexion internet.');
+
     return true;
 }
+
 function importPriceCatalog(data,fileName){
     const source=extractPriceProducts(data);
+
     if(!source)throw new Error('Ce JSON ne contient pas de liste de produits reconnue.');
+
     const products=normalizePriceProducts(source);
+
     if(!products.length)throw new Error('Aucun produit valide trouvé. Vérifiez designation et prix.');
+
     if(!saveLocalPriceCatalog(products))return;
-    priceCatalog=products;priceCatalogLoaded=true;updatePriceOptions();
+
+    priceCatalog=products;
+    priceCatalogLoaded=true;
+
+    updatePriceOptions();
+
     $('catalogCount').textContent=products.length+' référence(s) — disponible hors ligne';
+
     setPriceStatus('Base Prix importée depuis '+(fileName||'le fichier JSON')+'.');
+
     renderLines();
+
     alert('Base Prix importée avec succès : '+products.length+' produit(s).');
 }
+
 function updatePriceOptions(){
-    $('priceCatalogOptions').innerHTML=priceCatalog.map(p=>'<option value="'+esc(p.designation)+'"></option>').join('');
+    $('priceCatalogOptions').innerHTML=priceCatalog.map(p=>
+        '<option value="'+esc(p.designation)+'"></option>'
+    ).join('');
 }
+
 function findPriceProduct(name){
     const value=String(name||'').trim().toLocaleLowerCase('fr');
+
     if(!value)return null;
-    return priceCatalog.find(p=>p.designation.toLocaleLowerCase('fr')===value)||null;
+
+    return priceCatalog.find(p=>
+        p.designation.toLocaleLowerCase('fr')===value
+    )||null;
 }
+
 function selectCatalogProduct(id,name){
     const line=lines.find(x=>x.id===id);
+
     if(!line)return;
+
     line.description=name;
+
     const product=findPriceProduct(name);
+
     if(product)line.price=product.price;
+
     renderLines();
 }
+
 async function refreshPriceCatalog(){
     if(priceCatalogBusy)return;
+
     priceCatalogBusy=true;
     setPriceStatus('Actualisation du catalogue...');
 
@@ -476,369 +677,919 @@ async function refreshPriceCatalog(){
             KemsAndroid.getPriceCatalog();
             return;
         }
+
         if(window.KemsSync && typeof KemsSync.getPriceCatalog==='function'){
             const result=await KemsSync.getPriceCatalog();
             receivePriceCatalog(result);
             return;
         }
+
         throw new Error('Interface serveur indisponible.');
+
     }catch(error){
         priceCatalogBusy=false;
-        setPriceStatus(priceCatalogLoaded?'Serveur inaccessible. Catalogue local disponible.':'Impossible de charger la Base Prix : '+error.message,false);
+
+        setPriceStatus(
+            priceCatalogLoaded
+            ?'Serveur inaccessible. Catalogue local disponible.'
+            :'Impossible de charger la Base Prix : '+error.message,
+            false
+        );
     }
 }
+
 function receivePriceCatalog(response){
     priceCatalogBusy=false;
+
     try{
         let data=typeof response==='string'?JSON.parse(response):response;
+
         if(data&&data.data!==undefined)data=data.data;
+
         const source=extractPriceProducts(data);
         const products=normalizePriceProducts(source||[]);
+
         if(!products.length)throw new Error('Aucun produit valide reçu du serveur.');
+
         if(!saveLocalPriceCatalog(products))throw new Error('Enregistrement local impossible.');
-        priceCatalog=products;priceCatalogLoaded=true;updatePriceOptions();
+
+        priceCatalog=products;
+        priceCatalogLoaded=true;
+
+        updatePriceOptions();
+
         $('catalogCount').textContent=products.length+' référence(s) — synchronisé';
+
         setPriceStatus('Catalogue actualisé depuis le serveur et enregistré hors ligne.');
+
         renderLines();
+
     }catch(error){
-        setPriceStatus('Actualisation impossible. '+(priceCatalogLoaded?'Le catalogue local reste disponible. ':'')+error.message,false);
+        setPriceStatus(
+            'Actualisation impossible. '+
+            (priceCatalogLoaded?'Le catalogue local reste disponible. ':'')+
+            error.message,
+            false
+        );
     }
 }
 
 /* ARTICLES */
+
 function addLine(d={}){
     const id=Date.now()+Math.random();
-    lines.push({id,description:d.description||'',qty:d.qty||1,price:d.price||0});
+
+    lines.push({
+        id,
+        description:d.description||'',
+        qty:d.qty||1,
+        price:d.price||0
+    });
+
     renderLines();
 }
+
 function renderLines(){
     $('lines').innerHTML=lines.map(l=>`
     <div class="invoice-item">
       <div class="row">
-        <div><label>Désignation</label><input list="priceCatalogOptions" value="${esc(l.description)}" placeholder="Désignation ou rechercher un produit" onchange="selectCatalogProduct(${l.id},this.value)"></div>
-        <div><label>Qté</label><input type="number" min="0" step="any" value="${l.qty}" onchange="editLine(${l.id},'qty',this.value)"></div>
-        <div><label>Prix unitaire</label><input type="number" min="0" step="any" value="${l.price}" onchange="editLine(${l.id},'price',this.value)"></div>
+        <div>
+            <label>Désignation</label>
+            <input list="priceCatalogOptions"
+            value="${esc(l.description)}"
+            placeholder="Désignation ou rechercher un produit"
+            onchange="selectCatalogProduct(${l.id},this.value)">
+        </div>
+
+        <div>
+            <label>Qté</label>
+            <input type="number" min="0" step="any"
+            value="${l.qty}"
+            onchange="editLine(${l.id},'qty',this.value)">
+        </div>
+
+        <div>
+            <label>Prix unitaire</label>
+            <input type="number" min="0" step="any"
+            value="${l.price}"
+            onchange="editLine(${l.id},'price',this.value)">
+        </div>
+
         <button class="danger" onclick="removeLine(${l.id})">×</button>
       </div>
+
       <div class="muted">Montant : ${fmt(l.qty*l.price)}</div>
-    </div>`).join('');
+    </div>
+    `).join('');
+
     $('total').textContent=fmt(total());
 }
+
 function editLine(id,k,v){
     const l=lines.find(x=>x.id===id);
-    if(l){l[k]=k==='description'?v:Number(v)||0;renderLines();}
+
+    if(l){
+        l[k]=k==='description'?v:Number(v)||0;
+        renderLines();
+    }
 }
-function removeLine(id){lines=lines.filter(l=>l.id!==id);renderLines();}
-function total(){return lines.reduce((s,l)=>s+(Number(l.qty)||0)*(Number(l.price)||0),0);}
+
+function removeLine(id){
+    lines=lines.filter(l=>l.id!==id);
+    renderLines();
+}
+
+function total(){
+    return lines.reduce((s,l)=>
+        s+(Number(l.qty)||0)*(Number(l.price)||0),0
+    );
+}
 
 /* DOCUMENTS */
+
 function formInvoice(){
     return {
-        type:$('documentType').value,number:$('number').value,date:$('date').value,
-        client:$('client').value,clientAddress:$('clientAddress').value,
-        payment:$('payment').value,dueDate:$('dueDate').value,notes:$('notes').value,
-        lines:JSON.parse(JSON.stringify(lines)),total:total(),currency:$('currency').value
+        type:$('documentType').value,
+        number:$('number').value,
+        date:$('date').value,
+        client:$('client').value,
+        clientAddress:$('clientAddress').value,
+        payment:$('payment').value,
+        dueDate:$('dueDate').value,
+        notes:$('notes').value,
+        lines:JSON.parse(JSON.stringify(lines)),
+        total:total(),
+        currency:$('currency').value
     };
 }
+
 function saveInvoice(){
     const f=formInvoice();
-    if(!f.client.trim()){alert('Veuillez saisir le nom du client.');return;}
-    if(!f.lines.length){alert('Ajoutez au moins un article.');return;}
+
+    if(!f.client.trim()){
+        alert('Veuillez saisir le nom du client.');
+        return;
+    }
+
+    if(!f.lines.length){
+        alert('Ajoutez au moins un article.');
+        return;
+    }
+
     const old=invoices.findIndex(x=>x.number===f.number);
+
     if(old>=0){
         if(!confirm('Ce numéro existe déjà. Remplacer le document ?'))return;
         invoices[old]=f;
     }else{
         invoices.unshift(f);
+
         cfg.nextNumber=Number(cfg.nextNumber||$('nextNumber').value||1)+1;
         $('nextNumber').value=cfg.nextNumber;
+
         saveConfig();
     }
-    saveInvoices();renderHistory();updateNumber();
+
+    saveInvoices();
+    renderHistory();
+    updateNumber();
+
     alert(f.type==='DEVIS'?'Devis PROFORMA enregistré.':'Facture enregistrée.');
 }
+
 function renderHistory(){
     $('historyList').innerHTML=invoices.length?invoices.map((f,i)=>`
     <div class="invoice-item">
       <span class="document-badge">${esc(documentTitle(f.type||'FACTURE'))}</span>
       <b>${esc(f.number)} — ${esc(f.client)}</b>
       <div class="muted">${esc(f.date)} • ${fmt(f.total,f.currency)} • ${esc(f.payment)}</div>
+
       <div class="history-actions">
         <button onclick="loadInvoice(${i})">Modifier / consulter</button>
         <button onclick="printSaved(${i})">PDF</button>
         <button class="danger" onclick="deleteInvoice(${i})">Supprimer</button>
       </div>
-    </div>`).join(''):'<p class="muted">Aucun document enregistré.</p>';
+    </div>
+    `).join(''):'<p class="muted">Aucun document enregistré.</p>';
 }
+
 function deleteInvoice(index){
     if(index<0||index>=invoices.length)return;
+
     if(!confirm('Confirmer la suppression du document '+invoices[index].number+' ?'))return;
-    invoices.splice(index,1);saveInvoices();renderHistory();alert('Document supprimé.');
-}
-function clearHistory(){
-    if(!invoices.length){alert('L’historique est déjà vide.');return;}
-    if(!confirm('ATTENTION ! Voulez-vous supprimer tous les documents ?'))return;
-    invoices=[];saveInvoices();renderHistory();alert('Tout l’historique a été supprimé.');
-}
-function loadInvoice(i){
-    const f=invoices[i];if(!f)return;
-    $('documentType').value=f.type||'FACTURE';updateDocumentType();
-    $('number').value=f.number;$('date').value=f.date;$('client').value=f.client;
-    $('clientAddress').value=f.clientAddress||'';$('payment').value=f.payment||'Échéance';
-    $('dueDate').value=f.dueDate||'';$('notes').value=f.notes||'';
-    lines=(f.lines||[]).map(l=>({...l,id:Date.now()+Math.random()}));
-    renderLines();showPage('invoice');
+
+    invoices.splice(index,1);
+
+    saveInvoices();
+    renderHistory();
+
+    alert('Document supprimé.');
 }
 
-/* PDF */
+function clearHistory(){
+    if(!invoices.length){
+        alert('L’historique est déjà vide.');
+        return;
+    }
+
+    if(!confirm('ATTENTION ! Voulez-vous supprimer tous les documents ?'))return;
+
+    invoices=[];
+    saveInvoices();
+    renderHistory();
+
+    alert('Tout l’historique a été supprimé.');
+}
+
+function loadInvoice(i){
+    const f=invoices[i];
+
+    if(!f)return;
+
+    $('documentType').value=f.type||'FACTURE';
+    updateDocumentType();
+
+    $('number').value=f.number;
+    $('date').value=f.date;
+    $('client').value=f.client;
+    $('clientAddress').value=f.clientAddress||'';
+    $('payment').value=f.payment||'Échéance';
+    $('dueDate').value=f.dueDate||'';
+    $('notes').value=f.notes||'';
+
+    lines=(f.lines||[]).map(l=>({...l,id:Date.now()+Math.random()}));
+
+    renderLines();
+    showPage('invoice');
+}
+
+/* PDF — ALIGNEMENT DE TOUS LES TEXTES À GAUCHE */
+
 function invoiceHtml(f){
-    const c=cfg,currency=f.currency||c.currency||'Ar';
+    const c=cfg;
+    const currency=f.currency||c.currency||'Ar';
     const title=documentTitle(f.type||'FACTURE');
     const numberLabel=f.type==='DEVIS'?'Devis n°':'Facture n°';
-    return `<!doctype html><html lang="fr"><head><meta charset="utf-8"><style>
-    *{box-sizing:border-box;text-align:left!important}
-    html,body{width:100%;margin:0;padding:28px;font-family:Arial,sans-serif;font-size:12px;color:#222;text-align:left!important}
-    h1{color:#174b35;font-size:28px;width:100%;margin:0 0 25px;text-align:left!important}
-    h2{color:#174b35;text-align:left!important}
-    p,div,span,small,strong,b{ text-align:left!important}
-    table{width:100%;border-collapse:collapse;margin-top:24px}
-    th,td{border:1px solid #ccc;padding:9px;text-align:left!important}
-    th{background:#eaf5ee}
-    .total{font-size:18px;font-weight:bold;margin-top:25px;text-align:left!important}
-    .muted{color:#555;white-space:pre-wrap;line-height:1.6;text-align:left!important}
-    .client-address{white-space:pre-wrap;line-height:1.6;margin-top:6px;text-align:left!important}
-    </style></head><body>
-    <h1>${title}</h1><h2>${esc(c.company||'Votre entreprise')}</h2>
-    <div class="muted">${esc(c.companyAddress||'')}
-    ${esc(c.phone||'')} ${esc(c.email||'')}
-    ${esc(c.legal||'')}</div>
-    <p><b>${numberLabel}</b> ${esc(f.number)}<br><b>Date :</b> ${esc(f.date)}<br><b>Client :</b> ${esc(f.client)}<br></p>
-    <div class="client-address">${esc(f.clientAddress||'')}</div>
-    <p><b>Mode de paiement :</b> ${esc(f.payment||'')}</p>
-    <table><thead><tr><th>Désignation</th><th>Quantité</th><th>Prix unitaire</th><th>Montant</th></tr></thead>
-    <tbody>${(f.lines||[]).map(l=>`<tr><td>${esc(l.description)}</td><td>${Number(l.qty)||0}</td><td>${fmt(l.price,currency)}</td><td>${fmt(l.qty*l.price,currency)}</td></tr>`).join('')}</tbody></table>
-    <div class="total">TOTAL : ${fmt(f.total,currency)}</div>
-    <p>${esc(f.notes||'')}</p>
-    ${f.type==='DEVIS'?'<p><b>Document PROFORMA – Devis estimatif.</b></p>':''}
-    <hr><small>Merci pour votre confiance.</small></body></html>`;
+
+    return `<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<style>
+@page{
+    margin:15mm;
 }
+
+*{
+    box-sizing:border-box;
+    text-align:left !important;
+}
+
+html,body{
+    width:100%;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+    font-size:12px;
+    color:#222;
+    text-align:left !important;
+    direction:ltr;
+}
+
+body *{
+    text-align:left !important;
+}
+
+h1{
+    color:#174b35;
+    font-size:28px;
+    width:100%;
+    margin:0 0 25px;
+    padding:0;
+    text-align:left !important;
+}
+
+h2{
+    color:#174b35;
+    font-size:18px;
+    margin:0 0 8px;
+    text-align:left !important;
+}
+
+p,div,span,small,strong,b,label{
+    text-align:left !important;
+}
+
+p{
+    margin:12px 0;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:24px;
+    margin-left:0;
+    margin-right:auto;
+}
+
+th,td{
+    border:1px solid #ccc;
+    padding:9px;
+    text-align:left !important;
+    vertical-align:top;
+}
+
+th{
+    background:#eaf5ee;
+    text-align:left !important;
+}
+
+.total{
+    width:100%;
+    font-size:18px;
+    font-weight:bold;
+    margin-top:25px;
+    padding:0;
+    text-align:left !important;
+}
+
+.muted{
+    color:#555;
+    white-space:pre-wrap;
+    line-height:1.6;
+    text-align:left !important;
+}
+
+.client-address{
+    white-space:pre-wrap;
+    line-height:1.6;
+    margin-top:6px;
+    text-align:left !important;
+}
+
+hr{
+    margin-top:20px;
+    border:0;
+    border-top:1px solid #ccc;
+}
+</style>
+</head>
+
+<body>
+
+<h1>${title}</h1>
+
+<h2>${esc(c.company||'Votre entreprise')}</h2>
+
+<div class="muted">${esc(c.companyAddress||'')}
+${esc(c.phone||'')} ${esc(c.email||'')}
+${esc(c.legal||'')}</div>
+
+<p>
+<b>${numberLabel}</b> ${esc(f.number)}
+<br>
+<b>Date :</b> ${esc(f.date)}
+<br>
+<b>Client :</b> ${esc(f.client)}
+</p>
+
+<div class="client-address">${esc(f.clientAddress||'')}</div>
+
+<p>
+<b>Mode de paiement :</b> ${esc(f.payment||'')}
+</p>
+
+<table>
+<thead>
+<tr>
+<th>Désignation</th>
+<th>Quantité</th>
+<th>Prix unitaire</th>
+<th>Montant</th>
+</tr>
+</thead>
+
+<tbody>
+${(f.lines||[]).map(l=>`
+<tr>
+<td>${esc(l.description)}</td>
+<td>${Number(l.qty)||0}</td>
+<td>${fmt(l.price,currency)}</td>
+<td>${fmt(l.qty*l.price,currency)}</td>
+</tr>
+`).join('')}
+</tbody>
+</table>
+
+<div class="total">
+TOTAL : ${fmt(f.total,currency)}
+</div>
+
+<p>${esc(f.notes||'')}</p>
+
+${f.type==='DEVIS'?'<p><b>Document PROFORMA – Devis estimatif.</b></p>':''}
+
+<hr>
+
+<small>Merci pour votre confiance.</small>
+
+</body>
+</html>`;
+}
+
 function printDocument(f){
     if(window.KemsAndroid&&typeof KemsAndroid.printInvoice==='function'){
-        KemsAndroid.printInvoice(invoiceHtml(f));return;
+        KemsAndroid.printInvoice(invoiceHtml(f));
+        return;
     }
+
     const w=window.open('','_blank');
-    if(!w){alert('Impossible d’ouvrir la fenêtre PDF.');return;}
-    w.document.write(invoiceHtml(f));w.document.close();w.print();
+
+    if(!w){
+        alert('Impossible d’ouvrir la fenêtre PDF.');
+        return;
+    }
+
+    w.document.write(invoiceHtml(f));
+    w.document.close();
+    w.print();
 }
+
 function makePdf(){
     const f=formInvoice();
-    if(!f.client.trim()||!f.lines.length){alert('Saisissez le client et ajoutez au moins un article.');return;}
+
+    if(!f.client.trim()||!f.lines.length){
+        alert('Saisissez le client et ajoutez au moins un article.');
+        return;
+    }
+
     printDocument(f);
 }
-function printSaved(i){if(invoices[i])printDocument(invoices[i]);}
+
+function printSaved(i){
+    if(invoices[i])printDocument(invoices[i]);
+}
 
 /* EXPORT JSON */
+
 function exportData(){
     const json=JSON.stringify({cfg,invoices},null,2);
-    if(window.KemsAndroid&&typeof KemsAndroid.saveJson==='function'){KemsAndroid.saveJson(json);return;}
+
+    if(window.KemsAndroid&&typeof KemsAndroid.saveJson==='function'){
+        KemsAndroid.saveJson(json);
+        return;
+    }
+
     const blob=new Blob([json],{type:'application/json'});
-    const a=document.createElement('a'),url=URL.createObjectURL(blob);
-    a.href=url;a.download='KEMS_sauvegarde.json';a.click();
+    const a=document.createElement('a');
+    const url=URL.createObjectURL(blob);
+
+    a.href=url;
+    a.download='KEMS_sauvegarde.json';
+    a.click();
+
     setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 
 /* IMPORT JSON */
+
 function importData(e){
-    const file=e.target.files&&e.target.files[0];if(!file)return;
+    const file=e.target.files&&e.target.files[0];
+
+    if(!file)return;
+
     $('jsonFileName').textContent=file.name;
+
     const reader=new FileReader();
+
     reader.onload=()=>{
         try{
             const data=JSON.parse(reader.result);
+
             if(data&&typeof data==='object'&&Array.isArray(data.invoices)){
                 if(!confirm('Importer cette sauvegarde KEMS ? Les paramètres et documents actuels seront remplacés.'))return;
+
                 cfg=data.cfg&&typeof data.cfg==='object'?data.cfg:{};
-                invoices=data.invoices.map(f=>({...f,type:f.type==='DEVIS'?'DEVIS':'FACTURE'}));
-                saveConfig();saveInvoices();fillSettings();renderHistory();updateNumber();
-                alert('Sauvegarde KEMS importée avec succès.');return;
+
+                invoices=data.invoices.map(f=>({
+                    ...f,
+                    type:f.type==='DEVIS'?'DEVIS':'FACTURE'
+                }));
+
+                saveConfig();
+                saveInvoices();
+                fillSettings();
+                renderHistory();
+                updateNumber();
+
+                alert('Sauvegarde KEMS importée avec succès.');
+                return;
             }
+
             importPriceCatalog(data,file.name);
+
         }catch(error){
             console.error(error);
-            alert('Import impossible : '+(error.message||'fichier JSON invalide')+'\nAucune facture ni aucun paramètre n’a été remplacé.');
-        }finally{e.target.value='';}
+
+            alert(
+                'Import impossible : '+(error.message||'fichier JSON invalide')+
+                '\nAucune facture ni aucun paramètre n’a été remplacé.'
+            );
+        }finally{
+            e.target.value='';
+        }
     };
-    reader.onerror=()=>{alert('Impossible de lire le fichier.');e.target.value='';};
+
+    reader.onerror=()=>{
+        alert('Impossible de lire le fichier.');
+        e.target.value='';
+    };
+
     reader.readAsText(file);
 }
 
 /* SYNCHRONISATION */
+
 let syncBusy=false;
+
 function syncMessage(message,success=true){
     $('syncStatus').textContent='État : '+message;
     $('syncStatus').style.color=success?'#65e6a5':'#ff7777';
 }
+
 function loadSavedSyncToken(){
     try{
         const saved=localStorage.getItem('kems_sync_token');
-        if(saved){$('syncToken').value=saved;$('syncToken').placeholder='Clé enregistrée sur cet appareil';syncMessage('Clé de connexion enregistrée.');}
-    }catch(error){console.error(error);}
+
+        if(saved){
+            $('syncToken').value=saved;
+            $('syncToken').placeholder='Clé enregistrée sur cet appareil';
+            syncMessage('Clé de connexion enregistrée.');
+        }
+    }catch(error){
+        console.error(error);
+    }
 }
+
 function saveSyncToken(){
     const token=$('syncToken').value.trim();
-    if(!token){alert('Veuillez saisir la clé secrète du serveur.');return;}
+
+    if(!token){
+        alert('Veuillez saisir la clé secrète du serveur.');
+        return;
+    }
+
     try{
         localStorage.setItem('kems_sync_token',token);
+
         if(window.KemsAndroid&&typeof KemsAndroid.saveSyncToken==='function'){
             syncMessage('Enregistrement de la clé sur Android...');
             KemsAndroid.saveSyncToken(token);
         }else{
             syncMessage('Clé enregistrée localement. Sur Windows, la clé est lue depuis config/access-token.txt.');
+
             alert('Clé enregistrée localement. Pour Windows, vérifiez aussi config/access-token.txt.');
         }
-    }catch(error){syncMessage('Erreur : '+error.message,false);alert('Impossible d’enregistrer la clé.');}
+
+    }catch(error){
+        syncMessage('Erreur : '+error.message,false);
+        alert('Impossible d’enregistrer la clé.');
+    }
 }
+
 async function checkSync(){
     if(window.KemsAndroid&&typeof KemsAndroid.checkSyncServer==='function'){
-        syncMessage('Vérification en cours...');KemsAndroid.checkSyncServer();return;
+        syncMessage('Vérification en cours...');
+        KemsAndroid.checkSyncServer();
+        return;
     }
+
     await testServerAddress();
+
     const url=getServerUrl();
+
     if(!url)return;
+
     try{
         const token=localStorage.getItem('kems_sync_token')||'';
-        const response=await fetch(url+'/api/data',{headers:{'x-kems-token':token}});
-        if(response.ok)syncMessage('Serveur connecté et authentification acceptée.');
-        else if(response.status===401||response.status===403)syncMessage('Serveur accessible, mais clé secrète incorrecte.',false);
-        else syncMessage('Serveur accessible. Réponse HTTP '+response.status,false);
-    }catch(e){syncMessage('Connexion impossible : '+e.message,false);}
+
+        const response=await fetch(url+'/api/data',{
+            headers:{'x-kems-token':token}
+        });
+
+        if(response.ok){
+            syncMessage('Serveur connecté et authentification acceptée.');
+        }else if(response.status===401||response.status===403){
+            syncMessage('Serveur accessible, mais clé secrète incorrecte.',false);
+        }else{
+            syncMessage('Serveur accessible. Réponse HTTP '+response.status,false);
+        }
+
+    }catch(e){
+        syncMessage('Connexion impossible : '+e.message,false);
+    }
 }
+
 async function uploadSync(){
     if(syncBusy)return;
+
     const token=localStorage.getItem('kems_sync_token');
-    if(!token){alert('Veuillez d’abord enregistrer la clé de connexion.');return;}
-    if(!confirm('ATTENTION : les données présentes sur le serveur seront remplacées par celles de cet appareil. Continuer ?'))return;
-    const data=JSON.stringify({cfg,invoices});
-    if(window.KemsAndroid&&typeof KemsAndroid.uploadSyncData==='function'){
-        syncBusy=true;syncMessage('Envoi des données en cours...');KemsAndroid.uploadSyncData(data);return;
+
+    if(!token){
+        alert('Veuillez d’abord enregistrer la clé de connexion.');
+        return;
     }
+
+    if(!confirm('ATTENTION : les données présentes sur le serveur seront remplacées par celles de cet appareil. Continuer ?'))return;
+
+    const data=JSON.stringify({cfg,invoices});
+
+    if(window.KemsAndroid&&typeof KemsAndroid.uploadSyncData==='function'){
+        syncBusy=true;
+        syncMessage('Envoi des données en cours...');
+        KemsAndroid.uploadSyncData(data);
+        return;
+    }
+
     try{
-        const url=getServerUrl();if(!url)throw new Error('Adresse serveur manquante.');
-        syncBusy=true;syncMessage('Envoi des données en cours...');
-        const response=await fetch(url+'/api/data',{method:'PUT',headers:{'Content-Type':'application/json','x-kems-token':token},body:data});
-        if(!response.ok)throw new Error('Erreur HTTP '+response.status+' — vérifiez la clé.');
-        syncMessage('Envoi terminé avec succès.');alert('Les données ont été envoyées au serveur.');
-    }catch(e){syncMessage('Erreur pendant l’envoi : '+e.message,false);alert(e.message);}
-    finally{syncBusy=false;}
+        const url=getServerUrl();
+
+        if(!url)throw new Error('Adresse serveur manquante.');
+
+        syncBusy=true;
+        syncMessage('Envoi des données en cours...');
+
+        const response=await fetch(url+'/api/data',{
+            method:'PUT',
+            headers:{
+                'Content-Type':'application/json',
+                'x-kems-token':token
+            },
+            body:data
+        });
+
+        if(!response.ok){
+            throw new Error('Erreur HTTP '+response.status+' — vérifiez la clé.');
+        }
+
+        syncMessage('Envoi terminé avec succès.');
+        alert('Les données ont été envoyées au serveur.');
+
+    }catch(e){
+        syncMessage('Erreur pendant l’envoi : '+e.message,false);
+        alert(e.message);
+
+    }finally{
+        syncBusy=false;
+    }
 }
+
 async function downloadSync(){
     if(syncBusy)return;
+
     const token=localStorage.getItem('kems_sync_token');
-    if(!token){alert('Veuillez d’abord enregistrer la clé de connexion.');return;}
-    if(!confirm('ATTENTION : les documents et paramètres de cet appareil seront remplacés par ceux du serveur. Une sauvegarde locale sera créée. Continuer ?'))return;
-    if(window.KemsAndroid&&typeof KemsAndroid.downloadSyncData==='function'){
-        syncBusy=true;syncMessage('Téléchargement en cours...');KemsAndroid.downloadSyncData();return;
+
+    if(!token){
+        alert('Veuillez d’abord enregistrer la clé de connexion.');
+        return;
     }
+
+    if(!confirm('ATTENTION : les documents et paramètres de cet appareil seront remplacés par ceux du serveur. Une sauvegarde locale sera créée. Continuer ?'))return;
+
+    if(window.KemsAndroid&&typeof KemsAndroid.downloadSyncData==='function'){
+        syncBusy=true;
+        syncMessage('Téléchargement en cours...');
+        KemsAndroid.downloadSyncData();
+        return;
+    }
+
     try{
-        const url=getServerUrl();if(!url)throw new Error('Adresse serveur manquante.');
-        syncBusy=true;syncMessage('Téléchargement en cours...');
-        const response=await fetch(url+'/api/data',{headers:{'x-kems-token':token}});
-        if(!response.ok)throw new Error('Erreur HTTP '+response.status+' — vérifiez la clé.');
+        const url=getServerUrl();
+
+        if(!url)throw new Error('Adresse serveur manquante.');
+
+        syncBusy=true;
+        syncMessage('Téléchargement en cours...');
+
+        const response=await fetch(url+'/api/data',{
+            headers:{'x-kems-token':token}
+        });
+
+        if(!response.ok){
+            throw new Error('Erreur HTTP '+response.status+' — vérifiez la clé.');
+        }
+
         const data=await response.json();
+
         applyDownloadedData(data);
-    }catch(e){syncMessage('Erreur de téléchargement : '+e.message,false);alert(e.message);}
-    finally{syncBusy=false;}
+
+    }catch(e){
+        syncMessage('Erreur de téléchargement : '+e.message,false);
+        alert(e.message);
+
+    }finally{
+        syncBusy=false;
+    }
 }
+
 function applyDownloadedData(data){
     if(!data||typeof data.cfg!=='object'||data.cfg===null||!Array.isArray(data.invoices)){
         throw new Error('Données du serveur invalides.');
     }
-    localStorage.setItem('kems_last_sync_backup',JSON.stringify({cfg,invoices,backupDate:new Date().toISOString()}));
+
+    localStorage.setItem(
+        'kems_last_sync_backup',
+        JSON.stringify({
+            cfg,
+            invoices,
+            backupDate:new Date().toISOString()
+        })
+    );
+
     cfg=data.cfg;
-    invoices=data.invoices.map(f=>({...f,type:f.type==='DEVIS'?'DEVIS':'FACTURE'}));
-    saveConfig();saveInvoices();fillSettings();renderHistory();updateNumber();
+
+    invoices=data.invoices.map(f=>({
+        ...f,
+        type:f.type==='DEVIS'?'DEVIS':'FACTURE'
+    }));
+
+    saveConfig();
+    saveInvoices();
+    fillSettings();
+    renderHistory();
+    updateNumber();
+
     syncMessage('Téléchargement terminé avec succès.');
+
     alert('Synchronisation terminée : '+invoices.length+' document(s) récupéré(s).');
 }
+
 function syncNow(){
     const token=localStorage.getItem('kems_sync_token');
-    if(!token){alert('Veuillez d’abord enregistrer la clé de connexion.');return;}
-    const choice=confirm('Choisir la synchronisation :\n\nOK : envoyer les données vers le serveur.\n\nANNULER : télécharger les données du serveur.');
-    if(choice)uploadSync();else downloadSync();
+
+    if(!token){
+        alert('Veuillez d’abord enregistrer la clé de connexion.');
+        return;
+    }
+
+    const choice=confirm(
+        'Choisir la synchronisation :\n\n'+
+        'OK : envoyer les données vers le serveur.\n\n'+
+        'ANNULER : télécharger les données du serveur.'
+    );
+
+    if(choice)uploadSync();
+    else downloadSync();
 }
 
 /* CALLBACKS ANDROID */
+
 window.onKemsSyncResult=function(action,success,message){
+
     if(action==='prices'){
         priceCatalogBusy=false;
+
         if(success)receivePriceCatalog(message);
         else setPriceStatus('Impossible de récupérer la Base Prix : '+message,false);
+
         return;
     }
+
     if(action==='health'){
-        syncMessage(success?'Serveur connecté : '+message:'Connexion impossible : '+message,success);return;
+        syncMessage(
+            success?'Serveur connecté : '+message:'Connexion impossible : '+message,
+            success
+        );
+        return;
     }
+
     if(action==='saveToken'){
-        if(success){$('syncToken').placeholder='Clé enregistrée sur cet appareil';syncMessage(message);alert(message);}
-        else{syncMessage(message,false);alert(message);}return;
+        if(success){
+            $('syncToken').placeholder='Clé enregistrée sur cet appareil';
+            syncMessage(message);
+            alert(message);
+        }else{
+            syncMessage(message,false);
+            alert(message);
+        }
+        return;
     }
+
     if(action==='discover'){
         serverBusy=false;
+
         if(success){
             const url=cleanServerUrl(message);
+
             $('serverUrl').value=url;
             localStorage.setItem('kems_server_url',url);
+
             setServerStatus('Serveur trouvé : '+url);
             alert('Serveur trouvé : '+url);
-        }else setServerStatus('Recherche impossible : '+message,false);
+
+        }else{
+            setServerStatus('Recherche impossible : '+message,false);
+        }
+
         return;
     }
+
     if(action==='serverUrl'){
-        setServerStatus(success?'Adresse enregistrée : '+message:message,success);return;
+        setServerStatus(
+            success?'Adresse enregistrée : '+message:message,
+            success
+        );
+        return;
     }
+
     if(action==='testServer'){
-        setServerStatus(success?'Serveur accessible : '+message:message,success);return;
+        setServerStatus(
+            success?'Serveur accessible : '+message:message,
+            success
+        );
+        return;
     }
+
     if(action==='upload'){
         syncBusy=false;
-        if(success){syncMessage('Envoi terminé avec succès.');alert('Les données ont été envoyées au serveur.');}
-        else{syncMessage('Erreur pendant l’envoi : '+message,false);alert('Erreur : '+message);}
+
+        if(success){
+            syncMessage('Envoi terminé avec succès.');
+            alert('Les données ont été envoyées au serveur.');
+        }else{
+            syncMessage('Erreur pendant l’envoi : '+message,false);
+            alert('Erreur : '+message);
+        }
+
         return;
     }
+
     if(action==='download'){
         syncBusy=false;
-        if(!success){syncMessage('Erreur de téléchargement : '+message,false);alert('Erreur : '+message);return;}
+
+        if(!success){
+            syncMessage('Erreur de téléchargement : '+message,false);
+            alert('Erreur : '+message);
+            return;
+        }
+
         try{
             const data=typeof message==='string'?JSON.parse(message):message;
             applyDownloadedData(data);
-        }catch(error){syncMessage(error.message,false);alert('Erreur : '+error.message);}
+
+        }catch(error){
+            syncMessage(error.message,false);
+            alert('Erreur : '+error.message);
+        }
     }
 };
 
 /* NAVIGATION */
+
 function showPage(id){
-    document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('hidden',p.id!==id));
-    document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+    document.querySelectorAll('.pane').forEach(p=>
+        p.classList.toggle('hidden',p.id!==id)
+    );
+
+    document.querySelectorAll('nav button').forEach(b=>
+        b.classList.toggle('active',b.dataset.page===id)
+    );
 }
-document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
+
+document.querySelectorAll('nav button').forEach(b=>
+    b.addEventListener('click',()=>showPage(b.dataset.page))
+);
 
 /* INITIALISATION */
+
 fillSettings();
 loadSavedSyncToken();
 loadServerUrl();
+
 $('date').value=today();
-let d=new Date();d.setDate(d.getDate()+Number(cfg.dueDays||30));
+
+let d=new Date();
+d.setDate(d.getDate()+Number(cfg.dueDays||30));
+
 $('dueDate').value=d.toISOString().slice(0,10);
-updateNumber();updateDocumentType();
+
+updateNumber();
+updateDocumentType();
+
 loadLocalPriceCatalog();
-addLine();renderHistory();
+addLine();
+renderHistory();
 
 if(priceCatalogLoaded){
     setPriceStatus('Mode hors ligne : votre Base Prix locale est prête.');
 }else{
     setPriceStatus('Importez base_prix.json pour activer le catalogue hors ligne.',false);
 }
+
 if(window.KemsAndroid||window.KemsSync)refreshPriceCatalog();
+
 </script>
 </body>
 </html>
