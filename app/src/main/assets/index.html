@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="fr">
 <head>
@@ -134,8 +133,6 @@ color:var(--green)
 
 <main class="page">
 
-<!-- NOUVEAU DOCUMENT -->
-
 <section id="invoice" class="pane">
 
 <div class="card">
@@ -231,8 +228,6 @@ Générer / imprimer le PDF
 </div>
 </section>
 
-<!-- HISTORIQUE -->
-
 <section id="history" class="pane hidden">
 <div class="card">
 <h2>Historique des documents</h2>
@@ -249,10 +244,7 @@ Supprimer tout l'historique
 </div>
 </section>
 
-<!-- PARAMETRES -->
-
 <section id="settings" class="pane hidden">
-
 <div class="card">
 
 <h2>Paramètres de l'entreprise</h2>
@@ -364,8 +356,6 @@ Les données restent sur ce téléphone. Exportez régulièrement une sauvegarde
 </p>
 
 <hr style="border-color:#29453a;margin:22px 0">
-
-<!-- SYNCHRONISATION -->
 
 <h2>Synchronisation KEMS</h2>
 
@@ -1070,115 +1060,146 @@ function invoiceHtml(f) {
     let numberLabel = f.type === 'DEVIS' ? 'Devis n°' : 'Facture n°';
 
     return `<!doctype html>
-    <html lang="fr">
-    <meta charset="utf-8">
+<html lang="fr">
+<head>
+<meta charset="utf-8">
 
-    <style>
-    body{font:12px Arial;color:#222;padding:28px}
+<style>
+/* ALIGNEMENT GLOBAL DU PDF */
+* {
+    box-sizing: border-box;
+    text-align: left !important;
+}
 
-    h1{
-        color:#174b35;
-        text-align:left !important;
-        font-size:28px;
-        width:100%;
-        margin:0 0 25px;
-    }
+html, body {
+    width: 100%;
+    margin: 0;
+    padding: 28px;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    color: #222;
+    text-align: left !important;
+}
 
-    h2{color:#174b35}
+h1 {
+    color: #174b35;
+    font-size: 28px;
+    width: 100%;
+    margin: 0 0 25px;
+    text-align: left !important;
+}
 
-    table{
-        width:100%;
-        border-collapse:collapse;
-        margin-top:24px
-    }
+h2 {
+    color: #174b35;
+    text-align: left !important;
+}
 
-    th,td{
-        border:1px solid #ccc;
-        padding:9px;
-        text-align:left
-    }
+p, div, span, small, strong, b {
+    text-align: left !important;
+}
 
-    th{background:#eaf5ee}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 24px;
+}
 
-    .total{
-        font-size:18px;
-        font-weight:bold;
-        text-align:right;
-        margin-top:25px
-    }
+th, td {
+    border: 1px solid #ccc;
+    padding: 9px;
+    text-align: left !important;
+}
 
-    .muted{
-        color:#555;
-        white-space:pre-wrap;
-        line-height:1.6
-    }
+th {
+    background: #eaf5ee;
+}
 
-    .client-address{
-        white-space:pre-wrap;
-        line-height:1.6;
-        margin-top:6px
-    }
-    </style>
+.total {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 25px;
+    text-align: left !important;
+}
 
-    <h1>${title}</h1>
+.muted {
+    color: #555;
+    white-space: pre-wrap;
+    line-height: 1.6;
+    text-align: left !important;
+}
 
-    <h2>${esc(c.company || 'Votre entreprise')}</h2>
+.client-address {
+    white-space: pre-wrap;
+    line-height: 1.6;
+    margin-top: 6px;
+    text-align: left !important;
+}
+</style>
+</head>
 
-    <div class="muted">
-    ${esc(c.companyAddress || '')}
-    ${esc(c.phone || '')} ${esc(c.email || '')}
-    ${esc(c.legal || '')}
-    </div>
+<body>
 
-    <p>
-    <b>${numberLabel}</b> ${esc(f.number)}<br>
-    <b>Date :</b> ${esc(f.date)}<br>
-    <b>Client :</b> ${esc(f.client)}<br>
-    </p>
+<h1>${title}</h1>
 
-    <div class="client-address">
-    ${esc(f.clientAddress || '')}
-    </div>
+<h2>${esc(c.company || 'Votre entreprise')}</h2>
 
-    <p>
-    <b>Mode de paiement :</b> ${esc(f.payment || '')}
-    </p>
+<div class="muted">
+${esc(c.companyAddress || '')}
+${esc(c.phone || '')} ${esc(c.email || '')}
+${esc(c.legal || '')}
+</div>
 
-    <table>
-    <thead>
-    <tr>
-    <th>Désignation</th>
-    <th>Quantité</th>
-    <th>Prix unitaire</th>
-    <th>Montant</th>
-    </tr>
-    </thead>
+<p>
+<b>${numberLabel}</b> ${esc(f.number)}<br>
+<b>Date :</b> ${esc(f.date)}<br>
+<b>Client :</b> ${esc(f.client)}<br>
+</p>
 
-    <tbody>
-    ${(f.lines || []).map(l=>`
-    <tr>
-    <td>${esc(l.description)}</td>
-    <td>${Number(l.qty)||0}</td>
-    <td>${fmt(l.price,currency)}</td>
-    <td>${fmt(l.qty*l.price,currency)}</td>
-    </tr>
-    `).join('')}
-    </tbody>
-    </table>
+<div class="client-address">
+${esc(f.clientAddress || '')}
+</div>
 
-    <div class="total">
-    TOTAL : ${fmt(f.total,currency)}
-    </div>
+<p>
+<b>Mode de paiement :</b> ${esc(f.payment || '')}
+</p>
 
-    <p>${esc(f.notes || '')}</p>
+<table>
+<thead>
+<tr>
+<th>Désignation</th>
+<th>Quantité</th>
+<th>Prix unitaire</th>
+<th>Montant</th>
+</tr>
+</thead>
 
-    ${f.type === 'DEVIS'
-      ? '<p><b>Document PROFORMA – Devis estimatif.</b></p>'
-      : ''}
+<tbody>
+${(f.lines || []).map(l=>`
+<tr>
+<td>${esc(l.description)}</td>
+<td>${Number(l.qty)||0}</td>
+<td>${fmt(l.price,currency)}</td>
+<td>${fmt(l.qty*l.price,currency)}</td>
+</tr>
+`).join('')}
+</tbody>
+</table>
 
-    <hr>
-    <small>Merci pour votre confiance.</small>
-    </html>`;
+<div class="total">
+TOTAL : ${fmt(f.total,currency)}
+</div>
+
+<p>${esc(f.notes || '')}</p>
+
+${f.type === 'DEVIS'
+    ? '<p><b>Document PROFORMA – Devis estimatif.</b></p>'
+    : ''}
+
+<hr>
+<small>Merci pour votre confiance.</small>
+
+</body>
+</html>`;
 }
 
 function makePdf() {
@@ -1255,14 +1276,13 @@ function exportData() {
     setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 
-/* IMPORT JSON - CORRIGE */
+/* IMPORT JSON */
 
 function importData(e) {
     const file = e.target.files && e.target.files[0];
 
     if(!file) return;
 
-    // Le nom du fichier reste affiché après importation.
     $('jsonFileName').textContent = file.name;
 
     const reader = new FileReader();
@@ -1271,7 +1291,6 @@ function importData(e) {
         try {
             const data = JSON.parse(reader.result);
 
-            // Sauvegarde KEMS.
             if(data &&
                typeof data === 'object' &&
                Array.isArray(data.invoices)) {
@@ -1303,7 +1322,6 @@ function importData(e) {
                 return;
             }
 
-            // Base Prix.
             importPriceCatalog(data,file.name);
 
         } catch(error) {
@@ -1316,7 +1334,6 @@ function importData(e) {
             );
 
         } finally {
-            // Réinitialise le sélecteur mais conserve le nom affiché.
             e.target.value = '';
         }
     };
@@ -1343,11 +1360,6 @@ function syncMessage(message,success=true) {
         : '#ff7777';
 }
 
-/*
-   Chargement de la clé sauvegardée.
-   Le champ est de type password : la clé reste masquée.
-*/
-
 function loadSavedSyncToken() {
     try {
         const savedToken = localStorage.getItem('kems_sync_token');
@@ -1367,10 +1379,6 @@ function loadSavedSyncToken() {
     }
 }
 
-/*
-   Enregistrement local et Android.
-*/
-
 function saveSyncToken() {
     const token = $('syncToken').value.trim();
 
@@ -1380,10 +1388,8 @@ function saveSyncToken() {
     }
 
     try {
-        // Première sauvegarde dans le stockage de la WebView.
         localStorage.setItem('kems_sync_token',token);
 
-        // Deuxième sauvegarde dans Android.
         if(window.KemsAndroid &&
            typeof KemsAndroid.saveSyncToken === 'function') {
 
@@ -1538,7 +1544,6 @@ window.onKemsSyncResult = function(action,success,message) {
 
     if(action === 'saveToken') {
         if(success) {
-            // Ne pas effacer la clé : elle reste masquée dans le champ.
             $('syncToken').placeholder = 'Clé enregistrée sur cet appareil';
 
             syncMessage(message);
@@ -1586,7 +1591,6 @@ window.onKemsSyncResult = function(action,success,message) {
                 throw new Error('Données du serveur invalides.');
             }
 
-            // Sauvegarde avant remplacement.
             localStorage.setItem(
                 'kems_last_sync_backup',
                 JSON.stringify({
