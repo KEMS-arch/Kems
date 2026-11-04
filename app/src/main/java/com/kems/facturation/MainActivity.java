@@ -23,6 +23,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
+
 import android.util.Base64;
 
 import org.json.JSONArray;
@@ -75,6 +76,8 @@ public class MainActivity extends Activity {
 
     private volatile boolean discoveryRunning = false;
 
+    // INITIALISATION
+
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
@@ -90,6 +93,7 @@ public class MainActivity extends Activity {
     private void showStartupPin() {
 
         EditText pinInput = new EditText(this);
+
         pinInput.setHint("Saisir le code PIN");
 
         pinInput.setInputType(
@@ -116,9 +120,12 @@ public class MainActivity extends Activity {
                                     pinInput.getText().toString();
 
                             if (APP_PIN.equals(enteredPin)) {
+
                                 dialog.dismiss();
                                 initializeWebView();
+
                             } else {
+
                                 pinInput.setError("Code PIN incorrect");
                                 pinInput.setText("");
                             }
@@ -199,17 +206,22 @@ public class MainActivity extends Activity {
                 fileUploadCallback = callback;
 
                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 intent.setType("application/json");
 
                 try {
+
                     startActivityForResult(
                             intent,
                             REQUEST_IMPORT_JSON
                     );
+
                 } catch (Exception e) {
+
                     fileUploadCallback = null;
                     callback.onReceiveValue(null);
+
                     return false;
                 }
 
@@ -230,6 +242,7 @@ public class MainActivity extends Activity {
     // ADRESSE DU SERVEUR
 
     private String getServerUrl() {
+
         return getSharedPreferences(PREFS, MODE_PRIVATE)
                 .getString(SERVER_KEY, DEFAULT_SERVER_URL);
     }
@@ -246,6 +259,7 @@ public class MainActivity extends Activity {
 
         if (!url.getProtocol().equals("http") &&
                 !url.getProtocol().equals("https")) {
+
             throw new Exception("Utilisez une adresse HTTP ou HTTPS.");
         }
 
@@ -256,7 +270,10 @@ public class MainActivity extends Activity {
         if (url.getPath() != null &&
                 !url.getPath().isEmpty() &&
                 !url.getPath().equals("/")) {
-            throw new Exception("Saisissez uniquement l'adresse du serveur, sans chemin.");
+
+            throw new Exception(
+                    "Saisissez uniquement l'adresse du serveur, sans chemin."
+            );
         }
 
         String normalized =
@@ -268,7 +285,7 @@ public class MainActivity extends Activity {
                 .apply();
     }
 
-    // SECURITE DE LA CLE
+    // SECURITE DE LA CLE SERVEUR
 
     private SecretKey getEncryptionKey() throws Exception {
 
@@ -322,7 +339,14 @@ public class MainActivity extends Activity {
         byte[] combined = new byte[iv.length + encrypted.length];
 
         System.arraycopy(iv, 0, combined, 0, iv.length);
-        System.arraycopy(encrypted, 0, combined, iv.length, encrypted.length);
+
+        System.arraycopy(
+                encrypted,
+                0,
+                combined,
+                iv.length,
+                encrypted.length
+        );
 
         String encoded = Base64.encodeToString(
                 combined,
@@ -356,10 +380,18 @@ public class MainActivity extends Activity {
         }
 
         byte[] iv = new byte[12];
+
         byte[] encrypted = new byte[combined.length - 12];
 
         System.arraycopy(combined, 0, iv, 0, 12);
-        System.arraycopy(combined, 12, encrypted, 0, encrypted.length);
+
+        System.arraycopy(
+                combined,
+                12,
+                encrypted,
+                0,
+                encrypted.length
+        );
 
         Cipher cipher =
                 Cipher.getInstance("AES/GCM/NoPadding");
@@ -392,6 +424,7 @@ public class MainActivity extends Activity {
             URL url = new URL(getServerUrl() + endpoint);
 
             connection = (HttpURLConnection) url.openConnection();
+
             connection.setRequestMethod(method);
             connection.setConnectTimeout(15000);
             connection.setReadTimeout(20000);
@@ -402,6 +435,7 @@ public class MainActivity extends Activity {
             );
 
             if (authenticated) {
+
                 connection.setRequestProperty(
                         "x-kems-token",
                         getDecryptedToken()
@@ -409,10 +443,14 @@ public class MainActivity extends Activity {
             }
 
             if (body != null) {
+
                 connection.setDoOutput(true);
 
                 try (OutputStream output = connection.getOutputStream()) {
-                    output.write(body.getBytes(StandardCharsets.UTF_8));
+
+                    output.write(
+                            body.getBytes(StandardCharsets.UTF_8)
+                    );
                 }
             }
 
@@ -426,6 +464,7 @@ public class MainActivity extends Activity {
             StringBuilder response = new StringBuilder();
 
             if (stream != null) {
+
                 try (BufferedReader reader =
                              new BufferedReader(
                                      new InputStreamReader(
@@ -435,6 +474,7 @@ public class MainActivity extends Activity {
                              )) {
 
                     String line;
+
                     while ((line = reader.readLine()) != null) {
                         response.append(line);
                     }
@@ -442,6 +482,7 @@ public class MainActivity extends Activity {
             }
 
             if (status < 200 || status >= 300) {
+
                 throw new Exception(
                         "Erreur serveur HTTP " + status + " : " + response
                 );
@@ -450,45 +491,53 @@ public class MainActivity extends Activity {
             return response.toString();
 
         } finally {
+
             if (connection != null) {
                 connection.disconnect();
             }
         }
     }
 
-    // TEST D'UNE ADRESSE
+    // TEST DU SERVEUR
 
     private boolean isKemsServer(String address) {
 
         HttpURLConnection connection = null;
 
         try {
+
             URL url = new URL(address + "/api/health");
 
             connection = (HttpURLConnection) url.openConnection();
+
             connection.setRequestMethod("GET");
             connection.setConnectTimeout(700);
             connection.setReadTimeout(900);
 
             int status = connection.getResponseCode();
 
-            if (status < 200 || status >= 300) return false;
+            if (status < 200 || status >= 300) {
+                return false;
+            }
 
-            try (BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(
-                            connection.getInputStream(),
-                            StandardCharsets.UTF_8
-                    )
-            )) {
+            try (BufferedReader reader =
+                         new BufferedReader(
+                                 new InputStreamReader(
+                                         connection.getInputStream(),
+                                         StandardCharsets.UTF_8
+                                 )
+                         )) {
 
                 StringBuilder response = new StringBuilder();
+
                 String line;
 
                 while ((line = reader.readLine()) != null) {
                     response.append(line);
                 }
 
-                JSONObject json = new JSONObject(response.toString());
+                JSONObject json =
+                        new JSONObject(response.toString());
 
                 return "online".equalsIgnoreCase(
                         json.optString("status")
@@ -496,22 +545,28 @@ public class MainActivity extends Activity {
             }
 
         } catch (Exception e) {
+
             return false;
+
         } finally {
-            if (connection != null) connection.disconnect();
+
+            if (connection != null) {
+                connection.disconnect();
+            }
         }
     }
 
     // CONVERSION IP WIFI
 
     private String intToIp(int value) {
+
         return (value & 0xFF) + "." +
                 ((value >> 8) & 0xFF) + "." +
                 ((value >> 16) & 0xFF) + "." +
                 ((value >> 24) & 0xFF);
     }
 
-    // RECHERCHE AUTOMATIQUE SUR LE WIFI
+    // RECHERCHE DES ADRESSES DU RESEAU
 
     private List<String> getLocalAddresses() throws Exception {
 
@@ -526,12 +581,14 @@ public class MainActivity extends Activity {
         DhcpInfo dhcp = wifiManager.getDhcpInfo();
 
         if (dhcp == null || dhcp.ipAddress == 0) {
+
             throw new Exception(
                     "Connectez le téléphone au Wi-Fi avant la recherche."
             );
         }
 
         int ip = dhcp.ipAddress;
+
         int mask = dhcp.netmask;
 
         if (mask == 0) {
@@ -539,26 +596,44 @@ public class MainActivity extends Activity {
         }
 
         int network = ip & mask;
+
         int broadcast = network | ~mask;
 
-        long hostCount = ((long) broadcast - (long) network) - 1;
+        long networkUnsigned =
+                Integer.toUnsignedLong(network);
 
-        // Limite la recherche aux petits réseaux.
-        // Pour un réseau trop grand, recherche dans le /24 local.
+        long broadcastUnsigned =
+                Integer.toUnsignedLong(broadcast);
+
+        long hostCount =
+                broadcastUnsigned - networkUnsigned - 1L;
+
+        // Limitation au réseau /24 si le réseau est trop grand.
+
         if (hostCount < 1 || hostCount > 512) {
+
             network = ip & 0x00FFFFFF;
+
             broadcast = network | 0xFF000000;
+
+            networkUnsigned =
+                    Integer.toUnsignedLong(network);
+
+            broadcastUnsigned =
+                    Integer.toUnsignedLong(broadcast);
         }
 
         List<String> addresses = new ArrayList<>();
 
-        for (long current = (long) network + 1;
-             current < (long) broadcast;
+        for (long current = networkUnsigned + 1;
+             current < broadcastUnsigned;
              current++) {
 
             int candidate = (int) current;
 
-            if (candidate == ip) continue;
+            if (candidate == ip) {
+                continue;
+            }
 
             addresses.add(
                     "http://" + intToIp(candidate) + ":3000"
@@ -568,9 +643,13 @@ public class MainActivity extends Activity {
         return addresses;
     }
 
+    // RECHERCHE AUTOMATIQUE DU SERVEUR KEMS
+
     private void discoverKemsServer() {
 
-        if (discoveryRunning) return;
+        if (discoveryRunning) {
+            return;
+        }
 
         discoveryRunning = true;
 
@@ -578,10 +657,12 @@ public class MainActivity extends Activity {
 
             try {
 
-                // Vérifie d'abord l'adresse déjà enregistrée.
+                // Vérifier d'abord l'adresse enregistrée.
+
                 String saved = getServerUrl();
 
                 if (isKemsServer(saved)) {
+
                     sendResult(
                             "discovery",
                             true,
@@ -589,6 +670,7 @@ public class MainActivity extends Activity {
                                     .put("url", saved)
                                     .toString()
                     );
+
                     return;
                 }
 
@@ -605,9 +687,11 @@ public class MainActivity extends Activity {
                 try {
 
                     for (String address : addresses) {
+
                         completion.submit(() ->
                                 isKemsServer(address) ? address : null
                         );
+
                         submitted++;
                     }
 
@@ -616,7 +700,9 @@ public class MainActivity extends Activity {
                         Future<String> future =
                                 completion.poll(12, TimeUnit.SECONDS);
 
-                        if (future == null) break;
+                        if (future == null) {
+                            break;
+                        }
 
                         String found = future.get();
 
@@ -637,6 +723,7 @@ public class MainActivity extends Activity {
                     }
 
                 } finally {
+
                     scanPool.shutdownNow();
                 }
 
@@ -657,6 +744,7 @@ public class MainActivity extends Activity {
                 );
 
             } finally {
+
                 discoveryRunning = false;
             }
         });
@@ -672,7 +760,9 @@ public class MainActivity extends Activity {
 
         runOnUiThread(() -> {
 
-            if (webView == null) return;
+            if (webView == null) {
+                return;
+            }
 
             String script =
                     "if(window.onKemsSyncResult){" +
@@ -686,7 +776,7 @@ public class MainActivity extends Activity {
         });
     }
 
-    // FICHIERS JSON
+    // SAUVEGARDE ET IMPORTATION JSON
 
     @Override
     protected void onActivityResult(
@@ -711,6 +801,7 @@ public class MainActivity extends Activity {
                 }
 
                 fileUploadCallback.onReceiveValue(results);
+
                 fileUploadCallback = null;
             }
         }
@@ -742,6 +833,7 @@ public class MainActivity extends Activity {
                         );
 
                         output.close();
+
                         pfd.close();
 
                         new AlertDialog.Builder(this)
@@ -753,7 +845,10 @@ public class MainActivity extends Activity {
                 } catch (Exception e) {
 
                     new AlertDialog.Builder(this)
-                            .setMessage("Erreur pendant la sauvegarde JSON.")
+                            .setMessage(
+                                    "Erreur pendant la sauvegarde JSON : " +
+                                    e.getMessage()
+                            )
                             .setPositiveButton("OK", null)
                             .show();
                 }
@@ -763,11 +858,17 @@ public class MainActivity extends Activity {
         }
     }
 
+    // BOUTON RETOUR
+
     @Override
     public void onBackPressed() {
+
         if (webView != null && webView.canGoBack()) {
+
             webView.goBack();
+
         } else {
+
             super.onBackPressed();
         }
     }
@@ -782,22 +883,42 @@ public class MainActivity extends Activity {
             context = c;
         }
 
+        // OBTENIR L'ADRESSE DU SERVEUR
+
         @JavascriptInterface
         public String getServerUrl() {
             return MainActivity.this.getServerUrl();
         }
 
+        // ENREGISTRER L'ADRESSE DU SERVEUR
+
         @JavascriptInterface
         public void setServerUrl(String url) {
+
             executor.execute(() -> {
+
                 try {
+
                     saveServerUrl(url);
-                    sendResult("serverUrl", true, getServerUrl());
+
+                    sendResult(
+                            "serverUrl",
+                            true,
+                            getServerUrl()
+                    );
+
                 } catch (Exception e) {
-                    sendResult("serverUrl", false, e.getMessage());
+
+                    sendResult(
+                            "serverUrl",
+                            false,
+                            e.getMessage()
+                    );
                 }
             });
         }
+
+        // RECHERCHE AUTOMATIQUE
 
         @JavascriptInterface
         public void discoverServer() {
@@ -813,8 +934,11 @@ public class MainActivity extends Activity {
 
                 pendingJson = json;
 
-                Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                Intent intent =
+                        new Intent(Intent.ACTION_CREATE_DOCUMENT);
+
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
+
                 intent.setType("application/json");
 
                 intent.putExtra(
@@ -822,11 +946,14 @@ public class MainActivity extends Activity {
                         "KEMS_Facturation_Sauvegarde.json"
                 );
 
-                startActivityForResult(intent, REQUEST_SAVE_JSON);
+                startActivityForResult(
+                        intent,
+                        REQUEST_SAVE_JSON
+                );
             });
         }
 
-        // IMPRESSION FACTURE
+        // IMPRESSION FACTURE PDF
 
         @JavascriptInterface
         public void printInvoice(String html) {
@@ -840,7 +967,10 @@ public class MainActivity extends Activity {
                 printView.setWebViewClient(new WebViewClient() {
 
                     @Override
-                    public void onPageFinished(WebView view, String url) {
+                    public void onPageFinished(
+                            WebView view,
+                            String url
+                    ) {
 
                         PrintManager manager =
                                 (PrintManager) getSystemService(
@@ -882,7 +1012,7 @@ public class MainActivity extends Activity {
             });
         }
 
-        // ENREGISTRER LA CLE
+        // ENREGISTRER LA CLE SERVEUR
 
         @JavascriptInterface
         public void saveSyncToken(String token) {
@@ -892,7 +1022,10 @@ public class MainActivity extends Activity {
                 try {
 
                     if (token == null || token.trim().isEmpty()) {
-                        throw new Exception("Veuillez saisir la clé.");
+
+                        throw new Exception(
+                                "Veuillez saisir la clé."
+                        );
                     }
 
                     saveEncryptedToken(token.trim());
@@ -914,7 +1047,7 @@ public class MainActivity extends Activity {
             });
         }
 
-        // TEST CONNEXION
+        // TEST CONNEXION SERVEUR
 
         @JavascriptInterface
         public void checkSyncServer() {
@@ -934,12 +1067,16 @@ public class MainActivity extends Activity {
 
                 } catch (Exception e) {
 
-                    sendResult("health", false, e.getMessage());
+                    sendResult(
+                            "health",
+                            false,
+                            e.getMessage()
+                    );
                 }
             });
         }
 
-        // BASE PRIX
+        // BASE DE PRIX
 
         @JavascriptInterface
         public void getPriceCatalog() {
@@ -959,7 +1096,11 @@ public class MainActivity extends Activity {
 
                 } catch (Exception e) {
 
-                    sendResult("prices", false, e.getMessage());
+                    sendResult(
+                            "prices",
+                            false,
+                            e.getMessage()
+                    );
                 }
             });
         }
@@ -984,7 +1125,11 @@ public class MainActivity extends Activity {
 
                 } catch (Exception e) {
 
-                    sendResult("download", false, e.getMessage());
+                    sendResult(
+                            "download",
+                            false,
+                            e.getMessage()
+                    );
                 }
             });
         }
@@ -1003,7 +1148,9 @@ public class MainActivity extends Activity {
                     if (!(data.opt("cfg") instanceof JSONObject) ||
                             !(data.opt("invoices") instanceof JSONArray)) {
 
-                        throw new Exception("Format des données invalide.");
+                        throw new Exception(
+                                "Format des données invalide."
+                        );
                     }
 
                     String response = serverRequest(
@@ -1017,7 +1164,11 @@ public class MainActivity extends Activity {
 
                 } catch (Exception e) {
 
-                    sendResult("upload", false, e.getMessage());
+                    sendResult(
+                            "upload",
+                            false,
+                            e.getMessage()
+                    );
                 }
             });
         }
