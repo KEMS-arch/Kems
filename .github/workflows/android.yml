@@ -11,18 +11,53 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Récupération du projet
       - name: Checkout
         uses: actions/checkout@v4
 
+      # 2. Installation de Java
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
+      # 3. Configuration Gradle
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      # 4. Vérification de la présence du Manifest
+      - name: Vérifier les fichiers
+        run: |
+          echo "=== STRUCTURE DU PROJET ==="
+          ls -la
+          echo "=== MANIFEST ==="
+          ls -la app/src/main/
+
+      # 5. Nettoyage automatique du Manifest
+      - name: Nettoyer AndroidManifest
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import codecs
+
+          p = Path("app/src/main/AndroidManifest.xml")
+
+          if not p.exists():
+              raise SystemExit("ERREUR : AndroidManifest.xml introuvable")
+
+          content = p.read_text(encoding="utf-8-sig")
+
+          # Supprimer les espaces et lignes vides avant la déclaration XML
+          content = content.lstrip()
+
+          p.write_text(content, encoding="utf-8")
+
+          print("Manifest nettoyé.")
+          print("Début du fichier :", repr(content[:100]))
+          PY
+
+      # 6. Validation XML
       - name: Vérifier AndroidManifest XML
         run: |
           echo "=== CONTENU DU MANIFEST ==="
@@ -31,12 +66,27 @@ jobs:
           echo "=== VALIDATION XML ==="
           python3 -c "import xml.etree.ElementTree as ET; ET.parse('app/src/main/AndroidManifest.xml'); print('XML VALIDE')"
 
-      - name: Build APK
-        run: gradle :app:assembleDebug --stacktrace
+      # 7. Vérification Gradle
+      - name: Vérifier Gradle
+        run: |
+          gradle --version
 
+      # 8. Compilation APK
+      - name: Build APK
+        run: |
+          gradle :app:assembleDebug --stacktrace
+
+      # 9. Vérifier APK
+      - name: Vérifier APK généré
+        run: |
+          echo "=== APK DISPONIBLE ==="
+          ls -lh app/build/outputs/apk/debug/
+
+      # 10. Télécharger APK
       - name: Upload APK
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: KEMSFacturation-debug-apk
           path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
