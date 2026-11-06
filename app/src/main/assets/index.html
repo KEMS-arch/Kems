@@ -313,6 +313,21 @@ Le document sera imprimé avec le titre FACTURE.
 
 <hr style="border-color:#29453a;margin:22px 0">
 
+<h2>Connexion au serveur KEMS</h2>
+<p class="muted">Détectez automatiquement l'adresse IP du PC serveur sur le réseau Wi-Fi, ou saisissez-la manuellement.</p>
+
+<label>Adresse du serveur (IP ou URL)</label>
+<input id="serverAddress" type="url" inputmode="url" placeholder="http://192.168.8.101:3001">
+<div class="grid">
+  <button type="button" class="primary" onclick="detectServerAddress()">Détection automatique IP</button>
+  <button type="button" onclick="saveServerAddress()">Enregistrer l'adresse</button>
+</div>
+<button type="button" class="full" onclick="testServerAddress()">Tester la connexion au serveur</button>
+<div id="serverAddressStatus" class="sync-status muted">Adresse non vérifiée.</div>
+<p class="muted">Le téléphone et le PC doivent être connectés au même réseau Wi-Fi. En saisie manuelle, indiquez l'adresse complète, par exemple http://192.168.8.101:3001. La détection automatique nécessite la méthode Android KemsAndroid.detectServerIp() et son retour window.onKemsServerIpResult().</p>
+
+<hr style="border-color:#29453a;margin:22px 0">
+
 <h2>Synchronisation KEMS</h2>
 <p class="muted">Synchronisez vos documents entre votre téléphone Android et votre PC Lenovo.</p>
 
@@ -399,6 +414,7 @@ function updateDocumentType() {
 /* PARAMETRES */
 
 function fillSettings() {
+    if($('serverAddress')) $('serverAddress').value=cfg.serverAddress || readStorage('kems_server_address','');
     [
         'company','companyAddress','phone','email','legal',
         'currency','prefix','yearInNumber','nextNumber',
@@ -411,7 +427,8 @@ function fillSettings() {
 }
 
 function saveSettings() {
-    cfg={};
+    const savedServerAddress=currentServerAddress();
+    cfg={serverAddress:savedServerAddress};
 
     [
         'company','companyAddress','phone','email','legal',
@@ -997,6 +1014,94 @@ function importData(e) {
     reader.readAsText(file);
 }
 
+/* ADRESSE IP DU SERVEUR : DETECTION ET SAISIE MANUELLE */
+
+function normalizeServerAddress(value) {
+    let address=String(value||'').trim();
+    if(!address) throw new Error('Saisissez une adresse IP ou détectez le serveur.');
+    if(!/^https?:\/\//i.test(address)) address='http://'+address;
+    // Retire le slash final et refuse les adresses manifestement invalides.
+    address=address.replace(/\/+$/,'');
+    let parsed;
+    try { parsed=new URL(address); } catch(e) { throw new Error('Adresse serveur invalide. Exemple : http://192.168.8.101:3001'); }
+    if(!parsed.hostname) throw new Error('Adresse IP/nom du serveur invalide.');
+    return address;
+}
+
+function setServerAddressStatus(message, success=true) {
+    const el=$('serverAddressStatus');
+    if(!el) return;
+    el.textContent='État : '+message;
+    el.style.color=success?'#65e6a5':'#ff7777';
+}
+
+function currentServerAddress() {
+    return String(cfg.serverAddress||readStorage('kems_server_address','')||'').trim();
+}
+
+function saveServerAddress() {
+    try {
+        const address=normalizeServerAddress($('serverAddress').value);
+        cfg.serverAddress=address;
+        localStorage.setItem('kems_server_address',address);
+        saveConfig();
+        let nativeSaved=false;
+        if(window.KemsAndroid) {
+            if(typeof KemsAndroid.setServerAddress==='function') { KemsAndroid.setServerAddress(address); nativeSaved=true; }
+            else if(typeof KemsAndroid.saveServerAddress==='function') { KemsAndroid.saveServerAddress(address); nativeSaved=true; }
+            else if(typeof KemsAndroid.setServerUrl==='function') { KemsAndroid.setServerUrl(address); nativeSaved=true; }
+        }
+        setServerAddressStatus(nativeSaved?'Adresse enregistrée sur cet appareil et transmise à Android.':'Adresse enregistrée dans les paramètres de l’application.');
+    } catch(error) { setServerAddressStatus(error.message,false); }
+}
+
+function detectServerAddress() {
+    if(!window.KemsAndroid) {
+        setServerAddressStatus('Détection automatique indisponible dans le navigateur. Saisissez l’adresse IP manuellement ou utilisez l’APK Android avec la méthode native de détection.',false);
+        return;
+    }
+    const methods=['detectServerIp','discoverServerIp','detectServerAddress'];
+    const method=methods.find(name=>typeof KemsAndroid[name]==='function');
+    if(!method) {
+        setServerAddressStatus('La fonction native de détection IP n’est pas encore présente dans MainActivity Android. La saisie manuelle reste disponible.',false);
+        return;
+    }
+    setServerAddressStatus('Recherche du PC serveur sur le réseau local...');
+    try { KemsAndroid[method](); }
+    catch(error) { setServerAddressStatus('Échec de la détection : '+error.message,false); }
+}
+
+window.onKemsServerIpResult=function(address,success,message) {
+    if(success && address) {
+        try {
+            const normalized=normalizeServerAddress(address);
+            $('serverAddress').value=normalized;
+            cfg.serverAddress=normalized;
+            localStorage.setItem('kems_server_address',normalized);
+            saveConfig();
+            if(window.KemsAndroid && typeof KemsAndroid.setServerAddress==='function') KemsAndroid.setServerAddress(normalized);
+            setServerAddressStatus('Serveur détecté : '+normalized);
+        } catch(error) { setServerAddressStatus(error.message,false); }
+    } else setServerAddressStatus(message||'Aucun serveur trouvé. Vérifiez le Wi-Fi ou saisissez l’adresse manuellement.',false);
+};
+
+function testServerAddress() {
+    try {
+        const address=normalizeServerAddress($('serverAddress').value||currentServerAddress());
+        $('serverAddress').value=address;
+        cfg.serverAddress=address;
+        localStorage.setItem('kems_server_address',address);
+        saveConfig();
+        if(window.KemsAndroid && typeof KemsAndroid.setServerAddress==='function') KemsAndroid.setServerAddress(address);
+        if(window.KemsAndroid && typeof KemsAndroid.checkSyncServer==='function') {
+            setServerAddressStatus('Adresse transmise à Android. Vérification du serveur en cours...');
+            KemsAndroid.checkSyncServer();
+        } else {
+            setServerAddressStatus('Adresse enregistrée. Le test direct nécessite le pont Android KemsAndroid.checkSyncServer().',false);
+        }
+    } catch(error) { setServerAddressStatus(error.message,false); }
+}
+
 /* SYNCHRONISATION KEMS ANDROID */
 
 let syncBusy = false;
@@ -1230,6 +1335,7 @@ document.querySelectorAll('nav button').forEach(b=>{
 /* INITIALISATION */
 
 fillSettings();
+if($('serverAddress') && ! $('serverAddress').value) $('serverAddress').value=currentServerAddress();
 $('date').value=today();
 
 let d=new Date();
