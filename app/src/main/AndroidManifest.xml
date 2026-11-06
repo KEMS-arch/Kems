@@ -9,8 +9,8 @@
     <application
         android:allowBackup="false"
         android:label="KEMS Facturation"
-        android:icon="@android:drawable/sym_def_app_icon"
-        android:roundIcon="@android:drawable/sym_def_app_icon"
+        android:icon="@drawable/kems_facturation_logo"
+        android:roundIcon="@drawable/kems_facturation_logo"
         android:theme="@android:style/Theme.Material.Light.NoActionBar"
         android:usesCleartextTraffic="true"
         android:supportsRtl="true">
