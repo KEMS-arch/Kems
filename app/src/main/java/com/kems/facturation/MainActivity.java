@@ -23,6 +23,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
+
 import android.util.Base64;
 
 import org.json.JSONArray;
@@ -56,8 +57,9 @@ public class MainActivity extends Activity {
 
     private static final String APP_PIN = "1707";
 
+    // SERVEUR KEMS : PORT 3002
     private static final String DEFAULT_SERVER_URL =
-            "http://192.168.8.100:3000";
+            "http://192.168.8.100:3002";
 
     private static final String PREFS = "kems_secure";
     private static final String TOKEN_KEY = "server_token";
@@ -75,7 +77,10 @@ public class MainActivity extends Activity {
 
     private volatile boolean discoveryRunning = false;
 
+
+    // =====================================================
     // INITIALISATION
+    // =====================================================
 
     @Override
     public void onCreate(Bundle state) {
@@ -87,7 +92,10 @@ public class MainActivity extends Activity {
         showStartupPin();
     }
 
+
+    // =====================================================
     // PIN DE DEMARRAGE
+    // =====================================================
 
     private void showStartupPin() {
 
@@ -134,7 +142,10 @@ public class MainActivity extends Activity {
         dialog.show();
     }
 
+
+    // =====================================================
     // INITIALISATION WEBVIEW
+    // =====================================================
 
     private void initializeWebView() {
 
@@ -204,7 +215,8 @@ public class MainActivity extends Activity {
 
                 fileUploadCallback = callback;
 
-                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                Intent intent =
+                        new Intent(Intent.ACTION_OPEN_DOCUMENT);
 
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 intent.setType("application/json");
@@ -238,7 +250,10 @@ public class MainActivity extends Activity {
         webView.loadUrl("file:///android_asset/index.html");
     }
 
+
+    // =====================================================
     // ADRESSE DU SERVEUR
+    // =====================================================
 
     private String getServerUrl() {
 
@@ -284,7 +299,10 @@ public class MainActivity extends Activity {
                 .apply();
     }
 
+
+    // =====================================================
     // SECURITE DE LA CLE SERVEUR
+    // =====================================================
 
     private SecretKey getEncryptionKey() throws Exception {
 
@@ -407,7 +425,10 @@ public class MainActivity extends Activity {
         );
     }
 
+
+    // =====================================================
     // COMMUNICATION AVEC LE SERVEUR
+    // =====================================================
 
     private String serverRequest(
             String endpoint,
@@ -497,7 +518,10 @@ public class MainActivity extends Activity {
         }
     }
 
+
+    // =====================================================
     // TEST DU SERVEUR
+    // =====================================================
 
     private boolean isKemsServer(String address) {
 
@@ -555,7 +579,10 @@ public class MainActivity extends Activity {
         }
     }
 
+
+    // =====================================================
     // CONVERSION IP WIFI
+    // =====================================================
 
     private String intToIp(int value) {
 
@@ -565,7 +592,10 @@ public class MainActivity extends Activity {
                 ((value >> 24) & 0xFF);
     }
 
+
+    // =====================================================
     // RECHERCHE DES ADRESSES DU RESEAU
+    // =====================================================
 
     private List<String> getLocalAddresses() throws Exception {
 
@@ -630,14 +660,17 @@ public class MainActivity extends Activity {
             }
 
             addresses.add(
-                    "http://" + intToIp(candidate) + ":3000"
+                    "http://" + intToIp(candidate) + ":3002"
             );
         }
 
         return addresses;
     }
 
+
+    // =====================================================
     // RECHERCHE AUTOMATIQUE DU SERVEUR KEMS
+    // =====================================================
 
     private void discoverKemsServer() {
 
@@ -722,7 +755,7 @@ public class MainActivity extends Activity {
                 sendResult(
                         "discovery",
                         false,
-                        "Aucun serveur KEMS trouvé. Vérifiez le Wi-Fi, le port 3000 et le pare-feu Windows."
+                        "Aucun serveur KEMS trouvé. Vérifiez le Wi-Fi, le port 3002 et le pare-feu Windows."
                 );
 
             } catch (Exception e) {
@@ -742,7 +775,10 @@ public class MainActivity extends Activity {
         });
     }
 
+
+    // =====================================================
     // RETOUR VERS JAVASCRIPT
+    // =====================================================
 
     private void sendResult(
             String action,
@@ -768,7 +804,10 @@ public class MainActivity extends Activity {
         });
     }
 
+
+    // =====================================================
     // SAUVEGARDE ET IMPORTATION JSON
+    // =====================================================
 
     @Override
     protected void onActivityResult(
@@ -848,7 +887,10 @@ public class MainActivity extends Activity {
         }
     }
 
+
+    // =====================================================
     // BOUTON RETOUR
+    // =====================================================
 
     @Override
     public void onBackPressed() {
@@ -860,7 +902,10 @@ public class MainActivity extends Activity {
         }
     }
 
+
+    // =====================================================
     // PONT ANDROID / JAVASCRIPT
+    // =====================================================
 
     public class AndroidBridge {
 
@@ -869,6 +914,9 @@ public class MainActivity extends Activity {
         AndroidBridge(Context c) {
             context = c;
         }
+
+
+        // ADRESSE SERVEUR
 
         @JavascriptInterface
         public String getServerUrl() {
@@ -903,12 +951,16 @@ public class MainActivity extends Activity {
             });
         }
 
+
+        // DETECTION AUTOMATIQUE
+
         @JavascriptInterface
         public void discoverServer() {
             discoverKemsServer();
         }
 
-        // TEST D'UNE ADRESSE SERVEUR SAISIE
+
+        // TEST D'UNE ADRESSE SERVEUR
 
         @JavascriptInterface
         public void testServerUrl(String url) {
@@ -927,12 +979,14 @@ public class MainActivity extends Activity {
 
                     if (!parsed.getProtocol().equals("http") &&
                             !parsed.getProtocol().equals("https")) {
+
                         throw new Exception("Adresse HTTP ou HTTPS requise.");
                     }
 
                     if (parsed.getPath() != null &&
                             !parsed.getPath().isEmpty() &&
                             !parsed.getPath().equals("/")) {
+
                         throw new Exception("Ne saisissez pas de chemin après l'adresse.");
                     }
 
@@ -945,7 +999,7 @@ public class MainActivity extends Activity {
                             success,
                             success
                                     ? "Connexion au serveur KEMS réussie."
-                                    : "Serveur inaccessible. Vérifiez l'adresse, le port 3000 et le pare-feu Windows."
+                                    : "Serveur inaccessible. Vérifiez l'adresse, le port 3002 et le pare-feu Windows."
                     );
 
                 } catch (Exception e) {
@@ -960,6 +1014,7 @@ public class MainActivity extends Activity {
                 }
             });
         }
+
 
         // EXPORTATION JSON
 
@@ -987,6 +1042,7 @@ public class MainActivity extends Activity {
                 );
             });
         }
+
 
         // IMPRESSION PDF A4
 
@@ -1047,6 +1103,7 @@ public class MainActivity extends Activity {
             });
         }
 
+
         // ENREGISTREMENT SECURISE DE LA CLE
 
         @JavascriptInterface
@@ -1081,7 +1138,8 @@ public class MainActivity extends Activity {
             });
         }
 
-        // VERIFICATION DU SERVEUR ENREGISTRE
+
+        // VERIFICATION DU SERVEUR
 
         @JavascriptInterface
         public void checkSyncServer() {
@@ -1111,6 +1169,7 @@ public class MainActivity extends Activity {
                 }
             });
         }
+
 
         // CATALOGUE DES PRIX
 
@@ -1143,6 +1202,7 @@ public class MainActivity extends Activity {
             });
         }
 
+
         // TELECHARGEMENT DES DONNEES
 
         @JavascriptInterface
@@ -1173,6 +1233,7 @@ public class MainActivity extends Activity {
                 }
             });
         }
+
 
         // ENVOI DES DONNEES AU SERVEUR
 
@@ -1216,7 +1277,10 @@ public class MainActivity extends Activity {
         }
     }
 
+
+    // =====================================================
     // FERMETURE PROPRE
+    // =====================================================
 
     @Override
     protected void onDestroy() {
