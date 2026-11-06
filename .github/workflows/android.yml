@@ -1,3 +1,4 @@
+
 name: Build APK
 
 on:
@@ -22,8 +23,16 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Vérifier AndroidManifest XML
+        run: |
+          echo "=== CONTENU DU MANIFEST ==="
+          cat -A app/src/main/AndroidManifest.xml
+
+          echo "=== VALIDATION XML ==="
+          python3 -c "import xml.etree.ElementTree as ET; ET.parse('app/src/main/AndroidManifest.xml'); print('XML VALIDE')"
+
       - name: Build APK
-        run: gradle assembleDebug
+        run: gradle :app:assembleDebug --stacktrace
 
       - name: Upload APK
         if: success()
